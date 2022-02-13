@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.chatapp" >
+    package="com.example.chatapp">
 
     <application
         android:allowBackup="true"
@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApp">
         <activity
+            android:name=".mainActivity.MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".signUp.SignUpActivity"
             android:exported="false" />
         <activity
@@ -17,8 +20,8 @@
             android:exported="false" />
         <activity
             android:name=".splash.SplashActivity"
-            android:launchMode="singleTask"
-            android:exported="true" >
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
