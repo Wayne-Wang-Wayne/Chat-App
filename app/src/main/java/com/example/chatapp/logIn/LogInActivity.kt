@@ -3,6 +3,8 @@ package com.example.chatapp.logIn
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import com.example.chatapp.R
 import com.example.chatapp.signUp.SignUpActivity
