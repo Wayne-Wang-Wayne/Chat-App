@@ -10,6 +10,7 @@ import com.example.chatapp.R
 import com.example.chatapp.signUp.SignUpActivity
 import com.example.chatapp.util.SmallUtil
 import kotlinx.android.synthetic.main.activity_log_in.*
+import kotlinx.android.synthetic.main.activity_sign_up.*
 
 class LogInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
