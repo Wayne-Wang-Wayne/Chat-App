@@ -26,15 +26,16 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun signUp(email: String, password: String) {
+    private fun signUp(name: String, email: String, password: String) {
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     //登入成功回到主頁
+                    addUserToDatabase(name, email, mAuth.currentUser?.uid!!)
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
-                    SmallUtil.quickToast(this,"註冊成功！自動登入！")
+                    SmallUtil.quickToast(this, "註冊成功！自動登入！")
                 } else {
                     SmallUtil.quickToast(this, "註冊異常，請洽瑋瑋！")
                 }
@@ -66,7 +67,11 @@ class SignUpActivity : AppCompatActivity() {
             SmallUtil.quickToast(this, "密碼請輸入大於6位的小寫英數字(至少含一小寫字母和一數字)")
             return
         }
-        signUp(email, password)
+        signUp(name, email, password)
+    }
+
+    private fun addUserToDatabase(name: String, email: String, uid: String) {
+
     }
 
 }
