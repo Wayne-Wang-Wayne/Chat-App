@@ -3,6 +3,7 @@ package com.example.chatapp.signUp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.chatapp.R
+import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.util.FirebaseUtil.Companion.checkSingInfoAndSingUp
 import kotlinx.android.synthetic.main.activity_sign_up.*
 
@@ -17,7 +18,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setUpViewLogic(){
-        btn_sign_up.setOnClickListener {
+        btn_sign_up.setSafeOnClickListener {
             val name = edt_name.text.toString()
             val email = edt_email.text.toString()
             val password = edt_password.text.toString()

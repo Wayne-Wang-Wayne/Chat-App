@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.chatapp.R
+import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.mainActivity.MainActivity
 import com.example.chatapp.signUp.SignUpActivity
 import com.example.chatapp.util.FirebaseUtil.Companion.checkLogInfoAndLogIn
@@ -31,11 +32,11 @@ class LogInActivity : AppCompatActivity() {
     }
 
     private fun setUpViewLogic(){
-        btn_sign_up.setOnClickListener {
+        btn_sign_up.setSafeOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
-        btn_log_in.setOnClickListener {
+        btn_log_in.setSafeOnClickListener {
             val email = edt_email.text.toString()
             val password = edt_password.text.toString()
             checkLogInfoAndLogIn(this, this, email, password)
