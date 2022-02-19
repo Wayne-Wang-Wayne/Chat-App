@@ -71,4 +71,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 
+    //some tools
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+
 }

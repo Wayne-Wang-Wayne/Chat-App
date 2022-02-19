@@ -8,5 +8,6 @@ object FirebaseUtil {
     val mAuth = FirebaseAuth.getInstance()
     val mDbRef = FirebaseDatabase.getInstance().reference
 
+    
 
 }
