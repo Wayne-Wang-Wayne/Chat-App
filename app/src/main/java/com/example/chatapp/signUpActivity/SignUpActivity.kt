@@ -1,4 +1,4 @@
-package com.example.chatapp.signUp
+package com.example.chatapp.signUpActivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

@@ -3,7 +3,7 @@ package com.example.chatapp.util
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import com.example.chatapp.logIn.LogInActivity
+import com.example.chatapp.logInActivity.LogInActivity
 import com.example.chatapp.mainActivity.MainActivity
 import com.example.chatapp.model.User
 import com.google.firebase.auth.FirebaseAuth

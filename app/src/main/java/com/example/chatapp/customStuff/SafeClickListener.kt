@@ -3,6 +3,7 @@ package com.example.chatapp.customStuff
 import android.os.SystemClock
 import android.view.View
 
+//防止連點用
 class SafeClickListener(
     private var defaultInterval: Int = 1000,
     private val onSafeCLick: (View) -> Unit

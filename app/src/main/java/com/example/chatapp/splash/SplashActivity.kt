@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import com.example.chatapp.R
-import com.example.chatapp.logIn.LogInActivity
+import com.example.chatapp.logInActivity.LogInActivity
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

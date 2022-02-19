@@ -10,17 +10,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApp">
         <activity
+            android:name=".chatActivity.ChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".mainActivity.MainActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".signUp.SignUpActivity"
+            android:name=".signUpActivity.SignUpActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".logIn.LogInActivity"
+            android:name=".logInActivity.LogInActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".splash.SplashActivity"
             android:exported="true"

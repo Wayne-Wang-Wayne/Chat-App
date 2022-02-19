@@ -1,14 +1,12 @@
-package com.example.chatapp.logIn
+package com.example.chatapp.logInActivity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
-import com.example.chatapp.mainActivity.MainActivity
-import com.example.chatapp.signUp.SignUpActivity
+import com.example.chatapp.signUpActivity.SignUpActivity
 import com.example.chatapp.util.FirebaseUtil.Companion.checkLogInfoAndLogIn
-import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
 import com.example.chatapp.util.SmallUtil
 import kotlinx.android.synthetic.main.activity_log_in.*
 

@@ -11,6 +11,7 @@ import com.example.chatapp.model.User
 import com.example.chatapp.recyclerviewAdapter.UserListAdapter
 import com.example.chatapp.util.FirebaseUtil.Companion.listenToRTDB
 import com.example.chatapp.util.FirebaseUtil.Companion.logOut
+import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseRTDbInstance
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -44,7 +45,9 @@ class MainActivity : AppCompatActivity() {
                 userList.clear()
                 for (postSnapShot in snapshot.children) {
                     val currentUser = postSnapShot.getValue(User::class.java)
+                    if(mFirebaseAuthInstance.currentUser?.uid != currentUser?.uid){
                         userList.add(currentUser!!)
+                    }
                 }
                 userAdapter.notifyDataSetChanged()
             }
