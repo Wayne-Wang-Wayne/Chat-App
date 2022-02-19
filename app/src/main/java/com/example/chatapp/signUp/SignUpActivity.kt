@@ -5,19 +5,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.chatapp.R
 import com.example.chatapp.mainActivity.MainActivity
+import com.example.chatapp.model.User
+import com.example.chatapp.util.FirebaseUtil.mAuth
+import com.example.chatapp.util.FirebaseUtil.mDbRef
 import com.example.chatapp.util.SmallUtil
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_sign_up.*
 
 class SignUpActivity : AppCompatActivity() {
-
-    private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
-        mAuth = FirebaseAuth.getInstance()
+
         btn_sign_up.setOnClickListener {
             val name = edt_name.text.toString()
             val email = edt_email.text.toString()
@@ -71,7 +71,9 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun addUserToDatabase(name: String, email: String, uid: String) {
-
+        mDbRef.apply {
+            child("user").child(uid).setValue(User(name, email, uid))
+        }
     }
 
 }

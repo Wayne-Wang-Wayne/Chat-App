@@ -6,6 +6,7 @@ import android.os.UserHandle
 import com.example.chatapp.R
 import com.example.chatapp.model.User
 import com.example.chatapp.recyclerviewAdapter.UserListAdapter
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -16,7 +17,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 
         userList = ArrayList()
         userAdapter = UserListAdapter(this, userList)

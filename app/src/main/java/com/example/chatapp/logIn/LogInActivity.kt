@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.example.chatapp.R
 import com.example.chatapp.mainActivity.MainActivity
 import com.example.chatapp.signUp.SignUpActivity
+import com.example.chatapp.util.FirebaseUtil.mAuth
 import com.example.chatapp.util.SmallUtil
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_log_in.*
@@ -16,13 +17,11 @@ import kotlinx.android.synthetic.main.activity_log_in.*
 
 class LogInActivity : AppCompatActivity() {
 
-    private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
 
-        mAuth = FirebaseAuth.getInstance()
         btn_sign_up.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
