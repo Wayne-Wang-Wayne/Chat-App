@@ -19,6 +19,18 @@ class LogInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
 
+        setUpViewLogic()
+    }
+
+    override fun onBackPressed() {
+        if (SmallUtil.isDoubleClick()) {
+            finish()
+        } else {
+            SmallUtil.quickToast(this, "請再按一次以退出App")
+        }
+    }
+
+    private fun setUpViewLogic(){
         btn_sign_up.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
@@ -27,14 +39,6 @@ class LogInActivity : AppCompatActivity() {
             val email = edt_email.text.toString()
             val password = edt_password.text.toString()
             checkLogInfoAndLogIn(this, this, email, password)
-        }
-    }
-
-    override fun onBackPressed() {
-        if (SmallUtil.isDoubleClick()) {
-            finish()
-        } else {
-            SmallUtil.quickToast(this, "請再按一次以退出App")
         }
     }
 

@@ -1,14 +1,21 @@
 package com.example.chatapp.mainActivity
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.UserHandle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatapp.R
 import com.example.chatapp.model.User
 import com.example.chatapp.recyclerviewAdapter.UserListAdapter
-import com.google.firebase.auth.FirebaseAuth
+import com.example.chatapp.util.FirebaseUtil.Companion.listenToRTDB
+import com.example.chatapp.util.FirebaseUtil.Companion.logOut
+import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseRTDbInstance
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -26,6 +33,28 @@ class MainActivity : AppCompatActivity() {
         userList = ArrayList()
         userAdapter = UserListAdapter(this, userList)
 
+        userRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = userAdapter
+        }
+
+        listenToRTDB("user", object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                userList.clear()
+                for (postSnapShot in snapshot.children) {
+                    val currentUser = postSnapShot.getValue(User::class.java)
+                        userList.add(currentUser!!)
+                }
+                userAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
 
     }
 
@@ -38,15 +67,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.logOut){
-          //logic for log out
+        if (item.itemId == R.id.logOut) {
+            //logic for log out
+            logOut(this)
             return true
         }
 
         return true
     }
 
-    private fun initToolBar(){
+    private fun initToolBar() {
         setSupportActionBar(main_activity_toolbar)
     }
 }

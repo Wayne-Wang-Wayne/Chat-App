@@ -1,15 +1,9 @@
 package com.example.chatapp.signUp
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.chatapp.R
-import com.example.chatapp.mainActivity.MainActivity
-import com.example.chatapp.model.User
 import com.example.chatapp.util.FirebaseUtil.Companion.checkSingInfoAndSingUp
-import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
-import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseDbInstance
-import com.example.chatapp.util.SmallUtil
 import kotlinx.android.synthetic.main.activity_sign_up.*
 
 class SignUpActivity : AppCompatActivity() {
@@ -18,7 +12,11 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
+        setUpViewLogic()
 
+    }
+
+    private fun setUpViewLogic(){
         btn_sign_up.setOnClickListener {
             val name = edt_name.text.toString()
             val email = edt_email.text.toString()

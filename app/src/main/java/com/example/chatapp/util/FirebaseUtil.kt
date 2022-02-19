@@ -3,16 +3,19 @@ package com.example.chatapp.util
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import com.example.chatapp.logIn.LogInActivity
 import com.example.chatapp.mainActivity.MainActivity
 import com.example.chatapp.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class FirebaseUtil {
     companion object {
         val mFirebaseAuthInstance = FirebaseAuth.getInstance()
-        val mFirebaseDbInstance = FirebaseDatabase.getInstance().reference
-        //call for log in
+        val mFirebaseRTDbInstance = FirebaseDatabase.getInstance().reference
+
+        //call for logging in
         fun checkLogInfoAndLogIn(
             activity: Activity,
             mContext: Context,
@@ -42,7 +45,7 @@ class FirebaseUtil {
             logIn(activity, mContext, email, password)
         }
 
-        //call for sign up
+        //call for signing up
         fun checkSingInfoAndSingUp(
             activity: Activity,
             mContext: Context,
@@ -77,12 +80,25 @@ class FirebaseUtil {
             signUp(activity, mContext, name, email, password)
         }
 
+        //call for logging out
+        fun logOut(activity: Activity) {
+            mFirebaseAuthInstance.signOut()
+            val intent = Intent(activity,LogInActivity::class.java)
+            activity.startActivity(intent)
+            activity.finish()
+        }
+
+        fun listenToRTDB(path:String,valueEventListener: ValueEventListener){
+            mFirebaseRTDbInstance.child(path).addValueEventListener(valueEventListener)
+        }
+
         private fun logIn(activity: Activity, mContext: Context, email: String, password: String) {
             mFirebaseAuthInstance.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity) { task ->
                     if (task.isSuccessful) {
                         val intent = Intent(activity, MainActivity::class.java)
                         activity.startActivity(intent)
+                        activity.finish()
                         SmallUtil.quickToast(mContext, "登入成功！")
                     } else {
                         SmallUtil.quickToast(mContext, "此用戶不存在，請洽瑋瑋！")
@@ -113,7 +129,7 @@ class FirebaseUtil {
         }
 
         private fun addUserToDatabase(name: String, email: String, uid: String) {
-            mFirebaseDbInstance.apply {
+            mFirebaseRTDbInstance.apply {
                 child("user").child(uid).setValue(User(name, email, uid))
             }
         }
