@@ -8,9 +8,12 @@ import com.example.chatapp.model.Message
 import com.example.chatapp.model.User
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_chat.*
+import kotlinx.coroutines.tasks.await
 
 class FirebaseUtil {
     companion object {
@@ -48,13 +51,22 @@ class FirebaseUtil {
         }
 
         //call for signing up
-        fun checkSingInfoAndSingUp(
+        suspend fun checkSingInfoAndSingUp(
             activity: Activity,
             mContext: Context,
             name: String,
             email: String,
             password: String
         ) {
+            val snapshot =  mFirebaseRTDbInstance.child("user").get().await()
+            for (postSnapShot in snapshot.children) {
+                val user = postSnapShot.getValue(User::class.java)
+                if (name == user?.name) {
+                    SmallUtil.quickToast(mContext, "此名稱已經有人使用，請更換名稱！")
+                    return
+                }
+            }
+
             if (email.trim().isEmpty() && password.trim().isEmpty() && name.trim().isEmpty()) {
                 SmallUtil.quickToast(mContext, "請輸入email和密碼！")
                 return
@@ -142,7 +154,13 @@ class FirebaseUtil {
                 }
 
         }
-        fun listenToRTDBForMessage(firstPath: String,secondPath:String,thirdPath:String, valueEventListener: ValueEventListener) {
+
+        fun listenToRTDBForMessage(
+            firstPath: String,
+            secondPath: String,
+            thirdPath: String,
+            valueEventListener: ValueEventListener
+        ) {
             mFirebaseRTDbInstance.child(firstPath).child(secondPath).child(thirdPath)
                 .addValueEventListener(valueEventListener)
         }
