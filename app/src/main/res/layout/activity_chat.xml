@@ -6,21 +6,44 @@
     android:layout_height="match_parent"
     tools:context=".chatActivity.ChatActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/chat_activity_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/chat_activity_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Name!"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/chatLinearLayout"
-        android:layout_alignParentTop="true" />
+        android:layout_below="@+id/chat_activity_toolbar" />
 
     <LinearLayout
         android:id="@+id/chatLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
         android:orientation="horizontal"
-        android:weightSum="100"
-        android:layout_marginBottom="5dp">
+        android:weightSum="100">
 
         <EditText
             android:id="@+id/messageBox"
@@ -33,6 +56,7 @@
             android:paddingLeft="10dp" />
 
         <ImageView
+            android:id="@+id/sendButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_weight="15"

@@ -1,6 +1,7 @@
 package com.example.chatapp.recyclerviewAdapter
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,12 @@ class UserListAdapter(val context: Context, val userList: ArrayList<User>) :
         (holder as UserViewHolder)
         holder.tvName.text = currentUser.name
         holder.itemView.setSafeOnClickListener {
-            intentToAnyClass(context = context, cls = ChatActivity::class.java)
+            val mBundle = Bundle()
+            mBundle.apply {
+                putString("friendName", currentUser.name)
+                putString("friendUid", currentUser.uid)
+            }
+            intentToAnyClass(context = context, bundle = mBundle, cls = ChatActivity::class.java)
         }
     }
 
@@ -35,6 +41,6 @@ class UserListAdapter(val context: Context, val userList: ArrayList<User>) :
     }
 
     class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvName = itemView.findViewById<TextView>(R.id.tvName)
+        val tvName: TextView = itemView.findViewById(R.id.tvName)
     }
 }
