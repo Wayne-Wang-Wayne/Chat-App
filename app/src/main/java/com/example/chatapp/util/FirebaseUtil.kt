@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Context
 import com.example.chatapp.logInActivity.LogInActivity
 import com.example.chatapp.mainActivity.MainActivity
+import com.example.chatapp.model.Message
 import com.example.chatapp.model.User
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.activity_chat.*
 
 class FirebaseUtil {
     companion object {
@@ -87,7 +89,7 @@ class FirebaseUtil {
             activity.finish()
         }
 
-        fun listenToRTDB(path: String, valueEventListener: ValueEventListener) {
+        fun listenToRTDBForUser(path: String, valueEventListener: ValueEventListener) {
             mFirebaseRTDbInstance.child(path).addValueEventListener(valueEventListener)
         }
 
@@ -129,6 +131,20 @@ class FirebaseUtil {
             mFirebaseRTDbInstance.apply {
                 child("user").child(uid).setValue(User(name, email, uid))
             }
+        }
+
+        fun storeMessageToDB(senderRoomId: String, receiverRoomId: String, messageObject: Message) {
+            mFirebaseRTDbInstance.child("chats").child(senderRoomId!!).child("message").push()
+                .setValue(messageObject).addOnSuccessListener {
+                    mFirebaseRTDbInstance.child("chats").child(receiverRoomId!!).child("message")
+                        .push()
+                        .setValue(messageObject)
+                }
+
+        }
+        fun listenToRTDBForMessage(firstPath: String,secondPath:String,thirdPath:String, valueEventListener: ValueEventListener) {
+            mFirebaseRTDbInstance.child(firstPath).child(secondPath).child(thirdPath)
+                .addValueEventListener(valueEventListener)
         }
     }
 

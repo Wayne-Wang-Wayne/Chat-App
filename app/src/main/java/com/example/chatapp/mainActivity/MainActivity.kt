@@ -1,6 +1,5 @@
 package com.example.chatapp.mainActivity
 
-import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -9,11 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatapp.R
 import com.example.chatapp.model.User
 import com.example.chatapp.recyclerviewAdapter.UserListAdapter
-import com.example.chatapp.util.FirebaseUtil.Companion.listenToRTDB
+import com.example.chatapp.util.FirebaseUtil.Companion.listenToRTDBForUser
 import com.example.chatapp.util.FirebaseUtil.Companion.logOut
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
-import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseRTDbInstance
-import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -39,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             adapter = userAdapter
         }
 
-        listenToRTDB("user", object : ValueEventListener {
+        listenToRTDBForUser("user", object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 userList.clear()
