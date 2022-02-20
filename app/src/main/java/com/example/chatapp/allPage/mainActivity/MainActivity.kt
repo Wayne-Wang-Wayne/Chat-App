@@ -5,17 +5,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatapp.R
-import com.example.chatapp.model.User
-import com.example.chatapp.myMainFriend.MyMainFriendsFragment
-import com.example.chatapp.recyclerviewAdapter.UserListAdapter
-import com.example.chatapp.util.FirebaseUtil.Companion.listenToRTDBForUser
+import com.example.chatapp.allPage.myMainFriend.MyMainFriendsFragment
 import com.example.chatapp.util.FirebaseUtil.Companion.logOut
-import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
