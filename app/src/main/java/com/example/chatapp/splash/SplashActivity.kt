@@ -1,11 +1,11 @@
 package com.example.chatapp.splash
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import com.example.chatapp.R
 import com.example.chatapp.logInActivity.LogInActivity
+import com.example.chatapp.util.IntentUtil.intentToAnyClass
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,8 +18,7 @@ class SplashActivity : AppCompatActivity() {
     private fun delayForThreeSecond() {
         val handler = Handler()
         val runnable = Runnable {
-            val intent = Intent(this, LogInActivity::class.java)
-            startActivity(intent)
+            intentToAnyClass(context = this, cls = LogInActivity::class.java)
             finish()
         }
         handler.postDelayed(runnable, 3000)

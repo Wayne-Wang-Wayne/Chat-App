@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
+import com.example.chatapp.chatActivity.ChatActivity
+import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.User
+import com.example.chatapp.util.IntentUtil.intentToAnyClass
 
 class UserListAdapter(val context: Context, val userList: ArrayList<User>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -22,6 +25,9 @@ class UserListAdapter(val context: Context, val userList: ArrayList<User>) :
         val currentUser = userList[position]
         (holder as UserViewHolder)
         holder.tvName.text = currentUser.name
+        holder.itemView.setSafeOnClickListener {
+            intentToAnyClass(context = context, cls = ChatActivity::class.java)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -2,10 +2,10 @@ package com.example.chatapp.util
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import com.example.chatapp.logInActivity.LogInActivity
 import com.example.chatapp.mainActivity.MainActivity
 import com.example.chatapp.model.User
+import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
@@ -83,12 +83,11 @@ class FirebaseUtil {
         //call for logging out
         fun logOut(activity: Activity) {
             mFirebaseAuthInstance.signOut()
-            val intent = Intent(activity,LogInActivity::class.java)
-            activity.startActivity(intent)
+            intentToAnyClass(context = activity, cls = LogInActivity::class.java)
             activity.finish()
         }
 
-        fun listenToRTDB(path:String,valueEventListener: ValueEventListener){
+        fun listenToRTDB(path: String, valueEventListener: ValueEventListener) {
             mFirebaseRTDbInstance.child(path).addValueEventListener(valueEventListener)
         }
 
@@ -96,8 +95,7 @@ class FirebaseUtil {
             mFirebaseAuthInstance.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity) { task ->
                     if (task.isSuccessful) {
-                        val intent = Intent(activity, MainActivity::class.java)
-                        activity.startActivity(intent)
+                        intentToAnyClass(context = activity, cls = MainActivity::class.java)
                         activity.finish()
                         SmallUtil.quickToast(mContext, "登入成功！")
                     } else {
@@ -118,8 +116,7 @@ class FirebaseUtil {
                     if (task.isSuccessful) {
                         //登入成功回到主頁
                         addUserToDatabase(name, email, mFirebaseAuthInstance.currentUser?.uid!!)
-                        val intent = Intent(activity, MainActivity::class.java)
-                        activity.startActivity(intent)
+                        intentToAnyClass(context = activity, cls = MainActivity::class.java)
                         activity.finish()
                         SmallUtil.quickToast(mContext, "註冊成功！自動登入！")
                     } else {
