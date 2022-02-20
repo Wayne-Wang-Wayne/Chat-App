@@ -36,6 +36,16 @@
         android:layout_above="@+id/chatLinearLayout"
         android:layout_below="@+id/chat_activity_toolbar" />
 
+    <include
+        layout="@layout/retry_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/chatLinearLayout"
         android:layout_width="match_parent"

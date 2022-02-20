@@ -13,7 +13,7 @@ import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClic
 import com.example.chatapp.model.User
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
 
-class UserListAdapter(val context: Context, val userList: ArrayList<User>) :
+class UserListAdapter(val context: Context, private val userList: ArrayList<User>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
