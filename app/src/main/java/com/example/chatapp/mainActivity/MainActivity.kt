@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatapp.R
 import com.example.chatapp.model.User
+import com.example.chatapp.myMainFriend.MyMainFriendsFragment
 import com.example.chatapp.recyclerviewAdapter.UserListAdapter
 import com.example.chatapp.util.FirebaseUtil.Companion.listenToRTDBForUser
 import com.example.chatapp.util.FirebaseUtil.Companion.logOut
@@ -19,43 +21,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private var mMenu: Menu? = null
-    private lateinit var userList: ArrayList<User>
-    private lateinit var userAdapter: UserListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         initToolBar()
-        userList = ArrayList()
-        userAdapter = UserListAdapter(this, userList)
-
-        userRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = userAdapter
-        }
-
-        listenToRTDBForUser("user", object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-                userList.clear()
-                for (postSnapShot in snapshot.children) {
-                    val currentUser = postSnapShot.getValue(User::class.java)
-                    if(mFirebaseAuthInstance.currentUser?.uid != currentUser?.uid){
-                        userList.add(currentUser!!)
-                    }
-                }
-                userAdapter.notifyDataSetChanged()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
-
-
+        changePage(MyMainFriendsFragment())
+        
     }
 
 
@@ -78,5 +51,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun initToolBar() {
         setSupportActionBar(main_activity_toolbar)
+    }
+
+    private fun changePage(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(main_frame_layout.id, fragment)
+        supportFragmentManager.executePendingTransactions()
+        supportFragmentManager.beginTransaction()
+            .replace(main_frame_layout.id, fragment)
+            .commitAllowingStateLoss()
     }
 }
