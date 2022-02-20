@@ -7,12 +7,10 @@ import com.example.chatapp.mainActivity.MainActivity
 import com.example.chatapp.model.Message
 import com.example.chatapp.model.User
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
+import com.example.chatapp.util.SharedPreferenceUtil.AUTO_LOGIN
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.coroutines.tasks.await
 
 class FirebaseUtil {
@@ -58,7 +56,7 @@ class FirebaseUtil {
             email: String,
             password: String
         ) {
-            val snapshot =  mFirebaseRTDbInstance.child("user").get().await()
+            val snapshot = mFirebaseRTDbInstance.child("user").get().await()
             for (postSnapShot in snapshot.children) {
                 val user = postSnapShot.getValue(User::class.java)
                 if (name == user?.name) {
@@ -97,52 +95,14 @@ class FirebaseUtil {
         //call for logging out
         fun logOut(activity: Activity) {
             mFirebaseAuthInstance.signOut()
+            val sharedPreferenceUtil = SharedPreferenceUtil(activity)
+            sharedPreferenceUtil.remove(AUTO_LOGIN)
             intentToAnyClass(context = activity, cls = LogInActivity::class.java)
             activity.finish()
         }
 
         fun listenToRTDBForUser(path: String, valueEventListener: ValueEventListener) {
             mFirebaseRTDbInstance.child(path).addValueEventListener(valueEventListener)
-        }
-
-        private fun logIn(activity: Activity, mContext: Context, email: String, password: String) {
-            mFirebaseAuthInstance.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity) { task ->
-                    if (task.isSuccessful) {
-                        intentToAnyClass(context = activity, cls = MainActivity::class.java)
-                        activity.finish()
-                        SmallUtil.quickToast(mContext, "登入成功！")
-                    } else {
-                        SmallUtil.quickToast(mContext, "此用戶不存在，請洽瑋瑋！")
-                    }
-                }
-        }
-
-        private fun signUp(
-            activity: Activity,
-            mContext: Context,
-            name: String,
-            email: String,
-            password: String
-        ) {
-            mFirebaseAuthInstance.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity) { task ->
-                    if (task.isSuccessful) {
-                        //登入成功回到主頁
-                        addUserToDatabase(name, email, mFirebaseAuthInstance.currentUser?.uid!!)
-                        intentToAnyClass(context = activity, cls = MainActivity::class.java)
-                        activity.finish()
-                        SmallUtil.quickToast(mContext, "註冊成功！自動登入！")
-                    } else {
-                        SmallUtil.quickToast(mContext, "註冊異常，請洽瑋瑋！")
-                    }
-                }
-        }
-
-        private fun addUserToDatabase(name: String, email: String, uid: String) {
-            mFirebaseRTDbInstance.apply {
-                child("user").child(uid).setValue(User(name, email, uid))
-            }
         }
 
         fun storeMessageToDB(senderRoomId: String, receiverRoomId: String, messageObject: Message) {
@@ -164,6 +124,61 @@ class FirebaseUtil {
             mFirebaseRTDbInstance.child(firstPath).child(secondPath).child(thirdPath)
                 .addValueEventListener(valueEventListener)
         }
+
+        private fun logIn(activity: Activity, mContext: Context, email: String, password: String) {
+            mFirebaseAuthInstance.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(activity) { task ->
+                    if (task.isSuccessful) {
+                        storeAutoLoginInfo(email, password, mContext)
+                        intentToAnyClass(context = activity, cls = MainActivity::class.java)
+                        activity.finish()
+                        SmallUtil.quickToast(mContext, "登入成功！")
+                    } else {
+                        SmallUtil.quickToast(mContext, "此用戶不存在，請洽瑋瑋！")
+                    }
+                }
+        }
+
+        private fun signUp(
+            activity: Activity,
+            mContext: Context,
+            name: String,
+            email: String,
+            password: String
+        ) {
+            mFirebaseAuthInstance.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(activity) { task ->
+                    if (task.isSuccessful) {
+                        //登入成功回到主頁
+                        storeAutoLoginInfo(email, password, mContext)
+                        addUserToDatabase(name, email, mFirebaseAuthInstance.currentUser?.uid!!)
+                        intentToAnyClass(context = activity, cls = MainActivity::class.java)
+                        activity.finish()
+                        SmallUtil.quickToast(mContext, "註冊成功！自動登入！")
+                    } else {
+                        SmallUtil.quickToast(mContext, "註冊異常，請洽瑋瑋！")
+                    }
+                }
+        }
+
+        private fun addUserToDatabase(name: String, email: String, uid: String) {
+            mFirebaseRTDbInstance.apply {
+                child("user").child(uid).setValue(User(name, email, uid))
+            }
+        }
+
+        private fun storeAutoLoginInfo(email: String, password: String, mContext: Context) {
+            val accountInfo = ArrayList<String>()
+            accountInfo.add(email)
+            accountInfo.add(password)
+            val sharedPreferenceUtil =
+                SharedPreferenceUtil(
+                    mContext
+                )
+            sharedPreferenceUtil.putListString(AUTO_LOGIN, accountInfo)
+        }
+
+
     }
 
 

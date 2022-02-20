@@ -7,6 +7,8 @@ import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClic
 import com.example.chatapp.signUpActivity.SignUpActivity
 import com.example.chatapp.util.FirebaseUtil.Companion.checkLogInfoAndLogIn
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
+import com.example.chatapp.util.SharedPreferenceUtil
+import com.example.chatapp.util.SharedPreferenceUtil.AUTO_LOGIN
 import com.example.chatapp.util.SmallUtil
 import kotlinx.android.synthetic.main.activity_log_in.*
 
@@ -18,6 +20,7 @@ class LogInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
 
+        checkIsAutoLogIn()
         setUpViewLogic()
     }
 
@@ -37,6 +40,14 @@ class LogInActivity : AppCompatActivity() {
             val email = edt_email.text.toString()
             val password = edt_password.text.toString()
             checkLogInfoAndLogIn(this, this, email, password)
+        }
+    }
+
+    private fun checkIsAutoLogIn() {
+        val sharedPreferenceUtil = SharedPreferenceUtil(this)
+        val autoLoginInfo = sharedPreferenceUtil.getListString(AUTO_LOGIN)
+        if (autoLoginInfo.size == 2) {
+            checkLogInfoAndLogIn(this, this, autoLoginInfo[0], autoLoginInfo[1])
         }
     }
 
