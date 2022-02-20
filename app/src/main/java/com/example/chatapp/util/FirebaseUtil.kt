@@ -2,7 +2,7 @@ package com.example.chatapp.util
 
 import android.app.Activity
 import android.content.Context
-import com.example.chatapp.logInActivity.LogInActivity
+import com.example.chatapp.allPage.logInActivity.LogInActivity
 import com.example.chatapp.mainActivity.MainActivity
 import com.example.chatapp.model.Message
 import com.example.chatapp.model.User

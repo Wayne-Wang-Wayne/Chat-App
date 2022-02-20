@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.example.chatapp.R
 import com.example.chatapp.allPage.myMainFriend.MyMainFriendsFragment
 import com.example.chatapp.util.FirebaseUtil.Companion.logOut
+import com.example.chatapp.util.SmallUtil
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -52,5 +53,13 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(main_frame_layout.id, fragment)
             .commitAllowingStateLoss()
+    }
+
+    override fun onBackPressed() {
+        if (SmallUtil.isDoubleClick()) {
+            finish()
+        } else {
+            SmallUtil.quickToast(this, "請再按一次以退出App")
+        }
     }
 }

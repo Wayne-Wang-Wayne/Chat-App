@@ -1,4 +1,4 @@
-package com.example.chatapp.logInActivity
+package com.example.chatapp.allPage.logInActivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,7 +20,7 @@ class LogInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
 
-        checkIsAutoLogIn()
+
         setUpViewLogic()
     }
 
@@ -43,13 +43,7 @@ class LogInActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkIsAutoLogIn() {
-        val sharedPreferenceUtil = SharedPreferenceUtil(this)
-        val autoLoginInfo = sharedPreferenceUtil.getListString(AUTO_LOGIN)
-        if (autoLoginInfo.size == 2) {
-            checkLogInfoAndLogIn(this, this, autoLoginInfo[0], autoLoginInfo[1])
-        }
-    }
+
 
 
 }

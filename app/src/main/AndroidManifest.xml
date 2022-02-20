@@ -23,11 +23,11 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".logInActivity.LogInActivity"
+            android:name=".allPage.logInActivity.LogInActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".splash.SplashActivity"
+            android:name=".allPage.splash.SplashActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
