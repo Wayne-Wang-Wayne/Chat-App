@@ -33,9 +33,7 @@ class SignUpActivity : AppCompatActivity() {
             val name = edt_name.text.toString()
             val email = edt_email.text.toString()
             val password = edt_password.text.toString()
-            CoroutineScope(Dispatchers.Main).launch {
-                checkSingInfoAndSingUp(mActivity, mContext, name, email, password)
-            }
+            checkSingInfoAndSingUp(mActivity, mContext, name, email, password)
         }
     }
 
