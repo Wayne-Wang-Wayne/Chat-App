@@ -11,16 +11,18 @@ import java.util.regex.Pattern
 object SmallUtil {
     var mLastClickTime = 0;
     fun isDoubleClick(): Boolean {
-        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+        if (System.currentTimeMillis() - mLastClickTime < 1000) {
             return true
         }
-        mLastClickTime = SystemClock.elapsedRealtime().toInt()
+        mLastClickTime = System.currentTimeMillis().toInt()
         return false
     }
-    fun quickToast(context:Context,message:String){
-        Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+
+    fun quickToast(context: Context, message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
-    fun isValidPassword(password:String): Boolean {
+
+    fun isValidPassword(password: String): Boolean {
         val matcher: Matcher
         val pattern: Pattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{6,}$")
         matcher = pattern.matcher(password)

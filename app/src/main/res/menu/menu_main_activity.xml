@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/common_menu_settings"
-        android:icon="@drawable/add_friend_icon"
-        android:title=""
-        app:showAsAction="always" />
-    <item android:id="@+id/logOut" android:title="Log Out" />
+    <item android:id="@+id/logOut" android:title="登出" />
 </menu>

@@ -15,7 +15,7 @@
             android:name=".chatActivity.ChatActivity"
             android:exported="false" />
         <activity
-            android:name=".mainActivity.MainActivity"
+            android:name=".allPage.mainActivity.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

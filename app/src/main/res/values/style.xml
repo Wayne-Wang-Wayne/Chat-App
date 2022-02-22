@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="NoActionBar" parent="@android:style/Theme.Holo.Light">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="font_medium">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+
+    <style name="popupDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item> <!-- Dialog的windowFrame邊框為無-->
+        <item name="android:windowIsFloating">true</item><!-- 是否浮在activity上 -->
+        <item name="android:windowNoTitle">true</item><!-- 無標題 -->
+        <item name="android:background">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/transparent</item><!-- 設置dialog的背景-->
+        <item name="android:backgroundDimEnabled">true</item> <!--背景是否模糊?示，是否允許背景?暗，true則允許變暗-->
+        <item name="android:windowIsTranslucent">false</item><!-- 半透明 -->
+        <item name="android:backgroundDimAmount">0.5</item><!-- 灰度 -->
+        <item name="android:windowContentOverlay">@null</item><!-- 對話框是否有遮蔽 -->
+        <item name="android:colorBackgroundCacheHint">@null</item><!-- 背景?存?色 -->
+    </style>
+</resources>

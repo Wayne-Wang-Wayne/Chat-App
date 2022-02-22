@@ -1,7 +1,9 @@
-package com.example.chatapp.mainActivity
+package com.example.chatapp.allPage.mainActivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
@@ -20,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         initToolBar()
-        changePage(MyMainFriendsFragment())
+        changePage(BaseViewPagerFragment.newInstance())
         
     }
 
@@ -38,7 +40,6 @@ class MainActivity : AppCompatActivity() {
             logOut(this)
             return true
         }
-
         return true
     }
 
@@ -55,11 +56,14 @@ class MainActivity : AppCompatActivity() {
             .commitAllowingStateLoss()
     }
 
+    private var doubleBackToExitPressedOnce = false
     override fun onBackPressed() {
-        if (SmallUtil.isDoubleClick()) {
-            finish()
-        } else {
-            SmallUtil.quickToast(this, "請再按一次以退出App")
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
         }
+        this.doubleBackToExitPressedOnce = true
+        SmallUtil.quickToast(this, "請再按一次以退出App")
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 2000)
     }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xml>
+    <item
+        id="my_channels"
+        title="我的頻道" />
+    <item
+        id="public_channels"
+        title="公開的頻道" />
+    <item
+        id="join_channels"
+        title="加入頻道" />
+    <item
+        id="create_channels"
+        title="創建頻道" />
+
+</xml>

@@ -3,6 +3,7 @@ package com.example.chatapp.allPage.splash
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import com.example.chatapp.R
 import com.example.chatapp.allPage.logInActivity.LogInActivity
 import com.example.chatapp.util.FirebaseUtil
@@ -22,13 +23,7 @@ class SplashActivity : AppCompatActivity() {
         checkIsAutoLogIn()
     }
 
-    override fun onBackPressed() {
-        if (SmallUtil.isDoubleClick()) {
-            finish()
-        } else {
-            SmallUtil.quickToast(this, "請再按一次以退出App")
-        }
-    }
+
 
     private fun checkIsAutoLogIn() {
         val sharedPreferenceUtil = SharedPreferenceUtil(this)
@@ -50,5 +45,16 @@ class SplashActivity : AppCompatActivity() {
             }
         }
         handler.postDelayed(runnable, 3000)
+    }
+
+    private var doubleBackToExitPressedOnce = false
+    override fun onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+        this.doubleBackToExitPressedOnce = true
+        SmallUtil.quickToast(this, "請再按一次以退出App")
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 2000)
     }
 }

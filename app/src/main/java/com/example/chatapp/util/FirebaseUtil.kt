@@ -3,7 +3,7 @@ package com.example.chatapp.util
 import android.app.Activity
 import android.content.Context
 import com.example.chatapp.allPage.logInActivity.LogInActivity
-import com.example.chatapp.mainActivity.MainActivity
+import com.example.chatapp.allPage.mainActivity.MainActivity
 import com.example.chatapp.model.Message
 import com.example.chatapp.model.User
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
@@ -11,7 +11,6 @@ import com.example.chatapp.util.SharedPreferenceUtil.AUTO_LOGIN
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.tasks.await
 
 class FirebaseUtil {
     companion object {

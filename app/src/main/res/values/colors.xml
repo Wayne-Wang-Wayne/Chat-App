@@ -11,4 +11,7 @@
     <color name="btn_background">#5bf593</color>
     <color name="sent_message_background">#428df5</color>
     <color name="received_message_background">#31ad33</color>
+    <color name="tab_unselect_text">#31ad33</color>
+    <color name="tab_select_text">#FFFFFFFF</color>
+    <color name="tab_bg">#5bf593</color>
 </resources>
