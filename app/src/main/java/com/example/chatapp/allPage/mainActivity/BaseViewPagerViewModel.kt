@@ -13,7 +13,7 @@ class BaseViewPagerViewModel(@NonNull application: Application) : BaseAndroidVie
     private val TAG: String = javaClass.simpleName
     val newsTabs = MutableLiveData<List<BaseTabsModel>>()
 
-    fun fetchNewsTabs(){
+    fun fetchTabsInfo(){
         isLoading.value = true
         addDisposable(getTabs(getApplication()),object :DisposableSingleObserver<List<BaseTabsModel>>(){
             override fun onSuccess(t: List<BaseTabsModel>) {

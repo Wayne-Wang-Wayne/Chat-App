@@ -58,7 +58,7 @@ class MyMainFriendsFragment : Fragment() {
                 userList.clear()
                 for (postSnapShot in snapshot.children) {
                     val currentUser = postSnapShot.getValue(User::class.java)
-                    if (FirebaseUtil.mFirebaseAuthInstance.currentUser?.uid != currentUser?.uid) {
+                    if (FirebaseUtil.mFirebaseAuthInstance.currentUser?.uid != currentUser?.userUID) {
                         userList.add(currentUser!!)
                     }
                 }

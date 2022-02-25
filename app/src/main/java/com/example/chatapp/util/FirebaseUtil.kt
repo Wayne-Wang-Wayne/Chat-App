@@ -126,6 +126,10 @@ class FirebaseUtil {
                 .addValueEventListener(valueEventListener)
         }
 
+        fun createChannel(mContext: Context, chatUid: String, chatName: String, isPublic: Boolean) {
+
+        }
+
         private fun logIn(activity: Activity, mContext: Context, email: String, password: String) {
             mFirebaseAuthInstance.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity) { task ->
@@ -164,7 +168,7 @@ class FirebaseUtil {
 
         private fun addUserToDatabase(name: String, email: String, uid: String) {
             mFirebaseRTDbInstance.apply {
-                child("user").child(uid).setValue(User(name, email, uid))
+                child("allUser").child(uid).setValue(User(email, name, uid, ""))
             }
         }
 

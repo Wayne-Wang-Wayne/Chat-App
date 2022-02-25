@@ -19,7 +19,7 @@
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_base_view_pager.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/fragment_create_channels.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_create_channels.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_join_channels.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_my_channels.xml" value="0.13647830474268416" />
         <entry key="app/src/main/res/layout/fragment_my_main_friends.xml" value="0.17300724637681159" />

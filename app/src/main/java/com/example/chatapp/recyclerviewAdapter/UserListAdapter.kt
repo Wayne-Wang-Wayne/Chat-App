@@ -30,7 +30,7 @@ class UserListAdapter(val context: Context, private val userList: ArrayList<User
             val mBundle = Bundle()
             mBundle.apply {
                 putString("friendName", currentUser.name)
-                putString("friendUid", currentUser.uid)
+                putString("friendUid", currentUser.userUID)
             }
             intentToAnyClass(context = context, bundle = mBundle, cls = ChatActivity::class.java)
         }

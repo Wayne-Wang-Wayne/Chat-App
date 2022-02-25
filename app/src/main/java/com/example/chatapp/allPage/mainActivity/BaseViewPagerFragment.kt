@@ -36,7 +36,7 @@ open class BaseViewPagerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         baseViewPagerViewModel = ViewModelProvider(this).get(BaseViewPagerViewModel::class.java)
-        baseViewPagerViewModel.fetchNewsTabs()
+        baseViewPagerViewModel.fetchTabsInfo()
         observeViewModel()
     }
 
@@ -64,7 +64,7 @@ open class BaseViewPagerFragment : Fragment() {
                 retryLayout.vErrorMessage.text = it
                 retryLayout.vRefreshLayout.setOnClickListener {
                     retryLayout.vRefreshLayout.visibility = View.GONE
-                    baseViewPagerViewModel.fetchNewsTabs()
+                    baseViewPagerViewModel.fetchTabsInfo()
                 }
             }
 
