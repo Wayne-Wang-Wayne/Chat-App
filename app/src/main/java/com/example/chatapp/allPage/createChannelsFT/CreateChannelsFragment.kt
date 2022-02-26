@@ -42,10 +42,10 @@ class CreateChannelsFragment : Fragment() {
 
     private fun setView() {
         btn_create_channel.setSafeOnClickListener {
-            val chatUid = etChatUid.text.toString()
-            val chatName = etChatName.text.toString()
+            val channelUid = etChatUid.text.toString()
+            val channelName = etChatName.text.toString()
             val isPublic = cbIsPublic.isSelected
-            createChannel(mContext, chatUid, chatName, isPublic)
+            createChannel(mContext, channelUid, channelName, isPublic)
         }
     }
 }

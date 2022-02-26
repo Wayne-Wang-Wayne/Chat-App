@@ -29,4 +29,13 @@ object SmallUtil {
 
         return matcher.matches()
     }
+
+    fun isValidChannelUid(channelUid:String):Boolean{
+        val matcher: Matcher
+        val pattern: Pattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{4,}$")
+        matcher = pattern.matcher(channelUid)
+
+        return matcher.matches()
+    }
+
 }
