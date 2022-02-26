@@ -1,20 +1,24 @@
 package com.example.chatapp.allPage.createChannelsFT
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
-import com.example.chatapp.util.FirebaseUtil.Companion.createChannel
 import kotlinx.android.synthetic.main.fragment_create_channels.*
 
 
 class CreateChannelsFragment : Fragment() {
 
     private lateinit var mContext: Context
+    private lateinit var mCreateChannelFTViewModel: CreateChannelFTViewModel
 
 
     override fun onCreateView(
@@ -33,7 +37,11 @@ class CreateChannelsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        mCreateChannelFTViewModel =
+            ViewModelProvider(this).get(CreateChannelFTViewModel::class.java)
+
         setView()
+        observeViewModel()
     }
 
     companion object {
@@ -41,11 +49,39 @@ class CreateChannelsFragment : Fragment() {
     }
 
     private fun setView() {
+
+        etChatUid.addTextChangedListener { mCreateChannelFTViewModel.uidEditTextChanged(etChatUid.text.toString()) }
+        etChatName.addTextChangedListener { mCreateChannelFTViewModel.nameEditTextChanged(etChatName.text.toString()) }
+
         btn_create_channel.setSafeOnClickListener {
             val channelUid = etChatUid.text.toString()
             val channelName = etChatName.text.toString()
-            val isPublic = cbIsPublic.isSelected
-            createChannel(mContext, channelUid, channelName, isPublic)
+            val isPublic = cbIsPublic.isChecked
+            mCreateChannelFTViewModel.createChannelProcess(
+                mContext,
+                channelUid,
+                channelName,
+                isPublic
+            )
         }
     }
+
+    private fun observeViewModel() {
+        mCreateChannelFTViewModel.isCreateSuccessfully.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                showCreateSuccessDialog(etChatUid.text.toString())
+                etChatUid.setText("")
+                etChatName.setText("")
+            }
+        })
+    }
+
+    private fun showCreateSuccessDialog(channelUid: String) {
+        AlertDialog.Builder(mContext)
+            .setTitle("成功")
+            .setMessage("創建頻道成功，趕快告訴朋友你的頻道ID！\n房間Uid：$channelUid")
+            .setPositiveButton("好") { _, _ -> }
+            .show()
+    }
 }
+

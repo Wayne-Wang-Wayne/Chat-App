@@ -129,42 +129,7 @@ class FirebaseUtil {
                 .addValueEventListener(valueEventListener)
         }
 
-        fun createChannel(
-            mContext: Context,
-            channelUid: String,
-            channelName: String,
-            isPublic: Boolean
-        ) {
-            mFirebaseRTDbInstance.child("channels").get().addOnSuccessListener { snapShot ->
-                for (postSnapShot in snapShot.children) {
-                    val uid = postSnapShot.key
-                    if (channelUid == uid) {
-                        SmallUtil.quickToast(mContext, "此Uid已經有人使用，請更換！")
-                        return@addOnSuccessListener
-                    }
-                }
 
-                if (channelUid.trim().isEmpty() && channelName.trim().isEmpty()) {
-                    SmallUtil.quickToast(mContext, "請輸入Uid和房名！")
-                    return@addOnSuccessListener
-                }
-
-                if (channelUid.trim().isEmpty()) {
-                    SmallUtil.quickToast(mContext, "請輸入Uid！")
-                    return@addOnSuccessListener
-                }
-
-                if (channelName.trim().isEmpty()) {
-                    SmallUtil.quickToast(mContext, "請輸入房名！")
-                    return@addOnSuccessListener
-                }
-                if (!isValidChannelUid(channelUid)) {
-                    SmallUtil.quickToast(mContext, "Uid請輸入四位以上小寫英數字，不能重複！")
-                    return@addOnSuccessListener
-                }
-                storeChannelInfo(mContext, channelUid, channelName, isPublic)
-            }
-        }
 
         private fun logIn(activity: Activity, mContext: Context, email: String, password: String) {
             mFirebaseAuthInstance.signInWithEmailAndPassword(email, password)
@@ -219,25 +184,7 @@ class FirebaseUtil {
             sharedPreferenceUtil.putListString(AUTO_LOGIN, accountInfo)
         }
 
-        private fun storeChannelInfo(
-            mContext: Context,
-            channelUid: String,
-            channelName: String,
-            isPublic: Boolean
-        ) {
-            //先存channel資料
-            val channelInfo = ChannelInfo("", channelName, isPublic)
-            mFirebaseRTDbInstance.child("channels").child(channelUid).setValue(channelInfo)
-                .addOnSuccessListener {
-                    mFirebaseRTDbInstance.child("channels").child(channelUid).child("members")
-                        .push()
-                        .setValue(OnlyUserUid(mFirebaseAuthInstance.currentUser?.uid))
-                        .addOnSuccessListener {
-                            //show toast and clear edittext
-                            
-                        }
-                }
-        }
+
 
 
     }

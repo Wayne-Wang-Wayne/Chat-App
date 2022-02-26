@@ -42,7 +42,7 @@
         android:id="@+id/btn_create_channel"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/isPublic"
+        android:layout_below="@+id/cbIsPublic"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:background="@drawable/btn_background"
