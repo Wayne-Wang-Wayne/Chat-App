@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
+import com.example.chatapp.util.SmallUtil
 import kotlinx.android.synthetic.main.fragment_create_channels.*
 
 
@@ -67,11 +68,17 @@ class CreateChannelsFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        mCreateChannelFTViewModel.isCreateSuccessfully.observe(viewLifecycleOwner, Observer {
+        mCreateChannelFTViewModel.ifCreateSuccessfully.observe(viewLifecycleOwner, Observer {
             if (it) {
                 showCreateSuccessDialog(etChatUid.text.toString())
                 etChatUid.setText("")
                 etChatName.setText("")
+            }
+        })
+
+        mCreateChannelFTViewModel.ifCreateFail.observe(viewLifecycleOwner, Observer {
+            if(it){
+                SmallUtil.quickToast(mContext,"創建失敗！請重試或聯繫瑋瑋！")
             }
         })
     }

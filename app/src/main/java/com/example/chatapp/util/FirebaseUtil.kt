@@ -58,7 +58,7 @@ class FirebaseUtil {
             email: String,
             password: String
         ) {
-            mFirebaseRTDbInstance.child("user").get().addOnSuccessListener { snapShot ->
+            mFirebaseRTDbInstance.child("allUser").get().addOnSuccessListener { snapShot ->
                 for (postSnapShot in snapShot.children) {
                     val user = postSnapShot.getValue(User::class.java)
                     if (name == user?.name) {

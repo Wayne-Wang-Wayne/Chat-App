@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.example.chatapp.allPage.mainActivity.BaseAndroidViewModel
 import com.example.chatapp.model.ChannelInfo
 import com.example.chatapp.model.OnlyUserUid
+import com.example.chatapp.model.PublicChannels
+import com.example.chatapp.model.UserChannels
 import com.example.chatapp.util.FirebaseUtil
 import com.example.chatapp.util.SmallUtil
 
@@ -15,7 +17,8 @@ class CreateChannelFTViewModel(@NonNull application: Application) :
     private val TAG: String = javaClass.simpleName
     private val uidTextLiveData = MutableLiveData<String>()
     private val nameTextLiveData = MutableLiveData<String>()
-    val isCreateSuccessfully = MutableLiveData<Boolean>()
+    val ifCreateSuccessfully = MutableLiveData<Boolean>()
+    val ifCreateFail = MutableLiveData<Boolean>()
 
     fun createChannelProcess(
         mContext: Context,
@@ -87,16 +90,48 @@ class CreateChannelFTViewModel(@NonNull application: Application) :
     ) {
         //先存channel資料
         val channelInfo = ChannelInfo("", channelName, isPublic)
+        val currentUserUid = FirebaseUtil.mFirebaseAuthInstance.currentUser?.uid
+        //先存頻道
         FirebaseUtil.mFirebaseRTDbInstance.child("channels").child(channelUid).setValue(channelInfo)
             .addOnSuccessListener {
                 FirebaseUtil.mFirebaseRTDbInstance.child("channels").child(channelUid)
                     .child("members")
-                    .push()
-                    .setValue(OnlyUserUid(FirebaseUtil.mFirebaseAuthInstance.currentUser?.uid))
+                    .child(currentUserUid!!)
+                    .setValue(OnlyUserUid(currentUserUid))
                     .addOnSuccessListener {
-                        //show toast and clear edittext
-                        isCreateSuccessfully.value = true
+                        //再存各user各自擁有的頻道
+                        val userChannelModel = UserChannels(channelUid, channelName)
+                        FirebaseUtil.mFirebaseRTDbInstance.child("userChannels")
+                            .child(currentUserUid!!).child(channelUid).setValue(userChannelModel)
+                            .addOnSuccessListener {
+                                //再存公開頻道
+                                if (isPublic) {
+                                    val publicChannels = PublicChannels(channelUid, channelName, 1)
+                                    FirebaseUtil.mFirebaseRTDbInstance.child("publicChannels")
+                                        .child(channelUid).setValue(publicChannels)
+                                        .addOnSuccessListener {
+                                            //show successful toast and clear edittext
+                                            ifCreateSuccessfully.value = true
+                                        }.addOnFailureListener {
+                                            //error handle要清資料和show toast
+                                            ifCreateFail.value = true
+                                        }
+
+                                } else {
+                                    //show successful toast and clear edittext
+                                    ifCreateSuccessfully.value = true
+                                }
+                            }.addOnFailureListener {
+                                //error handle要清資料和show toast
+                                ifCreateFail.value = true
+                            }
+                    }.addOnFailureListener {
+                        //error handle要清資料和show toast
+                        ifCreateFail.value = true
                     }
+            }.addOnFailureListener {
+                //error handle要清資料和show toast
+                ifCreateFail.value = true
             }
     }
 }

@@ -2,6 +2,8 @@ package com.example.chatapp.allPage.logInActivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.signUpActivity.SignUpActivity
@@ -24,12 +26,15 @@ class LogInActivity : AppCompatActivity() {
         setUpViewLogic()
     }
 
+    private var doubleBackToExitPressedOnce = false
     override fun onBackPressed() {
-        if (SmallUtil.isDoubleClick()) {
-            finish()
-        } else {
-            SmallUtil.quickToast(this, "請再按一次以退出App")
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
         }
+        this.doubleBackToExitPressedOnce = true
+        SmallUtil.quickToast(this, "請再按一次以退出App")
+        Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 2000)
     }
 
     private fun setUpViewLogic() {
