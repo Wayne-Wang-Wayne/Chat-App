@@ -2,12 +2,10 @@ package com.example.chatapp.util
 
 import android.app.Activity
 import android.content.Context
+import com.example.chatapp.allPage.joinChannelsFT.OnJoinSuccess
 import com.example.chatapp.allPage.logInActivity.LogInActivity
 import com.example.chatapp.allPage.mainActivity.MainActivity
-import com.example.chatapp.model.ChannelInfo
-import com.example.chatapp.model.Message
-import com.example.chatapp.model.OnlyUserUid
-import com.example.chatapp.model.User
+import com.example.chatapp.model.*
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.example.chatapp.util.SharedPreferenceUtil.AUTO_LOGIN
 import com.example.chatapp.util.SmallUtil.isValidChannelUid
@@ -19,6 +17,15 @@ class FirebaseUtil {
     companion object {
         val mFirebaseAuthInstance = FirebaseAuth.getInstance()
         val mFirebaseRTDbInstance = FirebaseDatabase.getInstance().reference
+
+        // Firebase path name
+        val USER_CHANNELS = "userChannels"
+        val ALL_USER = "allUser"
+        val CHATS = "chats"
+        val MESSAGE = "message"
+        val CHANNELS = "channels"
+        val PUBLIC_CHANNELS = "publicChannels"
+        val MEMBERS = "members"
 
         //call for logging in
         fun checkLogInfoAndLogIn(
@@ -58,7 +65,7 @@ class FirebaseUtil {
             email: String,
             password: String
         ) {
-            mFirebaseRTDbInstance.child("allUser").get().addOnSuccessListener { snapShot ->
+            mFirebaseRTDbInstance.child(ALL_USER).get().addOnSuccessListener { snapShot ->
                 for (postSnapShot in snapShot.children) {
                     val user = postSnapShot.getValue(User::class.java)
                     if (name == user?.name) {
@@ -110,9 +117,9 @@ class FirebaseUtil {
         }
 
         fun storeMessageToDB(senderRoomId: String, receiverRoomId: String, messageObject: Message) {
-            mFirebaseRTDbInstance.child("chats").child(senderRoomId!!).child("message").push()
+            mFirebaseRTDbInstance.child(CHATS).child(senderRoomId!!).child(MESSAGE).push()
                 .setValue(messageObject).addOnSuccessListener {
-                    mFirebaseRTDbInstance.child("chats").child(receiverRoomId!!).child("message")
+                    mFirebaseRTDbInstance.child(CHATS).child(receiverRoomId!!).child(MESSAGE)
                         .push()
                         .setValue(messageObject)
                 }
@@ -129,6 +136,113 @@ class FirebaseUtil {
                 .addValueEventListener(valueEventListener)
         }
 
+        fun joinChannel(mContext: Context, channelUid: String,onJoinSuccess: OnJoinSuccess? = null) {
+            //檢查是否已經加入
+            mFirebaseRTDbInstance.child(USER_CHANNELS)
+                .child(mFirebaseAuthInstance.currentUser!!.uid).get()
+                .addOnSuccessListener { snapShotOne ->
+                    if (snapShotOne != null) {
+                        for (postSnapShot in snapShotOne.children) {
+                            val uid = postSnapShot.key
+                            if (channelUid == uid) {
+                                SmallUtil.quickToast(mContext, "您已經在此群組！")
+                                return@addOnSuccessListener
+                            }
+                        }
+                    }
+                    //檢查此群組是否存在
+                    mFirebaseRTDbInstance.child(CHANNELS).get()
+                        .addOnSuccessListener { snapShotTwo ->
+                            if (snapShotTwo == null) {
+                                SmallUtil.quickToast(mContext, "此群組不存在！")
+                                return@addOnSuccessListener
+                            }
+                            var isExisted = false
+                            for (postSnapShot in snapShotTwo.children) {
+                                val uid = postSnapShot.key
+                                if (channelUid == uid) {
+                                    isExisted = true
+                                }
+                            }
+                            if (!isExisted) {
+                                SmallUtil.quickToast(mContext, "此群組不存在！")
+                                return@addOnSuccessListener
+                            }
+
+                            if (channelUid.trim().isEmpty()) {
+                                SmallUtil.quickToast(mContext, "請輸入Uid！")
+                                return@addOnSuccessListener
+                            }
+
+                            if (!SmallUtil.isValidChannelUid(channelUid)) {
+                                SmallUtil.quickToast(mContext, "Uid請輸入四位以上小寫英數字！")
+                                return@addOnSuccessListener
+                            }
+                            joinChannelProcess(mContext, channelUid,onJoinSuccess)
+                        }
+                }
+        }
+
+        private fun joinChannelProcess(mContext: Context, channelUid: String,onJoinSuccess:OnJoinSuccess? = null) {
+            //先set channels 裡的members成員名單
+            mFirebaseRTDbInstance.child(CHANNELS).child(channelUid).child(MEMBERS)
+                .child(mFirebaseAuthInstance.currentUser!!.uid)
+                .setValue(OnlyUserUid(mFirebaseAuthInstance.currentUser!!.uid))
+                .addOnSuccessListener {
+                    //設Public Channel list(如果存在就成員人數加一)
+                    mFirebaseRTDbInstance.child(PUBLIC_CHANNELS).get()
+                        .addOnSuccessListener { snapShot ->
+                            if (snapShot != null) {
+                                for (postSnapShot in snapShot.children) {
+                                    if (postSnapShot.key == channelUid) {
+                                        val publicChannel =
+                                            postSnapShot.getValue(PublicChannels::class.java)
+                                        mFirebaseRTDbInstance.child(PUBLIC_CHANNELS).setValue(
+                                            PublicChannels(
+                                                publicChannel?.channelUID,
+                                                publicChannel?.channelName,
+                                                publicChannel?.userAmount?.plus(1)
+                                            )
+                                        )
+                                    }
+                                }
+
+                            }
+                            //set userChannel 名單
+                            mFirebaseRTDbInstance.child(CHANNELS).child(channelUid).child("channelName").get()
+                                .addOnSuccessListener { snapShotTwo ->
+                                    //找頻道暱稱
+                                    var channelsName = ""
+                                    if(snapShotTwo.value != null){
+                                        channelsName = snapShotTwo.value.toString()
+                                    }
+                                    val userChannel = UserChannels(channelUid, channelsName)
+                                    //set 到 userChannel
+                                    mFirebaseRTDbInstance.child(USER_CHANNELS)
+                                        .child(mFirebaseAuthInstance.currentUser!!.uid)
+                                        .child(channelUid).setValue(userChannel)
+                                        .addOnSuccessListener {
+                                            //全部set 成功
+                                            SmallUtil.simpleDialogUtil(
+                                                mContext,
+                                                "成功",
+                                                "加入成功，趕快去聊天！"
+                                            )
+                                            onJoinSuccess?.onJoinSuccess()
+                                        }.addOnFailureListener {
+                                            SmallUtil.quickToast(mContext, "註冊異常，煩請聯繫瑋瑋！")
+                                        }
+                                }.addOnFailureListener {
+                                    SmallUtil.quickToast(mContext, "註冊異常，煩請聯繫瑋瑋！")
+                                }
+                        }.addOnFailureListener {
+                            SmallUtil.quickToast(mContext, "註冊異常，煩請聯繫瑋瑋！")
+                        }
+
+                }.addOnFailureListener {
+                    SmallUtil.quickToast(mContext, "註冊異常，煩請聯繫瑋瑋！")
+                }
+        }
 
 
         private fun logIn(activity: Activity, mContext: Context, email: String, password: String) {
@@ -169,7 +283,7 @@ class FirebaseUtil {
 
         private fun addUserToDatabase(name: String, email: String, uid: String) {
             mFirebaseRTDbInstance.apply {
-                child("allUser").child(uid).setValue(User(email, name, uid, ""))
+                child(ALL_USER).child(uid).setValue(User(email, name, uid, ""))
             }
         }
 
@@ -183,8 +297,6 @@ class FirebaseUtil {
                 )
             sharedPreferenceUtil.putListString(AUTO_LOGIN, accountInfo)
         }
-
-
 
 
     }

@@ -7,6 +7,8 @@ import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.Message
 import com.example.chatapp.recyclerviewAdapter.ChatRecyclerviewAdapter
+import com.example.chatapp.util.FirebaseUtil.Companion.CHATS
+import com.example.chatapp.util.FirebaseUtil.Companion.MESSAGE
 import com.example.chatapp.util.FirebaseUtil.Companion.listenToRTDBForMessage
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseRTDbInstance
@@ -47,7 +49,7 @@ class ChatActivity : AppCompatActivity() {
         receiverRoomId = myUid + friendUid
 
         //logic for adding data to recyclerview
-        listenToRTDBForMessage("chats", senderRoomId!!, "message", object : ValueEventListener {
+        listenToRTDBForMessage(CHATS, senderRoomId!!, MESSAGE, object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 messageList.clear()
                 for (postSnapShot in snapshot.children) {

@@ -10,6 +10,11 @@ import com.example.chatapp.model.OnlyUserUid
 import com.example.chatapp.model.PublicChannels
 import com.example.chatapp.model.UserChannels
 import com.example.chatapp.util.FirebaseUtil
+import com.example.chatapp.util.FirebaseUtil.Companion.CHANNELS
+import com.example.chatapp.util.FirebaseUtil.Companion.MEMBERS
+import com.example.chatapp.util.FirebaseUtil.Companion.PUBLIC_CHANNELS
+import com.example.chatapp.util.FirebaseUtil.Companion.USER_CHANNELS
+import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseRTDbInstance
 import com.example.chatapp.util.SmallUtil
 
 class CreateChannelFTViewModel(@NonNull application: Application) :
@@ -49,7 +54,7 @@ class CreateChannelFTViewModel(@NonNull application: Application) :
         channelName: String,
         isPublic: Boolean
     ) {
-        FirebaseUtil.mFirebaseRTDbInstance.child("channels").get()
+        mFirebaseRTDbInstance.child(CHANNELS).get()
             .addOnSuccessListener { snapShot ->
                 for (postSnapShot in snapShot.children) {
                     val uid = postSnapShot.key
@@ -92,22 +97,22 @@ class CreateChannelFTViewModel(@NonNull application: Application) :
         val channelInfo = ChannelInfo("", channelName, isPublic)
         val currentUserUid = FirebaseUtil.mFirebaseAuthInstance.currentUser?.uid
         //先存頻道
-        FirebaseUtil.mFirebaseRTDbInstance.child("channels").child(channelUid).setValue(channelInfo)
+        mFirebaseRTDbInstance.child(CHANNELS).child(channelUid).setValue(channelInfo)
             .addOnSuccessListener {
-                FirebaseUtil.mFirebaseRTDbInstance.child("channels").child(channelUid)
-                    .child("members")
+                mFirebaseRTDbInstance.child(CHANNELS).child(channelUid)
+                    .child(MEMBERS)
                     .child(currentUserUid!!)
                     .setValue(OnlyUserUid(currentUserUid))
                     .addOnSuccessListener {
                         //再存各user各自擁有的頻道
                         val userChannelModel = UserChannels(channelUid, channelName)
-                        FirebaseUtil.mFirebaseRTDbInstance.child("userChannels")
+                        mFirebaseRTDbInstance.child(USER_CHANNELS)
                             .child(currentUserUid!!).child(channelUid).setValue(userChannelModel)
                             .addOnSuccessListener {
                                 //再存公開頻道
                                 if (isPublic) {
                                     val publicChannels = PublicChannels(channelUid, channelName, 1)
-                                    FirebaseUtil.mFirebaseRTDbInstance.child("publicChannels")
+                                    mFirebaseRTDbInstance.child(PUBLIC_CHANNELS)
                                         .child(channelUid).setValue(publicChannels)
                                         .addOnSuccessListener {
                                             //show successful toast and clear edittext

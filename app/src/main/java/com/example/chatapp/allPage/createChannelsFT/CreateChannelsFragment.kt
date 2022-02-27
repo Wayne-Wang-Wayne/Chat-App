@@ -70,7 +70,7 @@ class CreateChannelsFragment : Fragment() {
     private fun observeViewModel() {
         mCreateChannelFTViewModel.ifCreateSuccessfully.observe(viewLifecycleOwner, Observer {
             if (it) {
-                showCreateSuccessDialog(etChatUid.text.toString())
+                SmallUtil.simpleDialogUtil(mContext,"成功","創建頻道成功，趕快告訴朋友你的頻道ID！\n房間Uid：${etChatUid.text}")
                 etChatUid.setText("")
                 etChatName.setText("")
             }
@@ -83,12 +83,6 @@ class CreateChannelsFragment : Fragment() {
         })
     }
 
-    private fun showCreateSuccessDialog(channelUid: String) {
-        AlertDialog.Builder(mContext)
-            .setTitle("成功")
-            .setMessage("創建頻道成功，趕快告訴朋友你的頻道ID！\n房間Uid：$channelUid")
-            .setPositiveButton("好") { _, _ -> }
-            .show()
-    }
+
 }
 
