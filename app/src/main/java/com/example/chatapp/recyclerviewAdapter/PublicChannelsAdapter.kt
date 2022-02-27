@@ -14,8 +14,7 @@ import com.example.chatapp.model.UserChannels
 
 class PublicChannelsAdapter(
     val context: Context,
-    private var publicChannelsList: ArrayList<PublicChannels>,
-    private var myChannelsList: ArrayList<UserChannels>
+    private var publicChannelsList: ArrayList<PublicChannels>
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -29,15 +28,13 @@ class PublicChannelsAdapter(
     }
 
     override fun getItemCount(): Int {
-
+        return publicChannelsList.size
     }
 
     fun setRecyclerviewValue(
-        publicChannelsList: ArrayList<PublicChannels>,
-        myChannelsList: ArrayList<UserChannels>
+        publicChannelsList: ArrayList<PublicChannels>
     ) {
         this.publicChannelsList = publicChannelsList
-        this.myChannelsList = myChannelsList
         notifyDataSetChanged()
     }
 

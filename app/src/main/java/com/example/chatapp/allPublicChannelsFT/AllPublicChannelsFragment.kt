@@ -2,7 +2,6 @@ package com.example.chatapp.allPublicChannelsFT
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatapp.R
-import com.example.chatapp.allPage.mainActivity.BaseViewPagerViewModel
-import com.example.chatapp.allPage.myChannelsFT.MyChannelsFragment
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.PublicChannels
 import com.example.chatapp.model.UserChannels
@@ -48,7 +45,7 @@ class AllPublicChannelsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         publicChannelViewModel = ViewModelProvider(this).get(PublicChannelViewModel::class.java)
         publicChannelsAdapter =
-            PublicChannelsAdapter(mContext, ArrayList<PublicChannels>(), ArrayList<UserChannels>())
+            PublicChannelsAdapter(mContext, ArrayList<PublicChannels>())
         publicChannelsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = publicChannelsAdapter
@@ -67,10 +64,8 @@ class AllPublicChannelsFragment : Fragment() {
 
     private fun observeViewModel() {
 
-        publicChannelViewModel.myChanelLiveData.observe(viewLifecycleOwner, Observer {
-            publicChannelViewModel.publicChanelLiveData.value?.let { it1 ->
-                publicChannelsAdapter.setRecyclerviewValue(it1, it)
-            }
+        publicChannelViewModel.finalPublicChanelLiveData.observe(viewLifecycleOwner, Observer {
+           publicChannelsAdapter.setRecyclerviewValue(it)
         })
 
         publicChannelViewModel.isLoading.observe(viewLifecycleOwner, Observer {
