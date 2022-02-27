@@ -136,7 +136,11 @@ class FirebaseUtil {
                 .addValueEventListener(valueEventListener)
         }
 
-        fun joinChannel(mContext: Context, channelUid: String,onJoinSuccess: OnJoinSuccess? = null) {
+        fun joinChannel(
+            mContext: Context,
+            channelUid: String,
+            onJoinSuccess: OnJoinSuccess? = null
+        ) {
             //檢查是否已經加入
             mFirebaseRTDbInstance.child(USER_CHANNELS)
                 .child(mFirebaseAuthInstance.currentUser!!.uid).get()
@@ -178,12 +182,16 @@ class FirebaseUtil {
                                 SmallUtil.quickToast(mContext, "Uid請輸入四位以上小寫英數字！")
                                 return@addOnSuccessListener
                             }
-                            joinChannelProcess(mContext, channelUid,onJoinSuccess)
+                            joinChannelProcess(mContext, channelUid, onJoinSuccess)
                         }
                 }
         }
 
-        private fun joinChannelProcess(mContext: Context, channelUid: String,onJoinSuccess:OnJoinSuccess? = null) {
+        private fun joinChannelProcess(
+            mContext: Context,
+            channelUid: String,
+            onJoinSuccess: OnJoinSuccess? = null
+        ) {
             //先set channels 裡的members成員名單
             mFirebaseRTDbInstance.child(CHANNELS).child(channelUid).child(MEMBERS)
                 .child(mFirebaseAuthInstance.currentUser!!.uid)
@@ -209,14 +217,17 @@ class FirebaseUtil {
 
                             }
                             //set userChannel 名單
-                            mFirebaseRTDbInstance.child(CHANNELS).child(channelUid).child("channelName").get()
+                            mFirebaseRTDbInstance.child(CHANNELS).child(channelUid)
+                                .child("channelName").get()
                                 .addOnSuccessListener { snapShotTwo ->
                                     //找頻道暱稱
                                     var channelsName = ""
-                                    if(snapShotTwo.value != null){
+                                    if (snapShotTwo.value != null) {
                                         channelsName = snapShotTwo.value.toString()
                                     }
-                                    val userChannel = UserChannels(channelUid, channelsName)
+                                    val rightNowTime = (System.currentTimeMillis() / 1000).toInt()
+                                    val userChannel =
+                                        UserChannels(channelUid, channelsName, rightNowTime)
                                     //set 到 userChannel
                                     mFirebaseRTDbInstance.child(USER_CHANNELS)
                                         .child(mFirebaseAuthInstance.currentUser!!.uid)
