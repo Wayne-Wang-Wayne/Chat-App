@@ -18,7 +18,7 @@ class UserListAdapter(val context: Context, private val userList: ArrayList<User
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view: View = LayoutInflater.from(context).inflate(R.layout.user_layout, parent, false)
+        val view: View = LayoutInflater.from(context).inflate(R.layout.item_public_channel, parent, false)
         return UserViewHolder(view)
     }
 
