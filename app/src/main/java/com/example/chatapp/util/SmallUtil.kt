@@ -2,6 +2,7 @@ package com.example.chatapp.util
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.*
@@ -39,7 +40,7 @@ object SmallUtil {
         return matcher.matches()
     }
 
-    fun simpleDialogUtil(mContext: Context, title: String, message: String) {
+    fun simpleDialogUtilWithY(mContext: Context, title: String, message: String) {
         AlertDialog.Builder(mContext)
             .setTitle(title)
             .setMessage(message)

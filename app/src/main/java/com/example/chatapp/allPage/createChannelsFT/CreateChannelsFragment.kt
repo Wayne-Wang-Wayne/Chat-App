@@ -1,6 +1,5 @@
 package com.example.chatapp.allPage.createChannelsFT
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -70,7 +69,7 @@ class CreateChannelsFragment : Fragment() {
     private fun observeViewModel() {
         mCreateChannelFTViewModel.ifCreateSuccessfully.observe(viewLifecycleOwner, Observer {
             if (it) {
-                SmallUtil.simpleDialogUtil(mContext,"成功","創建頻道成功，趕快告訴朋友你的頻道ID！\n房間Uid：${etChatUid.text}")
+                SmallUtil.simpleDialogUtilWithY(mContext,"成功","創建頻道成功，趕快告訴朋友你的頻道ID！\n房間Uid：${etChatUid.text}")
                 etChatUid.setText("")
                 etChatName.setText("")
             }

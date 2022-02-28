@@ -11,7 +11,6 @@ import com.example.chatapp.util.SharedPreferenceUtil.AUTO_LOGIN
 import com.example.chatapp.util.SmallUtil.getCurrentDateString
 import com.example.chatapp.util.SmallUtil.getCurrentTimeStamp
 import com.example.chatapp.util.SmallUtil.getCurrentTimeString
-import com.example.chatapp.util.SmallUtil.isValidChannelUid
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
@@ -238,7 +237,7 @@ class FirebaseUtil {
                                         .child(channelUid).setValue(userChannel)
                                         .addOnSuccessListener {
                                             //全部set 成功
-                                            SmallUtil.simpleDialogUtil(
+                                            SmallUtil.simpleDialogUtilWithY(
                                                 mContext,
                                                 "成功",
                                                 "加入成功，趕快去聊天！"

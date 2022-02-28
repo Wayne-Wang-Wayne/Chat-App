@@ -1,5 +1,6 @@
 package com.example.chatapp.recyclerviewAdapter
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +21,8 @@ class PublicChannelsAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view: View = LayoutInflater.from(context).inflate(R.layout.item_public_channel, parent, false)
+        val view: View =
+            LayoutInflater.from(context).inflate(R.layout.item_public_channel, parent, false)
         return PublicChannelsViewHolder(view)
     }
 
@@ -29,7 +31,19 @@ class PublicChannelsAdapter(
         holder.tvChannelName.text = publicChannelsList[position].channelName
         holder.tvMemberAmount.text = "${publicChannelsList[position].userAmount.toString()}位成員"
         holder.btn_joinChannel.setSafeOnClickListener {
-            publicChannelsList[position].channelUID?.let { it1 -> joinChannel(context, it1) }
+            AlertDialog.Builder(context)
+                .setTitle("加入群組")
+                .setMessage("確定要加入此群組？")
+                .setPositiveButton("確定") { _, _ ->
+                    publicChannelsList[position].channelUID?.let { it1 ->
+                        joinChannel(
+                            context,
+                            it1
+                        )
+                    }
+                }
+                .setNegativeButton("離開") { _, _ -> }
+                .show()
         }
     }
 
