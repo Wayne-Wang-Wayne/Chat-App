@@ -7,8 +7,9 @@ data class UserChannels(
     var channelUID: String? = "",
     var channelsName: String? = "",
     var timeStamp: Int? = 0,
-    var updateTime:String? = "",
-    var updateDate:String? = "",
-    var lastMessage:String? = "",
-    var needNewTag:Boolean? = false
+    var updateTime: String? = "",
+    var updateDate: String? = "",
+    var lastMessage: String? = "",
+    var lastSenderName: String? = "",
+    var needNewTag: Boolean? = false
 )

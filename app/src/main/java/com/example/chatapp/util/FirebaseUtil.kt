@@ -231,7 +231,7 @@ class FirebaseUtil {
 
                                     val userChannel =
                                         UserChannels(channelUid, channelsName,getCurrentTimeStamp(),
-                                            getCurrentTimeString(), getCurrentDateString(),"",false)
+                                            getCurrentTimeString(), getCurrentDateString(),"","",false)
                                     //set 到 userChannel
                                     mFirebaseRTDbInstance.child(USER_CHANNELS)
                                         .child(mFirebaseAuthInstance.currentUser!!.uid)
