@@ -205,7 +205,7 @@ class FirebaseUtil {
                                     if (postSnapShot.key == channelUid) {
                                         val publicChannel =
                                             postSnapShot.getValue(PublicChannels::class.java)
-                                        mFirebaseRTDbInstance.child(PUBLIC_CHANNELS).setValue(
+                                        mFirebaseRTDbInstance.child(PUBLIC_CHANNELS).child(channelUid).setValue(
                                             PublicChannels(
                                                 publicChannel?.channelUID,
                                                 publicChannel?.channelName,

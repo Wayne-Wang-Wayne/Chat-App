@@ -44,6 +44,7 @@ class PublicChannelViewModel(@NonNull application: Application) :
                 publicChannels.removeAll(toRemove)
                 finalPublicChanelLiveData.value = publicChannels
                 isLoading.value = false
+                isError.value = false
             }.addOnFailureListener {
                 isLoading.value = false
                 isError.value = true

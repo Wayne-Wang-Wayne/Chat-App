@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/tvChannelName"
-        android:layout_width="270dp"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:text="哈哈群組"
@@ -28,10 +28,11 @@
 
     <Button
         android:id="@+id/btn_joinChannel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
         android:text="加入！"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvChannelName"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -8,9 +8,11 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
+import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.PublicChannels
 import com.example.chatapp.model.User
 import com.example.chatapp.model.UserChannels
+import com.example.chatapp.util.FirebaseUtil.Companion.joinChannel
 
 class PublicChannelsAdapter(
     val context: Context,
@@ -18,13 +20,17 @@ class PublicChannelsAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view: View = LayoutInflater.from(context).inflate(R.layout.user_layout, parent, false)
+        val view: View = LayoutInflater.from(context).inflate(R.layout.item_public_channel, parent, false)
         return PublicChannelsViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as UserListAdapter.UserViewHolder)
-
+        (holder as PublicChannelsViewHolder)
+        holder.tvChannelName.text = publicChannelsList[position].channelName
+        holder.tvMemberAmount.text = "${publicChannelsList[position].userAmount.toString()}位成員"
+        holder.btn_joinChannel.setSafeOnClickListener {
+            publicChannelsList[position].channelUID?.let { it1 -> joinChannel(context, it1) }
+        }
     }
 
     override fun getItemCount(): Int {

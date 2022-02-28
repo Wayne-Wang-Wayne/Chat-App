@@ -65,7 +65,13 @@ class AllPublicChannelsFragment : Fragment() {
     private fun observeViewModel() {
 
         publicChannelViewModel.finalPublicChanelLiveData.observe(viewLifecycleOwner, Observer {
-           publicChannelsAdapter.setRecyclerviewValue(it)
+            if(it.size==0){
+                tvNoPublicChannelToJoin.visibility = View.VISIBLE
+            }else{
+                publicChannelsAdapter.setRecyclerviewValue(it)
+                tvNoPublicChannelToJoin.visibility = View.INVISIBLE
+            }
+
         })
 
         publicChannelViewModel.isLoading.observe(viewLifecycleOwner, Observer {
