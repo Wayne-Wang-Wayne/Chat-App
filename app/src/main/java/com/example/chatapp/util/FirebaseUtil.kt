@@ -8,6 +8,9 @@ import com.example.chatapp.allPage.mainActivity.MainActivity
 import com.example.chatapp.model.*
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.example.chatapp.util.SharedPreferenceUtil.AUTO_LOGIN
+import com.example.chatapp.util.SmallUtil.getCurrentDateString
+import com.example.chatapp.util.SmallUtil.getCurrentTimeStamp
+import com.example.chatapp.util.SmallUtil.getCurrentTimeString
 import com.example.chatapp.util.SmallUtil.isValidChannelUid
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -225,9 +228,10 @@ class FirebaseUtil {
                                     if (snapShotTwo.value != null) {
                                         channelsName = snapShotTwo.value.toString()
                                     }
-                                    val rightNowTime = (System.currentTimeMillis() / 1000).toInt()
+
                                     val userChannel =
-                                        UserChannels(channelUid, channelsName, rightNowTime)
+                                        UserChannels(channelUid, channelsName,getCurrentTimeStamp(),
+                                            getCurrentTimeString(), getCurrentDateString(),"",false)
                                     //set 到 userChannel
                                     mFirebaseRTDbInstance.child(USER_CHANNELS)
                                         .child(mFirebaseAuthInstance.currentUser!!.uid)

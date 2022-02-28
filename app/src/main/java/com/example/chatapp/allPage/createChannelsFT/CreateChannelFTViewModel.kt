@@ -16,6 +16,9 @@ import com.example.chatapp.util.FirebaseUtil.Companion.PUBLIC_CHANNELS
 import com.example.chatapp.util.FirebaseUtil.Companion.USER_CHANNELS
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseRTDbInstance
 import com.example.chatapp.util.SmallUtil
+import com.example.chatapp.util.SmallUtil.getCurrentDateString
+import com.example.chatapp.util.SmallUtil.getCurrentTimeStamp
+import com.example.chatapp.util.SmallUtil.getCurrentTimeString
 
 class CreateChannelFTViewModel(@NonNull application: Application) :
     BaseAndroidViewModel(application) {
@@ -105,8 +108,9 @@ class CreateChannelFTViewModel(@NonNull application: Application) :
                     .setValue(OnlyUserUid(currentUserUid))
                     .addOnSuccessListener {
                         //再存各user各自擁有的頻道
-                        val rightNowTime = (System.currentTimeMillis() / 1000).toInt()
-                        val userChannelModel = UserChannels(channelUid, channelName, rightNowTime)
+                        val userChannelModel = UserChannels(channelUid, channelName,getCurrentTimeStamp(),
+                            getCurrentTimeString(),
+                            getCurrentDateString(),"",false)
                         mFirebaseRTDbInstance.child(USER_CHANNELS)
                             .child(currentUserUid!!).child(channelUid).setValue(userChannelModel)
                             .addOnSuccessListener {

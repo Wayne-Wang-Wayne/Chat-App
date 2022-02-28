@@ -6,5 +6,9 @@ import androidx.annotation.Keep
 data class UserChannels(
     var channelUID: String? = "",
     var channelsName: String? = "",
-    var joinOrCreateTime: Int? = 0
+    var timeStamp: Int? = 0,
+    var updateTime:String? = "",
+    var updateDate:String? = "",
+    var lastMessage:String? = "",
+    var needNewTag:Boolean? = false
 )

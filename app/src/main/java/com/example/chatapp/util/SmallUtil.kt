@@ -1,10 +1,10 @@
 package com.example.chatapp.util
 
-import android.R.attr
 import android.app.AlertDialog
 import android.content.Context
-import android.os.SystemClock
 import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -45,6 +45,18 @@ object SmallUtil {
             .setMessage(message)
             .setPositiveButton("好") { _, _ -> }
             .show()
+    }
+
+    fun getCurrentTimeStamp():Int{
+        return (System.currentTimeMillis() / 1000).toInt()
+    }
+
+    fun getCurrentDateString():String{
+        return SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+    }
+
+    fun getCurrentTimeString():String{
+        return SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
     }
 
 }
