@@ -24,6 +24,7 @@
         <entry key="app/src/main/res/layout/fragment_join_channels.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_my_channels.xml" value="0.13647830474268416" />
         <entry key="app/src/main/res/layout/fragment_my_main_friends.xml" value="0.17300724637681159" />
+        <entry key="app/src/main/res/layout/item_my_channel.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_public_channel.xml" value="0.23385416666666667" />
         <entry key="app/src/main/res/layout/item_tab.xml" value="0.1" />
         <entry key="app/src/main/res/layout/message_received_box.xml" value="0.17300724637681159" />
