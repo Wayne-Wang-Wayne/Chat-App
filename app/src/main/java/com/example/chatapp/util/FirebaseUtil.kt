@@ -118,6 +118,10 @@ class FirebaseUtil {
             mFirebaseRTDbInstance.child(path).addValueEventListener(valueEventListener)
         }
 
+        fun listenToRTDBForUser(valueEventListener: ValueEventListener){
+            mFirebaseRTDbInstance.child(USER_CHANNELS).child(mFirebaseAuthInstance.currentUser!!.uid).addValueEventListener(valueEventListener)
+        }
+
         fun storeMessageToDB(senderRoomId: String, receiverRoomId: String, messageObject: Message) {
             mFirebaseRTDbInstance.child(CHATS).child(senderRoomId!!).child(MESSAGE).push()
                 .setValue(messageObject).addOnSuccessListener {
