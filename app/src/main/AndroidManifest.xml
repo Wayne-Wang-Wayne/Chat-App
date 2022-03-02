@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApp">
         <activity
-            android:name=".chatActivity.ChatActivity"
+            android:name=".allPage.chatActivity.ChatActivity"
             android:exported="false" />
         <activity
             android:name=".allPage.mainActivity.MainActivity"

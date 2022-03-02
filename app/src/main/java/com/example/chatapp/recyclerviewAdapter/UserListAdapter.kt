@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
-import com.example.chatapp.chatActivity.ChatActivity
+import com.example.chatapp.allPage.chatActivity.ChatActivity
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.User
 import com.example.chatapp.util.IntentUtil.intentToAnyClass

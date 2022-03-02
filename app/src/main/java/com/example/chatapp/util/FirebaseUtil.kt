@@ -2,6 +2,7 @@ package com.example.chatapp.util
 
 import android.app.Activity
 import android.content.Context
+import com.example.chatapp.allPage.chatActivity.OnMessageSent
 import com.example.chatapp.allPage.joinChannelsFT.OnJoinSuccess
 import com.example.chatapp.allPage.logInActivity.LogInActivity
 import com.example.chatapp.allPage.mainActivity.MainActivity
@@ -19,6 +20,7 @@ class FirebaseUtil {
     companion object {
         val mFirebaseAuthInstance = FirebaseAuth.getInstance()
         val mFirebaseRTDbInstance = FirebaseDatabase.getInstance().reference
+        var currentUserName = ""
 
         // Firebase path name
         val USER_CHANNELS = "userChannels"
@@ -28,6 +30,17 @@ class FirebaseUtil {
         val CHANNELS = "channels"
         val PUBLIC_CHANNELS = "publicChannels"
         val MEMBERS = "members"
+        val CHANNEL_MESSAGES = "channelMessages"
+
+        fun setCurrentUserName() {
+            mFirebaseRTDbInstance.child(ALL_USER).child(mFirebaseAuthInstance.currentUser!!.uid)
+                .get().addOnSuccessListener { snapShot ->
+                    val userInfo = snapShot.getValue(User::class.java)
+                    if (userInfo != null) {
+                        currentUserName = userInfo.name.toString()
+                    }
+                }
+        }
 
         //call for logging in
         fun checkLogInfoAndLogIn(
@@ -118,27 +131,50 @@ class FirebaseUtil {
             mFirebaseRTDbInstance.child(path).addValueEventListener(valueEventListener)
         }
 
-        fun listenToRTDBForUser(valueEventListener: ValueEventListener){
-            mFirebaseRTDbInstance.child(USER_CHANNELS).child(mFirebaseAuthInstance.currentUser!!.uid).addValueEventListener(valueEventListener)
+        fun listenToRTDBForUser(valueEventListener: ValueEventListener) {
+            mFirebaseRTDbInstance.child(USER_CHANNELS)
+                .child(mFirebaseAuthInstance.currentUser!!.uid)
+                .addValueEventListener(valueEventListener)
         }
 
-        fun storeMessageToDB(senderRoomId: String, receiverRoomId: String, messageObject: Message) {
-            mFirebaseRTDbInstance.child(CHATS).child(senderRoomId!!).child(MESSAGE).push()
+        fun storeMessageToDB(
+            channelUID: String,
+            channelName: String,
+            messageObject: ChannelMessage,
+            onMessageSent: OnMessageSent
+        ) {
+            //存到channelMessages
+            mFirebaseRTDbInstance.child(CHANNEL_MESSAGES).child(channelUID)
+                .push()
                 .setValue(messageObject).addOnSuccessListener {
-                    mFirebaseRTDbInstance.child(CHATS).child(receiverRoomId!!).child(MESSAGE)
-                        .push()
-                        .setValue(messageObject)
+                    //存到channels
+                    mFirebaseRTDbInstance.child(CHANNELS).child(channelUID).child("lastMessageSent")
+                        .setValue(messageObject.message).addOnSuccessListener {
+                            //存到userChannels
+                            mFirebaseRTDbInstance.child(USER_CHANNELS)
+                                .child(mFirebaseAuthInstance.currentUser!!.uid).setValue(
+                                    UserChannels(
+                                        channelUID,
+                                        channelName,
+                                        getCurrentTimeStamp(),
+                                        getCurrentTimeString(),
+                                        getCurrentDateString(),
+                                        messageObject.message,
+                                        currentUserName,
+                                        true
+                                    )
+                                ).addOnSuccessListener {
+                                    //存到userNotification
+                                    onMessageSent.doOnMessageSent()
+                                }
+                        }
                 }
 
         }
 
-        fun listenToRTDBForMessage(
-            firstPath: String,
-            secondPath: String,
-            thirdPath: String,
-            valueEventListener: ValueEventListener
-        ) {
-            mFirebaseRTDbInstance.child(firstPath).child(secondPath).child(thirdPath)
+        fun listenToRTDBForMessage(channelUID: String, valueEventListener: ValueEventListener) {
+            mFirebaseRTDbInstance.child(CHANNEL_MESSAGES).child(channelUID)
+                .child(getCurrentTimeStamp().toString())
                 .addValueEventListener(valueEventListener)
         }
 
@@ -211,13 +247,14 @@ class FirebaseUtil {
                                     if (postSnapShot.key == channelUid) {
                                         val publicChannel =
                                             postSnapShot.getValue(PublicChannels::class.java)
-                                        mFirebaseRTDbInstance.child(PUBLIC_CHANNELS).child(channelUid).setValue(
-                                            PublicChannels(
-                                                publicChannel?.channelUID,
-                                                publicChannel?.channelName,
-                                                publicChannel?.userAmount?.plus(1)
+                                        mFirebaseRTDbInstance.child(PUBLIC_CHANNELS)
+                                            .child(channelUid).setValue(
+                                                PublicChannels(
+                                                    publicChannel?.channelUID,
+                                                    publicChannel?.channelName,
+                                                    publicChannel?.userAmount?.plus(1)
+                                                )
                                             )
-                                        )
                                     }
                                 }
 
@@ -233,8 +270,16 @@ class FirebaseUtil {
                                     }
 
                                     val userChannel =
-                                        UserChannels(channelUid, channelsName,getCurrentTimeStamp(),
-                                            getCurrentTimeString(), getCurrentDateString(),"","",false)
+                                        UserChannels(
+                                            channelUid,
+                                            channelsName,
+                                            getCurrentTimeStamp(),
+                                            getCurrentTimeString(),
+                                            getCurrentDateString(),
+                                            "",
+                                            "",
+                                            false
+                                        )
                                     //set 到 userChannel
                                     mFirebaseRTDbInstance.child(USER_CHANNELS)
                                         .child(mFirebaseAuthInstance.currentUser!!.uid)
@@ -271,6 +316,7 @@ class FirebaseUtil {
                         intentToAnyClass(context = activity, cls = MainActivity::class.java)
                         activity.finish()
                         SmallUtil.quickToast(mContext, "登入成功！")
+                        setCurrentUserName()
                     } else {
                         SmallUtil.quickToast(mContext, "此用戶不存在，請洽瑋瑋！")
                     }
@@ -293,6 +339,7 @@ class FirebaseUtil {
                         intentToAnyClass(context = activity, cls = MainActivity::class.java)
                         activity.finish()
                         SmallUtil.quickToast(mContext, "註冊成功！自動登入！")
+                        currentUserName = name
                     } else {
                         SmallUtil.quickToast(mContext, "註冊異常，請洽瑋瑋！")
                     }

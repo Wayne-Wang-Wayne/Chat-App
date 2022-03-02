@@ -3,7 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
+    <TextView
+        android:id="@+id/tvSentTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvSentMessageParent"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/tvSentMessageParent"
+        android:text="2022-03-02 18:00" />
+
     <RelativeLayout
+        android:id="@+id/tvSentMessageParent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -11,10 +22,13 @@
         android:layout_marginRight="5dp"
         android:background="@drawable/sent_message_background">
 
+
         <TextView
             android:id="@+id/tvSentMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="250dp"
+            android:maxLines="10"
             android:padding="10dp"
             android:text="This is sent message"
             android:textColor="@color/white"

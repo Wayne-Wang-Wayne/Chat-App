@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
-import com.example.chatapp.model.Message
+import com.example.chatapp.model.ChannelMessage
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
 
-class ChatRecyclerviewAdapter(private val mContext: Context, private val messageList: ArrayList<Message>) :
+class ChatRecyclerviewAdapter(private val mContext: Context, private val messageList: ArrayList<ChannelMessage>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val MESSAGE_RECEIVED = 1

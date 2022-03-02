@@ -1,6 +1,7 @@
 package com.example.chatapp.recyclerviewAdapter
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
+import com.example.chatapp.allPage.chatActivity.ChatActivity
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.PublicChannels
 import com.example.chatapp.model.UserChannels
+import com.example.chatapp.util.IntentUtil.intentToAnyClass
 
 class MyChannelAdapter(
     val context: Context,
@@ -44,7 +47,12 @@ class MyChannelAdapter(
         holder.tv_CurrentTime.text =
             "${myChannelsList[position].updateDate}\n$recentTime"
         holder.itemView.setSafeOnClickListener {
-
+            val mBundle = Bundle()
+            mBundle.apply {
+                putString("channelName", myChannelsList[position].channelsName)
+                putString("channelUID", myChannelsList[position].channelUID)
+            }
+            intentToAnyClass(context,mBundle,ChatActivity::class.java)
         }
     }
 
