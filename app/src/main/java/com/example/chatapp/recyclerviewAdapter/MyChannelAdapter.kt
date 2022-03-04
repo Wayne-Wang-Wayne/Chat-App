@@ -43,7 +43,7 @@ class MyChannelAdapter(
         }
         var recentTime = myChannelsList[position].updateTime
         var lastIndex = recentTime?.lastIndexOf(":");
-        recentTime = lastIndex?.let { recentTime?.substring(0, it) };
+        recentTime = lastIndex?.let { recentTime?.substring(0, it) }
         holder.tv_CurrentTime.text =
             "${myChannelsList[position].updateDate}\n$recentTime"
         holder.itemView.setSafeOnClickListener {

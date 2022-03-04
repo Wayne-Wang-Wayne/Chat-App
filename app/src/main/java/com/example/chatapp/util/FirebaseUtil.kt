@@ -150,23 +150,27 @@ class FirebaseUtil {
                     //存到channels
                     mFirebaseRTDbInstance.child(CHANNELS).child(channelUID).child("lastMessageSent")
                         .setValue(messageObject.message).addOnSuccessListener {
-                            //存到userChannels
-                            mFirebaseRTDbInstance.child(USER_CHANNELS)
-                                .child(mFirebaseAuthInstance.currentUser!!.uid).setValue(
-                                    UserChannels(
-                                        channelUID,
-                                        channelName,
-                                        getCurrentTimeStamp(),
-                                        getCurrentTimeString(),
-                                        getCurrentDateString(),
-                                        messageObject.message,
-                                        currentUserName,
-                                        true
-                                    )
-                                ).addOnSuccessListener {
-                                    //存到userNotification
-                                    onMessageSent.doOnMessageSent()
+                            //存到每個user的userChannels
+                            mFirebaseRTDbInstance.child(CHANNELS).child(channelUID).child(MEMBERS).get().addOnSuccessListener {snapShot->
+                                for (postSnapShot in snapShot.children) {
+                                   val userUid = postSnapShot.key
+                                    mFirebaseRTDbInstance.child(USER_CHANNELS)
+                                        .child(userUid!!).child(channelUID).setValue(
+                                            UserChannels(
+                                                channelUID,
+                                                channelName,
+                                                getCurrentTimeStamp(),
+                                                getCurrentTimeString(),
+                                                getCurrentDateString(),
+                                                messageObject.message,
+                                                currentUserName,
+                                                true
+                                            )
+                                        )
                                 }
+                                onMessageSent.doOnMessageSent()
+                            }
+
                         }
                 }
 
@@ -174,7 +178,6 @@ class FirebaseUtil {
 
         fun listenToRTDBForMessage(channelUID: String, valueEventListener: ValueEventListener) {
             mFirebaseRTDbInstance.child(CHANNEL_MESSAGES).child(channelUID)
-                .child(getCurrentTimeStamp().toString())
                 .addValueEventListener(valueEventListener)
         }
 

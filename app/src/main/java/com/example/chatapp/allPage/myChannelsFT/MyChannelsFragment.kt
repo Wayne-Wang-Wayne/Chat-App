@@ -48,7 +48,7 @@ class MyChannelsFragment : Fragment() {
         setView()
     }
 
-    private fun setView(){
+    private fun setView() {
         myChannelViewModel = ViewModelProvider(this).get(MyChannelViewModel::class.java)
         myChannelAdapter = MyChannelAdapter(mContext, ArrayList())
         myChannelsRecyclerView.apply {
@@ -56,14 +56,20 @@ class MyChannelsFragment : Fragment() {
             adapter = myChannelAdapter
         }
 
-        listenToRTDBForUser( object : ValueEventListener{
+        listenToRTDBForUser(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var myChannelList = ArrayList<UserChannels>()
-                for (postSnapShot in snapshot.children){
+                if (snapshot.exists()) {
+                    tvHaveNoMyChannel.visibility = View.INVISIBLE
+                } else {
+                    tvHaveNoMyChannel.visibility = View.VISIBLE
+                }
+                for (postSnapShot in snapshot.children) {
                     val myChannel = postSnapShot.getValue(UserChannels::class.java)
                     myChannelList.add(myChannel!!)
                 }
-                val sortedList = ArrayList<UserChannels>(myChannelList.sortedWith(compareByDescending { it.timeStamp }))
+                val sortedList =
+                    ArrayList<UserChannels>(myChannelList.sortedWith(compareByDescending { it.timeStamp }))
                 myChannelAdapter.setRecyclerviewValue(sortedList)
             }
 

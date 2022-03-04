@@ -13,7 +13,8 @@
         android:theme="@style/Theme.ChatApp">
         <activity
             android:name=".allPage.chatActivity.ChatActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".allPage.mainActivity.MainActivity"
             android:exported="false"

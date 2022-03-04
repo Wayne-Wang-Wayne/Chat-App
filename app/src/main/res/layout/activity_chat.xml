@@ -34,7 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/chatLinearLayout"
-        android:layout_below="@+id/chat_activity_toolbar" />
+        android:layout_below="@+id/chat_activity_toolbar"
+        />
 
     <include
         layout="@layout/retry_layout"
@@ -53,7 +54,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="5dp"
         android:orientation="horizontal"
-        android:weightSum="100">
+        android:weightSum="100"
+        >
 
         <EditText
             android:id="@+id/messageBox"
