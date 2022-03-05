@@ -51,10 +51,5 @@
         app:layout_constraintStart_toEndOf="@+id/tv_ChannelName"
         app:layout_constraintTop_toBottomOf="@+id/iv_NewTag"
         android:gravity="center"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

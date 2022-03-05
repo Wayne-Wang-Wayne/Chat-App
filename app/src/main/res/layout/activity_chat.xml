@@ -10,7 +10,7 @@
         android:id="@+id/chat_activity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
+        android:background="@color/tool_bar_background"
         app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
@@ -34,8 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/chatLinearLayout"
-        android:layout_below="@+id/chat_activity_toolbar"
-        />
+        android:layout_below="@+id/chat_activity_toolbar" />
 
     <include
         layout="@layout/retry_layout"

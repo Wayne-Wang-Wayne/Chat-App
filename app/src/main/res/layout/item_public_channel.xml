@@ -31,6 +31,7 @@
         android:layout_width="70dp"
         android:layout_height="50dp"
         android:text="加入！"
+        android:background="@drawable/public_channel_btn_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvChannelName"

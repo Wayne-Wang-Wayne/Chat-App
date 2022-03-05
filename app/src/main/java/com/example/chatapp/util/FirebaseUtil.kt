@@ -321,7 +321,7 @@ class FirebaseUtil {
                         SmallUtil.quickToast(mContext, "登入成功！")
                         setCurrentUserName()
                     } else {
-                        SmallUtil.quickToast(mContext, "此用戶不存在，請洽瑋瑋！")
+                        SmallUtil.quickToast(mContext, "登入失敗！此用戶不存在，請洽瑋瑋！")
                     }
                 }
         }

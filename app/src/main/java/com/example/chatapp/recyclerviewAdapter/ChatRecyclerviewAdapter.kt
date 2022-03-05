@@ -45,18 +45,32 @@ class ChatRecyclerviewAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         val currentMessage = messageList[position]
+
         if (holder.javaClass == SentViewHolder::class.java) {
             //do the stuff for sent view holder
             holder as SentViewHolder
+            //set sent message
             holder.tvSentMessage.text = currentMessage.message
-            holder.tvSentTime.text = "${modifyDate(currentMessage.messageDate!!)} ${modifyTime(currentMessage.messageTime!!)}"
+            //set send time
+            holder.tvSentTime.text =
+                "${modifyDate(currentMessage.messageDate!!)} ${modifyTime(currentMessage.messageTime!!)}"
         }
         if (holder.javaClass == ReceivedViewHolder::class.java) {
             //do the stuff for received view holder
             holder as ReceivedViewHolder
+            //set received message
             holder.tvReceivedMessage.text = currentMessage.message
+
+            //set receiver name and also hide duplicate name
             holder.tvReceiveName.text = currentMessage.senderName
-            holder.tvReceiveTime.text = "${modifyDate(currentMessage.messageDate!!)} ${modifyTime(currentMessage.messageTime!!)}"
+            if (position > 0 && messageList[position].senderName == messageList[position - 1].senderName) {
+                holder.tvReceiveName.visibility = View.GONE
+            } else {
+                holder.tvReceiveName.visibility = View.VISIBLE
+            }
+            //set receive time
+            holder.tvReceiveTime.text =
+                "${modifyDate(currentMessage.messageDate!!)} ${modifyTime(currentMessage.messageTime!!)}"
         }
     }
 

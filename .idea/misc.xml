@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/debug/res/drawable/btn_background.xml" value="0.132" />
+        <entry key="app/src/debug/res/drawable/edt_background.xml" value="0.13" />
         <entry key="app/src/debug/res/layout/activity_sign_up.xml" value="0.17300724637681159" />
         <entry key="app/src/debug/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.132" />
         <entry key="app/src/main/res/drawable-v24/bg_tab_select.xml" value="0.1045" />
@@ -11,6 +12,7 @@
         <entry key="app/src/main/res/drawable/btn_background.xml" value="0.20208333333333334" />
         <entry key="app/src/main/res/drawable/edt_background.xml" value="0.335" />
         <entry key="app/src/main/res/drawable/message_box_background.xml" value="0.132" />
+        <entry key="app/src/main/res/drawable/public_channel_btn_background.xml" value="0.13" />
         <entry key="app/src/main/res/drawable/received_message_background.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/sent_message_background.xml" value="0.132" />
         <entry key="app/src/main/res/layout/activity_chat.xml" value="0.17300724637681159" />

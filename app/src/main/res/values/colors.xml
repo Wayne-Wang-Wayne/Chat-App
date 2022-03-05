@@ -7,11 +7,20 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="edt_background">#03fcd3</color>
-    <color name="btn_background">#5bf593</color>
+    <color name="edt_background">#9ADCFF</color>
+    <color name="btn_background">#FFBED8</color>
     <color name="sent_message_background">#428df5</color>
     <color name="received_message_background">#31ad33</color>
-    <color name="tab_unselect_text">#31ad33</color>
+    <color name="tab_unselect_text">#85F4FF</color>
     <color name="tab_select_text">#FFFFFFFF</color>
-    <color name="tab_bg">#5bf593</color>
+    <color name="tab_bg">#42C2FF</color>
+    <color name="tool_bar_background">#42C2FF</color>
+    <color name="my_channel_bg_one">#85F4FF</color>
+    <color name="my_channel_bg_two">#B8FFF9</color>
+    <color name="public_channel_bg_one">#85F4FF</color>
+    <color name="public_channel_bg_two">#B8FFF9</color>
+    <color name="public_channel_bg_button">#EFFFFD</color>
+    <color name="sent_box_bg">#9ADCFF</color>
+    <color name="receive_box_bg">#42C2FF</color>
+
 </resources>

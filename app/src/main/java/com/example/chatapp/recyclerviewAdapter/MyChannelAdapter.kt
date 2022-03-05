@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
 import com.example.chatapp.allPage.chatActivity.ChatActivity
@@ -64,6 +65,16 @@ class MyChannelAdapter(
         recentTime = lastIndex?.let { recentTime?.substring(0, it) }
         holder.tv_CurrentTime.text =
             "${myChannelsList[position].updateDate}\n$recentTime"
+        //上色
+        if (position % 2 == 1) {
+            holder.itemView.setBackgroundColor(
+                ContextCompat.getColor(context, R.color.my_channel_bg_one)
+            )
+        } else {
+            holder.itemView.setBackgroundColor(
+                ContextCompat.getColor(context, R.color.my_channel_bg_two)
+            )
+        }
 
         //set item click logic
         holder.itemView.setSafeOnClickListener {

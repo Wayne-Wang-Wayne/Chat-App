@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
@@ -44,6 +45,17 @@ class PublicChannelsAdapter(
                 }
                 .setNegativeButton("離開") { _, _ -> }
                 .show()
+        }
+
+        //上色
+        if (position % 2 == 1) {
+            holder.itemView.setBackgroundColor(
+                ContextCompat.getColor(context, R.color.public_channel_bg_one)
+            )
+        } else {
+            holder.itemView.setBackgroundColor(
+                ContextCompat.getColor(context, R.color.public_channel_bg_two)
+            )
         }
     }
 
