@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.example.chatapp.R
 import com.example.chatapp.allPage.chatActivity.ChatActivity
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
@@ -101,7 +102,7 @@ class MyChannelAdapter(
     class MyChannelsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tv_ChannelName = itemView.findViewById<TextView>(R.id.tv_ChannelName)
         val tv_LastMessage = itemView.findViewById<TextView>(R.id.tv_LastMessage)
-        val iv_NewTag = itemView.findViewById<ImageView>(R.id.iv_NewTag)
+        val iv_NewTag = itemView.findViewById<LottieAnimationView>(R.id.iv_NewTag)
         val tv_CurrentTime = itemView.findViewById<TextView>(R.id.tv_CurrentTime)
     }
 }

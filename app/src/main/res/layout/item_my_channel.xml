@@ -29,16 +29,19 @@
         app:layout_constraintStart_toStartOf="@+id/tv_ChannelName"
         app:layout_constraintTop_toBottomOf="@+id/tv_ChannelName" />
 
-    <ImageView
+    <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/iv_NewTag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/new_tag"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_CurrentTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_ChannelName"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        android:scaleType="centerCrop"
+        app:lottie_fileName="new-message-notificaiton.json"
+        app:lottie_loop="true"/>
 
     <TextView
         android:id="@+id/tv_CurrentTime"

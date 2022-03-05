@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".allPage.createChannelsFT.CreateChannelsFragment">
 
     <EditText
@@ -49,6 +50,15 @@
         android:text="創建頻道！"
         android:textColor="@color/white"
         android:textSize="20sp" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_create_channel"
+        app:lottie_autoPlay="true"
+        android:layout_alignParentBottom="true"
+        app:lottie_fileName="73810-business-idea-animation.json"
+        app:lottie_loop="true" />
 
 
 </RelativeLayout>

@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.chatapp.R
 import com.example.chatapp.allPage.myMainFriend.MyMainFriendsFragment
@@ -22,8 +23,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         initToolBar()
+        entryAnimationStart()
         changePage(BaseViewPagerFragment.newInstance())
-        
     }
 
 
@@ -65,5 +66,14 @@ class MainActivity : AppCompatActivity() {
         this.doubleBackToExitPressedOnce = true
         SmallUtil.quickToast(this, "請再按一次以退出App")
         Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 2000)
+    }
+
+
+    private fun entryAnimationStart(){
+        Handler(Looper.getMainLooper()).postDelayed({
+            main_entry_animation.visibility = View.INVISIBLE
+            main_activity_toolbar.visibility = View.VISIBLE
+            main_frame_layout.visibility = View.VISIBLE
+        },2300)
     }
 }

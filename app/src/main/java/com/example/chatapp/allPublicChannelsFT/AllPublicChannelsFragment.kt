@@ -12,10 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.PublicChannels
-import com.example.chatapp.model.UserChannels
 import com.example.chatapp.recyclerviewAdapter.PublicChannelsAdapter
 import kotlinx.android.synthetic.main.fragment_all_public_channels.*
-import kotlinx.android.synthetic.main.fragment_base_view_pager.*
 
 
 class AllPublicChannelsFragment : Fragment() {
@@ -76,9 +74,9 @@ class AllPublicChannelsFragment : Fragment() {
 
         publicChannelViewModel.isLoading.observe(viewLifecycleOwner, Observer {
             if (it) {
-                all_channel_progressbar.visibility = View.VISIBLE
+                public_channel_progressbar.visibility = View.VISIBLE
             } else {
-                all_channel_progressbar.visibility = View.INVISIBLE
+                public_channel_progressbar.visibility = View.INVISIBLE
             }
         })
 
