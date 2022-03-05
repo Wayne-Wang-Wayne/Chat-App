@@ -15,6 +15,7 @@ import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClic
 import com.example.chatapp.model.PublicChannels
 import com.example.chatapp.model.UserChannels
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
+import com.example.chatapp.util.SmallUtil.getCharCount
 
 class MyChannelAdapter(
     val context: Context,
@@ -29,30 +30,49 @@ class MyChannelAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as MyChannelsViewHolder)
+
+        //set channel Name
         holder.tv_ChannelName.text = myChannelsList[position].channelsName
+
+        //set channel last message
         if (myChannelsList[position].lastSenderName != "") {
-            holder.tv_LastMessage.text =
-                "${myChannelsList[position].lastSenderName}:${myChannelsList[position].lastMessage}"
+            val charAmount = getCharCount(myChannelsList[position].lastMessage!!)
+            if (charAmount >= 11) {
+                holder.tv_LastMessage.text =
+                    "${myChannelsList[position].lastSenderName}:${
+                        myChannelsList[position].lastMessage?.substring(
+                            0,
+                            10
+                        )
+                    }..."
+            } else {
+                holder.tv_LastMessage.text =
+                    "${myChannelsList[position].lastSenderName}:${myChannelsList[position].lastMessage}"
+            }
         } else {
             holder.tv_LastMessage.text = ""
         }
+        //判斷是否須加new tag
         if (myChannelsList[position].needNewTag == true) {
             holder.iv_NewTag.visibility = View.VISIBLE
         } else {
             holder.iv_NewTag.visibility = View.INVISIBLE
         }
+        //set 時間
         var recentTime = myChannelsList[position].updateTime
         var lastIndex = recentTime?.lastIndexOf(":");
         recentTime = lastIndex?.let { recentTime?.substring(0, it) }
         holder.tv_CurrentTime.text =
             "${myChannelsList[position].updateDate}\n$recentTime"
+
+        //set item click logic
         holder.itemView.setSafeOnClickListener {
             val mBundle = Bundle()
             mBundle.apply {
                 putString("channelName", myChannelsList[position].channelsName)
                 putString("channelUID", myChannelsList[position].channelUID)
             }
-            intentToAnyClass(context,mBundle,ChatActivity::class.java)
+            intentToAnyClass(context, mBundle, ChatActivity::class.java)
         }
     }
 

@@ -59,17 +59,19 @@
 
         <EditText
             android:id="@+id/messageBox"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginLeft="10dp"
             android:layout_weight="85"
             android:background="@drawable/message_box_background"
             android:hint="Type a message"
-            android:paddingLeft="10dp" />
+            android:paddingLeft="10dp"
+            android:gravity="bottom"
+            android:paddingBottom="12dp"/>
 
         <ImageView
             android:id="@+id/sendButton"
-            android:layout_width="50dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="15"
             android:src="@drawable/send_message_icon" />

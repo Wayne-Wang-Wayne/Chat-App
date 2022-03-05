@@ -2,7 +2,6 @@ package com.example.chatapp.util
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.*
@@ -48,16 +47,23 @@ object SmallUtil {
             .show()
     }
 
-    fun getCurrentTimeStamp():Int{
+    fun getCurrentTimeStamp(): Int {
         return (System.currentTimeMillis() / 1000).toInt()
     }
 
-    fun getCurrentDateString():String{
+    fun getCurrentDateString(): String {
         return SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
     }
 
-    fun getCurrentTimeString():String{
+    fun getCurrentTimeString(): String {
         return SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
     }
 
+    fun getCharCount(str: String): Int {
+        var count = 0
+        for (element in str) {
+            count++
+        }
+        return count
+    }
 }
