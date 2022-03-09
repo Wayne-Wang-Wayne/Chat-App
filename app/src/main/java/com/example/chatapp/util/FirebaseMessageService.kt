@@ -30,7 +30,7 @@ class FirebaseMessageService : FirebaseMessagingService() {
         }
     }
 
-    fun sendFirebaseMessageWithVolley(mContext: Context, topic:String, title:String, body:String, count:Int) {
+    fun sendFirebaseMessageWithVolley(mContext: Context, topic:String, title:String, body:String) {
         val mRequestQue: RequestQueue = Volley.newRequestQueue(mContext)
 
         val json = JSONObject()

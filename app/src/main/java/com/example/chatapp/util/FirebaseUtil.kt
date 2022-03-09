@@ -15,6 +15,7 @@ import com.example.chatapp.util.SmallUtil.getCurrentTimeString
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.tasks.await
 
 class FirebaseUtil {
     companion object {
@@ -141,7 +142,8 @@ class FirebaseUtil {
             channelUID: String,
             channelName: String,
             messageObject: ChannelMessage,
-            onMessageSent: OnMessageSent
+            onMessageSent: OnMessageSent,
+            mContext: Context
         ) {
             //存到channelMessages
             mFirebaseRTDbInstance.child(CHANNEL_MESSAGES).child(channelUID)
@@ -151,25 +153,33 @@ class FirebaseUtil {
                     mFirebaseRTDbInstance.child(CHANNELS).child(channelUID).child("lastMessageSent")
                         .setValue(messageObject.message).addOnSuccessListener {
                             //存到每個user的userChannels
-                            mFirebaseRTDbInstance.child(CHANNELS).child(channelUID).child(MEMBERS).get().addOnSuccessListener {snapShot->
-                                for (postSnapShot in snapShot.children) {
-                                   val userUid = postSnapShot.key
-                                    mFirebaseRTDbInstance.child(USER_CHANNELS)
-                                        .child(userUid!!).child(channelUID).setValue(
-                                            UserChannels(
-                                                channelUID,
-                                                channelName,
-                                                getCurrentTimeStamp(),
-                                                getCurrentTimeString(),
-                                                getCurrentDateString(),
-                                                messageObject.message,
-                                                currentUserName,
-                                                true
+                            mFirebaseRTDbInstance.child(CHANNELS).child(channelUID).child(MEMBERS)
+                                .get().addOnSuccessListener { snapShot ->
+                                    //全部成功
+                                    for (postSnapShot in snapShot.children) {
+                                        val userUid = postSnapShot.key
+                                        mFirebaseRTDbInstance.child(USER_CHANNELS)
+                                            .child(userUid!!).child(channelUID).setValue(
+                                                UserChannels(
+                                                    channelUID,
+                                                    channelName,
+                                                    getCurrentTimeStamp(),
+                                                    getCurrentTimeString(),
+                                                    getCurrentDateString(),
+                                                    messageObject.message,
+                                                    currentUserName,
+                                                    true
+                                                )
                                             )
-                                        )
+                                    }
+                                    //成功後清空editText box
+                                    onMessageSent.doOnMessageSent()
+                                    //成功後推播訊息給其他群組成員
+                                    FirebaseMessageService().sendFirebaseMessageWithVolley(
+                                        mContext, channelUID,
+                                        currentUserName, messageObject.message!!
+                                    )
                                 }
-                                onMessageSent.doOnMessageSent()
-                            }
 
                         }
                 }
@@ -232,6 +242,18 @@ class FirebaseUtil {
                 }
         }
 
+        fun subScribeAllMyChannelsUid() {
+            mFirebaseRTDbInstance.child(USER_CHANNELS)
+                .child(mFirebaseAuthInstance.currentUser!!.uid).get()
+                .addOnSuccessListener { snapShot ->
+                    val topicList = ArrayList<String>()
+                    for (postSnapShot in snapShot.children) {
+                        topicList.add(postSnapShot.key!!)
+                    }
+                    FirebaseMessageService().subscribeToMultipleTopic(topicList)
+                }
+        }
+
         private fun joinChannelProcess(
             mContext: Context,
             channelUid: String,
@@ -289,12 +311,21 @@ class FirebaseUtil {
                                         .child(channelUid).setValue(userChannel)
                                         .addOnSuccessListener {
                                             //全部set 成功
+
+                                            //show success dialog
                                             SmallUtil.simpleDialogUtilWithY(
                                                 mContext,
                                                 "成功",
                                                 "加入成功，趕快去聊天！"
                                             )
+                                            //clear edittext box
                                             onJoinSuccess?.onJoinSuccess()
+                                            //subscribe FCM topic
+                                            val topicList = ArrayList<String>()
+                                            topicList.add(channelUid)
+                                            FirebaseMessageService().subscribeToMultipleTopic(
+                                                topicList
+                                            )
                                         }.addOnFailureListener {
                                             SmallUtil.quickToast(mContext, "註冊異常，煩請聯繫瑋瑋！")
                                         }

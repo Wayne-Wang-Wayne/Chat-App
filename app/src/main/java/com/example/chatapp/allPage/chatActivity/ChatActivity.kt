@@ -89,7 +89,7 @@ class ChatActivity : AppCompatActivity() {
                     messageBox.setText("")
                 }
             }
-            storeMessageToDB(channelUID, channelName!!, messageObject, onMessageSent)
+            storeMessageToDB(channelUID, channelName!!, messageObject, onMessageSent, this)
         }
     }
 

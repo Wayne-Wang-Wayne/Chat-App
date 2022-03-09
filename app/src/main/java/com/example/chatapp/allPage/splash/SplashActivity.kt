@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import com.example.chatapp.R
 import com.example.chatapp.allPage.logInActivity.LogInActivity
+import com.example.chatapp.util.FirebaseMessageService
 import com.example.chatapp.util.FirebaseUtil
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.example.chatapp.util.SharedPreferenceUtil
@@ -22,7 +23,6 @@ class SplashActivity : AppCompatActivity() {
     private fun delayForThreeSecond() {
         checkIsAutoLogIn()
     }
-
 
 
     private fun checkIsAutoLogIn() {
@@ -44,6 +44,10 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             }
         }
+
+        //subscribe to all users channels
+        FirebaseUtil.subScribeAllMyChannelsUid()
+
         handler.postDelayed(runnable, 1000)
     }
 
@@ -55,6 +59,8 @@ class SplashActivity : AppCompatActivity() {
         }
         this.doubleBackToExitPressedOnce = true
         SmallUtil.quickToast(this, "請再按一次以退出App")
-        Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 2000)
+        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            doubleBackToExitPressedOnce = false
+        }, 2000)
     }
 }
