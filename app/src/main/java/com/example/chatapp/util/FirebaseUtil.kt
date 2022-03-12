@@ -177,7 +177,7 @@ class FirebaseUtil {
                                     //成功後推播訊息給其他群組成員
                                     FirebaseMessageService().sendFirebaseMessageWithVolley(
                                         mContext, channelUID,
-                                        currentUserName, messageObject.message!!
+                                        channelName, "$currentUserName:${messageObject.message!!}"
                                     )
                                 }
 
