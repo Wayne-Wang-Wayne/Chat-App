@@ -45,9 +45,6 @@ class SplashActivity : AppCompatActivity() {
             }
         }
 
-        //subscribe to all users channels
-        FirebaseUtil.subScribeAllMyChannelsUid()
-
         handler.postDelayed(runnable, 1000)
     }
 

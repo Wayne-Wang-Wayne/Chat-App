@@ -10,6 +10,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.chatapp.R
 import com.example.chatapp.allPage.myMainFriend.MyMainFriendsFragment
+import com.example.chatapp.util.FirebaseUtil
 import com.example.chatapp.util.FirebaseUtil.Companion.logOut
 import com.example.chatapp.util.SmallUtil
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,6 +26,9 @@ class MainActivity : AppCompatActivity() {
         initToolBar()
         entryAnimationStart()
         changePage(BaseViewPagerFragment.newInstance())
+
+        //subscribe to all users channels
+        FirebaseUtil.subScribeAllMyChannelsUid()
     }
 
 
