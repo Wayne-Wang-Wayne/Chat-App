@@ -254,6 +254,41 @@ class FirebaseUtil {
                 }
         }
 
+        fun leaveChannel(activity: Activity, channelUID: String) {
+            //依序移除相關退出群組要移除的資料
+            mFirebaseRTDbInstance.child(CHANNELS).child(channelUID).child(MEMBERS).child(
+                mFirebaseAuthInstance.currentUser?.uid!!
+            ).removeValue().addOnSuccessListener {
+                mFirebaseRTDbInstance.child(USER_CHANNELS)
+                    .child(mFirebaseAuthInstance.currentUser?.uid!!).child(channelUID).removeValue()
+                    .addOnSuccessListener {
+                        mFirebaseRTDbInstance.child(PUBLIC_CHANNELS).child(channelUID).get()
+                            .addOnSuccessListener { snapShot1 ->
+                                //如果是public 群組 也有資料要更新
+                                if (snapShot1.value != null) {
+                                    mFirebaseRTDbInstance.child(PUBLIC_CHANNELS).child(channelUID)
+                                        .child("userAmount").get()
+                                        .addOnSuccessListener { snapShot2 ->
+                                            var userAmount = snapShot2.getValue(Int::class.java)
+                                            if (userAmount != null) {
+                                                mFirebaseRTDbInstance.child(PUBLIC_CHANNELS)
+                                                    .child(channelUID).child("userAmount")
+                                                    .setValue(userAmount - 1).addOnSuccessListener {
+                                                        activity.finish()
+                                                        FirebaseMessageService().unSubscribeTopic(channelUID)
+                                                    }
+                                            }
+                                        }
+                                } else {
+                                    //不是public群組
+                                    activity.finish()
+                                    FirebaseMessageService().unSubscribeTopic(channelUID)
+                                }
+                            }
+                    }
+            }
+        }
+
         private fun joinChannelProcess(
             mContext: Context,
             channelUid: String,

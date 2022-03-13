@@ -2,6 +2,8 @@ package com.example.chatapp.allPage.chatActivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
@@ -30,7 +32,7 @@ class ChatActivity : AppCompatActivity() {
 
     private lateinit var chatRecyclerviewAdapter: ChatRecyclerviewAdapter
     private lateinit var messageList: ArrayList<ChannelMessage>
-
+    private var mMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,9 +50,17 @@ class ChatActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         //離開時設置new tag不顯示
+        //如果是退出群組process就不需要動，因為資料刪掉了
         mFirebaseRTDbInstance.child(USER_CHANNELS)
-            .child(mFirebaseAuthInstance.currentUser?.uid!!).child(intent.extras?.getString("channelUID")!!).child("needNewTag").setValue(false)
-    }
+            .child(mFirebaseAuthInstance.currentUser?.uid!!).child(intent.extras?.getString("channelUID")!!).get().addOnSuccessListener{
+                snapShot->
+                if (snapShot.value != null){
+                    mFirebaseRTDbInstance.child(USER_CHANNELS)
+                        .child(mFirebaseAuthInstance.currentUser?.uid!!)
+                        .child(intent.extras?.getString("channelUID")!!).child("needNewTag").setValue(false)
+                }
+            }
+      }
 
     private fun setView() {
         initToolBar()
@@ -67,7 +77,7 @@ class ChatActivity : AppCompatActivity() {
                     messageList.add(message!!)
                 }
                 chatRecyclerviewAdapter.notifyDataSetChanged()
-                if (messageList.size!=0){
+                if (messageList.size != 0) {
                     chatRecyclerview.scrollToPosition(messageList.size - 1)
                 }
             }
@@ -95,6 +105,22 @@ class ChatActivity : AppCompatActivity() {
 
     private fun initToolBar() {
         setSupportActionBar(chat_activity_toolbar)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.clear()
+        mMenu = menu
+        menuInflater.inflate(R.menu.menu_chat_activity, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.leaveChannel) {
+            //logic for log out
+            FirebaseUtil.leaveChannel(this, intent.extras?.getString("channelUID")!!)
+            return true
+        }
+        return true
     }
 
 }

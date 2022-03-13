@@ -46,6 +46,10 @@ class FirebaseMessageService : FirebaseMessagingService() {
         }
     }
 
+    fun unSubscribeTopic(topic:String){
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+    }
+
     fun sendFirebaseMessageWithVolley(
         mContext: Context,
         topic: String,
