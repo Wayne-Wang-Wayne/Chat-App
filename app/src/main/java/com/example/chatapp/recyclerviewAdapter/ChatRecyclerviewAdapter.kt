@@ -4,7 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
 import com.example.chatapp.model.ChannelMessage
@@ -16,6 +18,7 @@ class ChatRecyclerviewAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    val colorSettingList = ArrayList<String>()
     val MESSAGE_RECEIVED = 1
     val MESSAGE_SENT = 2
 
@@ -61,6 +64,8 @@ class ChatRecyclerviewAdapter(
             //set received message
             holder.tvReceivedMessage.text = currentMessage.message
 
+            setReceiveBoxColor(currentMessage.senderName!!, holder.tvReceivedMessageParent)
+
             //set receiver name and also hide duplicate name
             holder.tvReceiveName.text = currentMessage.senderName
             if (position > 0 && messageList[position].senderName == messageList[position - 1].senderName) {
@@ -96,6 +101,8 @@ class ChatRecyclerviewAdapter(
         val tvReceiveName: TextView = itemView.findViewById<TextView>(R.id.tvReceiveName)
         val tvReceivedMessage: TextView = itemView.findViewById<TextView>(R.id.tvReceivedMessage)
         val tvReceiveTime: TextView = itemView.findViewById<TextView>(R.id.tvReceiveTime)
+        val tvReceivedMessageParent: RelativeLayout =
+            itemView.findViewById(R.id.tvReceivedMessageParent)
     }
 
     private fun modifyDate(messageDate: String): String {
@@ -106,5 +113,40 @@ class ChatRecyclerviewAdapter(
     private fun modifyTime(messageTime: String): String {
         val lastIndexTime = messageTime.lastIndexOf(":")
         return lastIndexTime.let { messageTime.substring(0, it) }
+    }
+
+    private fun setReceiveBoxColor(senderName: String, relativeLayout: RelativeLayout) {
+        var isNameAlreadyAdd = false
+        var positionOfName = 0
+        for (item in colorSettingList) {
+            if (item == senderName) {
+                isNameAlreadyAdd = true
+                break
+            }
+            positionOfName++
+        }
+        if (isNameAlreadyAdd) {
+            determineBgColor(positionOfName % 6, relativeLayout)
+        } else {
+            colorSettingList.add(senderName)
+            determineBgColor(positionOfName % 6, relativeLayout)
+        }
+    }
+
+    private fun determineBgColor(index: Int, relativeLayout: RelativeLayout) {
+        when (index) {
+            0 -> relativeLayout.background =
+                ContextCompat.getDrawable(mContext, R.drawable.received_message_background1)
+            1 -> relativeLayout.background =
+                ContextCompat.getDrawable(mContext, R.drawable.received_message_background2)
+            2 -> relativeLayout.background =
+                ContextCompat.getDrawable(mContext, R.drawable.received_message_background3)
+            3 -> relativeLayout.background =
+                ContextCompat.getDrawable(mContext, R.drawable.received_message_background4)
+            4 -> relativeLayout.background =
+                ContextCompat.getDrawable(mContext, R.drawable.received_message_background5)
+            5 -> relativeLayout.background =
+                ContextCompat.getDrawable(mContext, R.drawable.received_message_background6)
+        }
     }
 }

@@ -21,6 +21,11 @@
     <color name="public_channel_bg_two">#B8FFF9</color>
     <color name="public_channel_bg_button">#EFFFFD</color>
     <color name="sent_box_bg">#9ADCFF</color>
-    <color name="receive_box_bg">#42C2FF</color>
+    <color name="receive_box_bg1">#42C2FF</color>
+    <color name="receive_box_bg2">#32a852</color>
+    <color name="receive_box_bg3">#2a40bd</color>
+    <color name="receive_box_bg4">#bd582a</color>
+    <color name="receive_box_bg5">#772ed1</color>
+    <color name="receive_box_bg6">#bd1999</color>
 
 </resources>

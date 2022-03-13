@@ -15,6 +15,11 @@
         <entry key="app/src/main/res/drawable/message_box_background.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/public_channel_btn_background.xml" value="0.13" />
         <entry key="app/src/main/res/drawable/received_message_background.xml" value="0.132" />
+        <entry key="app/src/main/res/drawable/received_message_background2.xml" value="0.1245" />
+        <entry key="app/src/main/res/drawable/received_message_background3.xml" value="0.1245" />
+        <entry key="app/src/main/res/drawable/received_message_background4.xml" value="0.1245" />
+        <entry key="app/src/main/res/drawable/received_message_background5.xml" value="0.1245" />
+        <entry key="app/src/main/res/drawable/received_message_background6.xml" value="0.1245" />
         <entry key="app/src/main/res/drawable/sent_message_background.xml" value="0.132" />
         <entry key="app/src/main/res/layout/activity_chat.xml" value="0.17300724637681159" />
         <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.335" />

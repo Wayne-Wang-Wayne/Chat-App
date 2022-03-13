@@ -21,18 +21,22 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
-        android:background="@drawable/sent_message_background">
+        android:background="@drawable/sent_message_background"
+        >
 
 
         <TextView
             android:id="@+id/tvSentMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:linksClickable="true"
             android:maxWidth="250dp"
             android:maxLines="10"
             android:padding="10dp"
             android:text="This is sent message"
             android:textColor="@color/white"
+            android:textIsSelectable="true"
             android:textSize="18sp" />
     </RelativeLayout>
 
