@@ -81,42 +81,31 @@ class FirebaseUtil {
             email: String,
             password: String
         ) {
-            mFirebaseRTDbInstance.child(ALL_USER).get().addOnSuccessListener { snapShot ->
-                for (postSnapShot in snapShot.children) {
-                    val user = postSnapShot.getValue(User::class.java)
-                    if (name == user?.name) {
-                        SmallUtil.quickToast(mContext, "此名稱已經有人使用，請更換名稱！")
-                        return@addOnSuccessListener
-                    }
-                }
-
                 if (email.trim().isEmpty() && password.trim().isEmpty() && name.trim().isEmpty()) {
                     SmallUtil.quickToast(mContext, "請輸入email和密碼！")
-                    return@addOnSuccessListener
+                    return
                 }
                 if (name.trim().isEmpty()) {
                     SmallUtil.quickToast(mContext, "請輸入ID！")
-                    return@addOnSuccessListener
+                    return
                 }
                 if (email.trim().isEmpty()) {
                     SmallUtil.quickToast(mContext, "請輸入email！")
-                    return@addOnSuccessListener
+                    return
                 }
                 if (password.trim().isEmpty()) {
                     SmallUtil.quickToast(mContext, "請輸入密碼！")
-                    return@addOnSuccessListener
+                    return
                 }
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     SmallUtil.quickToast(mContext, "請輸入正確格式的email")
-                    return@addOnSuccessListener
+                    return
                 }
                 if (!SmallUtil.isValidPassword(password)) {
                     SmallUtil.quickToast(mContext, "密碼請輸入大於6位的小寫英數字(至少含一小寫字母和一數字)")
-                    return@addOnSuccessListener
+                    return
                 }
                 signUp(activity, mContext, name, email, password)
-            }
-
         }
 
         //call for logging out
