@@ -9,11 +9,14 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.chatapp.R
+import com.example.chatapp.allPage.myInfoActivity.MyInfoActivity
 import com.example.chatapp.allPage.myMainFriend.MyMainFriendsFragment
 import com.example.chatapp.util.FirebaseUtil
 import com.example.chatapp.util.FirebaseUtil.Companion.logOut
+import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.example.chatapp.util.SmallUtil
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_my_info.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,11 +43,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.logOut) {
-            //logic for log out
-            logOut(this)
-            return true
+        when(item.itemId){
+            R.id.logOut->{
+                //logic for log out
+                logOut(this)
+                return true
+            }
+            R.id.profile->{
+                //logic to profile
+                intentToAnyClass(this, Bundle(),MyInfoActivity::class.java)
+                return true
+            }
         }
+
         return true
     }
 

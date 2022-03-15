@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.chatapp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_round"
@@ -12,9 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApp">
         <activity
+            android:name=".allPage.myInfoActivity.MyInfoActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".allPage.chatActivity.ChatActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".allPage.mainActivity.MainActivity"
             android:exported="false"
@@ -47,4 +52,5 @@
             </intent-filter>
         </service>
     </application>
+
 </manifest>
