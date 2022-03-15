@@ -2,6 +2,7 @@ package com.example.chatapp.allPage.myChannelsFT
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_my_channels.*
 
 class MyChannelsFragment : Fragment() {
 
+    private val TAG: String = javaClass.simpleName
     private lateinit var mContext: Context
     private lateinit var myChannelViewModel: MyChannelViewModel
     private lateinit var myChannelAdapter: MyChannelAdapter
@@ -74,7 +76,7 @@ class MyChannelsFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Log.d(TAG,error.message)
             }
 
         })

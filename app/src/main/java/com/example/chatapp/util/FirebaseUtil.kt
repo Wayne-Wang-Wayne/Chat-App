@@ -110,11 +110,11 @@ class FirebaseUtil {
 
         //call for logging out
         fun logOut(activity: Activity) {
-            mFirebaseAuthInstance.signOut()
             val sharedPreferenceUtil = SharedPreferenceUtil(activity)
             sharedPreferenceUtil.remove(AUTO_LOGIN)
             intentToAnyClass(context = activity, cls = LogInActivity::class.java)
             activity.finish()
+            mFirebaseAuthInstance.signOut()
         }
 
         fun listenToRTDBForUser(path: String, valueEventListener: ValueEventListener) {
