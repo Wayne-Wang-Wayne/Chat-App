@@ -2,6 +2,10 @@ package com.example.chatapp.util
 
 import android.app.Activity
 import android.content.Context
+import android.net.Uri
+import android.view.View
+import android.widget.ImageView
+import android.widget.Toast
 import com.example.chatapp.allPage.chatActivity.OnMessageSent
 import com.example.chatapp.allPage.joinChannelsFT.OnJoinSuccess
 import com.example.chatapp.allPage.logInActivity.LogInActivity
@@ -15,12 +19,15 @@ import com.example.chatapp.util.SmallUtil.getCurrentTimeString
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.tasks.await
 
 class FirebaseUtil {
     companion object {
         val mFirebaseAuthInstance = FirebaseAuth.getInstance()
         val mFirebaseRTDbInstance = FirebaseDatabase.getInstance().reference
+        val mFirebaseStorageInstance = FirebaseStorage.getInstance().reference
         var currentUserName = ""
 
         // Firebase path name
@@ -81,31 +88,31 @@ class FirebaseUtil {
             email: String,
             password: String
         ) {
-                if (email.trim().isEmpty() && password.trim().isEmpty() && name.trim().isEmpty()) {
-                    SmallUtil.quickToast(mContext, "請輸入email和密碼！")
-                    return
-                }
-                if (name.trim().isEmpty()) {
-                    SmallUtil.quickToast(mContext, "請輸入ID！")
-                    return
-                }
-                if (email.trim().isEmpty()) {
-                    SmallUtil.quickToast(mContext, "請輸入email！")
-                    return
-                }
-                if (password.trim().isEmpty()) {
-                    SmallUtil.quickToast(mContext, "請輸入密碼！")
-                    return
-                }
-                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    SmallUtil.quickToast(mContext, "請輸入正確格式的email")
-                    return
-                }
-                if (!SmallUtil.isValidPassword(password)) {
-                    SmallUtil.quickToast(mContext, "密碼請輸入大於6位的小寫英數字(至少含一小寫字母和一數字)")
-                    return
-                }
-                signUp(activity, mContext, name, email, password)
+            if (email.trim().isEmpty() && password.trim().isEmpty() && name.trim().isEmpty()) {
+                SmallUtil.quickToast(mContext, "請輸入email和密碼！")
+                return
+            }
+            if (name.trim().isEmpty()) {
+                SmallUtil.quickToast(mContext, "請輸入ID！")
+                return
+            }
+            if (email.trim().isEmpty()) {
+                SmallUtil.quickToast(mContext, "請輸入email！")
+                return
+            }
+            if (password.trim().isEmpty()) {
+                SmallUtil.quickToast(mContext, "請輸入密碼！")
+                return
+            }
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                SmallUtil.quickToast(mContext, "請輸入正確格式的email")
+                return
+            }
+            if (!SmallUtil.isValidPassword(password)) {
+                SmallUtil.quickToast(mContext, "密碼請輸入大於6位的小寫英數字(至少含一小寫字母和一數字)")
+                return
+            }
+            signUp(activity, mContext, name, email, password)
         }
 
         //call for logging out
@@ -264,7 +271,9 @@ class FirebaseUtil {
                                                     .child(channelUID).child("userAmount")
                                                     .setValue(userAmount - 1).addOnSuccessListener {
                                                         activity.finish()
-                                                        FirebaseMessageService().unSubscribeTopic(channelUID)
+                                                        FirebaseMessageService().unSubscribeTopic(
+                                                            channelUID
+                                                        )
                                                     }
                                             }
                                         }
@@ -275,6 +284,37 @@ class FirebaseUtil {
                                 }
                             }
                     }
+            }
+        }
+
+        fun uploadProfileImage(context: Context, imageView: ImageView, profileImageUri: Uri,loadingView: View? = null) {
+            loadingView?.visibility = View.VISIBLE
+            val fireRef =
+                mFirebaseStorageInstance.child("users/${mFirebaseAuthInstance.currentUser?.uid}/profile.jpg")
+            fireRef.putFile(profileImageUri).addOnSuccessListener {
+                fireRef.downloadUrl.addOnSuccessListener {
+                    Picasso.get().load(it).rotate(90F).into(imageView)
+                    Toast.makeText(context, "更新頭貼成功！", Toast.LENGTH_SHORT)
+                    loadingView?.visibility = View.INVISIBLE
+                }
+            }.addOnFailureListener {
+                Toast.makeText(context, "更新頭貼失敗！", Toast.LENGTH_SHORT)
+                loadingView?.visibility = View.INVISIBLE
+            }
+        }
+
+        fun getPictureFromFirebase(
+            fileName: String, imageView: ImageView, context: Context,
+            loadingView: View? = null
+        ) {
+            loadingView?.visibility = View.VISIBLE
+            val fireRef = mFirebaseStorageInstance.child(fileName)
+            fireRef.downloadUrl.addOnSuccessListener {
+                Picasso.get().load(it).rotate(90F).into(imageView)
+                loadingView?.visibility = View.INVISIBLE
+            }.addOnFailureListener {
+                //Toast.makeText(context, "載入圖片失敗！", Toast.LENGTH_SHORT)
+                loadingView?.visibility = View.INVISIBLE
             }
         }
 
