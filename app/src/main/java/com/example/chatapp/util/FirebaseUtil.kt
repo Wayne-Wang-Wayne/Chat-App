@@ -6,6 +6,9 @@ import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.chatapp.R
 import com.example.chatapp.allPage.chatActivity.OnMessageSent
 import com.example.chatapp.allPage.joinChannelsFT.OnJoinSuccess
 import com.example.chatapp.allPage.logInActivity.LogInActivity
@@ -293,7 +296,15 @@ class FirebaseUtil {
                 mFirebaseStorageInstance.child("users/${mFirebaseAuthInstance.currentUser?.uid}/profile.jpg")
             fireRef.putFile(profileImageUri).addOnSuccessListener {
                 fireRef.downloadUrl.addOnSuccessListener {
-                    Picasso.get().load(it).rotate(90F).into(imageView)
+                    Glide.with(context)
+                        .load(it)
+                        .placeholder(R.drawable.default_user_image)
+                        .error(R.drawable.default_user_image)
+                        .override(200, 200)
+                        .centerCrop()
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(imageView)
                     Toast.makeText(context, "更新頭貼成功！", Toast.LENGTH_SHORT)
                     loadingView?.visibility = View.INVISIBLE
                 }
@@ -310,7 +321,15 @@ class FirebaseUtil {
             loadingView?.visibility = View.VISIBLE
             val fireRef = mFirebaseStorageInstance.child(fileName)
             fireRef.downloadUrl.addOnSuccessListener {
-                Picasso.get().load(it).rotate(90F).into(imageView)
+                Glide.with(context)
+                    .load(it)
+                    .placeholder(R.drawable.default_user_image)
+                    .error(R.drawable.default_user_image)
+                    .override(200, 200)
+                    .centerCrop()
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView)
                 loadingView?.visibility = View.INVISIBLE
             }.addOnFailureListener {
                 //Toast.makeText(context, "載入圖片失敗！", Toast.LENGTH_SHORT)

@@ -1,16 +1,23 @@
 package com.example.chatapp.recyclerviewAdapter
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.chatapp.R
 import com.example.chatapp.model.ChannelMessage
+import com.example.chatapp.util.FirebaseUtil
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
+import com.squareup.picasso.Picasso
 
 class ChatRecyclerviewAdapter(
     private val mContext: Context,
@@ -21,6 +28,7 @@ class ChatRecyclerviewAdapter(
     val colorSettingList = ArrayList<String>()
     val MESSAGE_RECEIVED = 1
     val MESSAGE_SENT = 2
+    val profileUriMap = HashMap<String, Any>()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -66,12 +74,49 @@ class ChatRecyclerviewAdapter(
 
             setReceiveBoxColor(currentMessage.senderName!!, holder.tvReceivedMessageParent)
 
+            //set profile picture(只抓一次Url，抓下來就存Map)
+            if (profileUriMap[currentMessage.sentUserUID] != null) {
+                if (profileUriMap[currentMessage.sentUserUID] is String) {
+                    holder.iv_myProfilePictureInReceiveBox.setImageResource(R.drawable.default_user_image)
+                } else {
+                    Glide.with(mContext)
+                        .load(profileUriMap[currentMessage.sentUserUID] as Uri)
+                        .placeholder(R.drawable.default_user_image)
+                        .error(R.drawable.default_user_image)
+                        .override(200, 200)
+                        .centerCrop()
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(holder.iv_myProfilePictureInReceiveBox);
+                }
+            } else {
+                val fireRef =
+                    FirebaseUtil.mFirebaseStorageInstance.child("users/${currentMessage.sentUserUID}/profile.jpg")
+                fireRef.downloadUrl.addOnSuccessListener {
+                    Glide.with(mContext)
+                        .load(it)
+                        .placeholder(R.drawable.default_user_image)
+                        .error(R.drawable.default_user_image)
+                        .override(200, 200)
+                        .centerCrop()
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(holder.iv_myProfilePictureInReceiveBox);
+                    profileUriMap[currentMessage.sentUserUID!!] = it
+                }.addOnFailureListener {
+                    profileUriMap[currentMessage.sentUserUID!!] = "Fail"
+                    holder.iv_myProfilePictureInReceiveBox.setImageResource(R.drawable.default_user_image)
+                }
+            }
+
             //set receiver name and also hide duplicate name
             holder.tvReceiveName.text = currentMessage.senderName
             if (position > 0 && messageList[position].senderName == messageList[position - 1].senderName) {
                 holder.tvReceiveName.visibility = View.GONE
+                holder.profilePictureGroupInReceiveBox.visibility = View.GONE
             } else {
                 holder.tvReceiveName.visibility = View.VISIBLE
+                holder.profilePictureGroupInReceiveBox.visibility = View.VISIBLE
             }
             //set receive time
             holder.tvReceiveTime.text =
@@ -103,6 +148,10 @@ class ChatRecyclerviewAdapter(
         val tvReceiveTime: TextView = itemView.findViewById<TextView>(R.id.tvReceiveTime)
         val tvReceivedMessageParent: RelativeLayout =
             itemView.findViewById(R.id.tvReceivedMessageParent)
+        val profilePictureGroupInReceiveBox: CardView =
+            itemView.findViewById(R.id.profilePictureGroupInReceiveBox)
+        val iv_myProfilePictureInReceiveBox: ImageView =
+            itemView.findViewById(R.id.iv_myProfilePictureInReceiveBox)
     }
 
     private fun modifyDate(messageDate: String): String {
