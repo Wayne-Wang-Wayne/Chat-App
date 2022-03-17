@@ -19,6 +19,7 @@ import com.example.chatapp.util.SharedPreferenceUtil.AUTO_LOGIN
 import com.example.chatapp.util.SmallUtil.getCurrentDateString
 import com.example.chatapp.util.SmallUtil.getCurrentTimeStamp
 import com.example.chatapp.util.SmallUtil.getCurrentTimeString
+import com.example.chatapp.util.SmallUtil.glideProfileUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
@@ -296,15 +297,7 @@ class FirebaseUtil {
                 mFirebaseStorageInstance.child("users/${mFirebaseAuthInstance.currentUser?.uid}/profile.jpg")
             fireRef.putFile(profileImageUri).addOnSuccessListener {
                 fireRef.downloadUrl.addOnSuccessListener {
-                    Glide.with(context)
-                        .load(it)
-                        .placeholder(R.drawable.default_user_image)
-                        .error(R.drawable.default_user_image)
-                        .override(200, 200)
-                        .centerCrop()
-                        .dontAnimate()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(imageView)
+                    glideProfileUtil(context,600,it,imageView)
                     Toast.makeText(context, "更新頭貼成功！", Toast.LENGTH_SHORT)
                     loadingView?.visibility = View.INVISIBLE
                 }
@@ -321,15 +314,7 @@ class FirebaseUtil {
             loadingView?.visibility = View.VISIBLE
             val fireRef = mFirebaseStorageInstance.child(fileName)
             fireRef.downloadUrl.addOnSuccessListener {
-                Glide.with(context)
-                    .load(it)
-                    .placeholder(R.drawable.default_user_image)
-                    .error(R.drawable.default_user_image)
-                    .override(200, 200)
-                    .centerCrop()
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(imageView)
+                glideProfileUtil(context,600,it,imageView)
                 loadingView?.visibility = View.INVISIBLE
             }.addOnFailureListener {
                 //Toast.makeText(context, "載入圖片失敗！", Toast.LENGTH_SHORT)

@@ -2,7 +2,12 @@ package com.example.chatapp.util
 
 import android.app.AlertDialog
 import android.content.Context
+import android.net.Uri
+import android.widget.ImageView
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.chatapp.R
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Matcher
@@ -65,5 +70,17 @@ object SmallUtil {
             count++
         }
         return count
+    }
+
+    fun glideProfileUtil(context: Context, width: Int, uri: Uri, imageView: ImageView) {
+        Glide.with(context)
+            .load(uri)
+            .placeholder(R.drawable.default_user_image)
+            .error(R.drawable.default_user_image)
+            .override(width, width)
+            .centerCrop()
+            .dontAnimate()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(imageView)
     }
 }
