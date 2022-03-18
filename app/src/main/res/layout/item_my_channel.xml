@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="110dp">
 
     <TextView
         android:id="@+id/tv_ChannelName"
@@ -17,42 +17,73 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_LastMessage"
-        android:layout_width="230dp"
-        android:layout_height="wrap_content"
-        android:lines="2"
-        android:maxLines="2"
-        android:text="XXX:你好呀瑋瑋"
-        android:textSize="14sp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/profilePictureGroupInMyChannel"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="250dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tv_ChannelName"
+        app:layout_constraintTop_toBottomOf="@+id/tv_ChannelName">
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="250dp">
+
+            <ImageView
+                android:id="@+id/iv_myProfilePictureInMyChannel"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_user_image" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tv_LastMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:lines="2"
+        android:maxLines="2"
+        android:paddingStart="5dp"
+        android:text="XXX : 你好呀瑋瑋"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_CurrentTime"
+        app:layout_constraintStart_toEndOf="@+id/profilePictureGroupInMyChannel"
         app:layout_constraintTop_toBottomOf="@+id/tv_ChannelName" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/iv_NewTag"
         android:layout_width="100dp"
         android:layout_height="50dp"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_CurrentTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_ChannelName"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
-        android:scaleType="centerCrop"
         app:lottie_fileName="new-message-notificaiton.json"
-        app:lottie_loop="true"/>
+        app:lottie_loop="true" />
 
     <TextView
         android:id="@+id/tv_CurrentTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="2022/01/28 18:00"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_ChannelName"
-        app:layout_constraintTop_toBottomOf="@+id/iv_NewTag"
-        android:gravity="center"/>
+        app:layout_constraintTop_toBottomOf="@+id/iv_NewTag" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,15 +8,19 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.example.chatapp.R
 import com.example.chatapp.allPage.chatActivity.ChatActivity
+import com.example.chatapp.allPage.splash.SplashActivity
+import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserProfileUrl
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.PublicChannels
 import com.example.chatapp.model.UserChannels
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
+import com.example.chatapp.util.SmallUtil
 import com.example.chatapp.util.SmallUtil.getCharCount
 
 class MyChannelAdapter(
@@ -36,7 +40,7 @@ class MyChannelAdapter(
         //set channel Name
         holder.tv_ChannelName.text = myChannelsList[position].channelsName
 
-        //set channel last message
+        //set channel last message and last sender's profile picture
         if (myChannelsList[position].lastSenderName != "") {
             val charAmount = getCharCount(myChannelsList[position].lastMessage!!)
             if (charAmount >= 11) {
@@ -51,8 +55,16 @@ class MyChannelAdapter(
                 holder.tv_LastMessage.text =
                     "${myChannelsList[position].lastSenderName}:${myChannelsList[position].lastMessage}"
             }
+            //set last sender's profile picture
+            holder.profilePictureGroupInMyChannel.visibility = View.VISIBLE
+            if (allUserProfileUrl[myChannelsList[position].lastSenderUid] != null) {
+                SmallUtil.glideProfileUtil(context, 300, SplashActivity.allUserProfileUrl[myChannelsList[position].lastSenderUid]!!, holder.iv_myProfilePictureInMyChannel)
+            } else {
+                holder.iv_myProfilePictureInMyChannel.setImageResource(R.drawable.default_user_image)
+            }
         } else {
             holder.tv_LastMessage.text = ""
+            holder.profilePictureGroupInMyChannel.visibility = View.INVISIBLE
         }
         //判斷是否須加new tag
         if (myChannelsList[position].needNewTag == true) {
@@ -104,5 +116,7 @@ class MyChannelAdapter(
         val tv_LastMessage = itemView.findViewById<TextView>(R.id.tv_LastMessage)
         val iv_NewTag = itemView.findViewById<LottieAnimationView>(R.id.iv_NewTag)
         val tv_CurrentTime = itemView.findViewById<TextView>(R.id.tv_CurrentTime)
+        val profilePictureGroupInMyChannel = itemView.findViewById<CardView>(R.id.profilePictureGroupInMyChannel)
+        val iv_myProfilePictureInMyChannel = itemView.findViewById<ImageView>(R.id.iv_myProfilePictureInMyChannel)
     }
 }

@@ -169,6 +169,7 @@ class FirebaseUtil {
                                                     getCurrentDateString(),
                                                     messageObject.message,
                                                     currentUserName,
+                                                    mFirebaseAuthInstance.currentUser?.uid,
                                                     true
                                                 )
                                             )
@@ -379,6 +380,7 @@ class FirebaseUtil {
                                             getCurrentTimeStamp(),
                                             getCurrentTimeString(),
                                             getCurrentDateString(),
+                                            "",
                                             "",
                                             "",
                                             false
