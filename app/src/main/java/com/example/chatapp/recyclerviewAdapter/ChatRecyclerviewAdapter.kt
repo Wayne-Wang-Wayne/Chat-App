@@ -77,7 +77,12 @@ class ChatRecyclerviewAdapter(
 
             //set profile picture
             if (allUserProfileUrl[currentMessage.sentUserUID] != null) {
-                    SmallUtil.glideProfileUtil(mContext, 200, allUserProfileUrl[currentMessage.sentUserUID]!!, holder.iv_myProfilePictureInReceiveBox)
+                SmallUtil.glideProfileUtil(
+                    mContext,
+                    200,
+                    allUserProfileUrl[currentMessage.sentUserUID]!!,
+                    holder.iv_myProfilePictureInReceiveBox
+                )
             } else {
                 holder.iv_myProfilePictureInReceiveBox.setImageResource(R.drawable.default_user_image)
             }

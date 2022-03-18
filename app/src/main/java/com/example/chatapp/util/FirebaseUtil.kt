@@ -293,7 +293,8 @@ class FirebaseUtil {
             }
         }
 
-        fun uploadProfileImage(activity: Activity,
+        fun uploadProfileImage(
+            activity: Activity,
             context: Context,
             imageView: ImageView,
             profileImageUri: Uri,
@@ -307,7 +308,7 @@ class FirebaseUtil {
                     mFirebaseRTDbInstance.child(ALL_USER)
                         .child(mFirebaseAuthInstance.currentUser?.uid!!).child("userPhotoUrl")
                         .setValue(uri.toString()).addOnSuccessListener {
-                            if (!activity.isDestroyed){
+                            if (!activity.isDestroyed) {
                                 glideProfileUtil(context, 600, uri, imageView)
                                 Toast.makeText(context, "更新頭貼成功！", Toast.LENGTH_SHORT)
                                 loadingView?.visibility = View.INVISIBLE

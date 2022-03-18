@@ -108,9 +108,11 @@ class CreateChannelFTViewModel(@NonNull application: Application) :
                     .setValue(OnlyUserUid(currentUserUid))
                     .addOnSuccessListener {
                         //再存各user各自擁有的頻道
-                        val userChannelModel = UserChannels(channelUid, channelName,getCurrentTimeStamp(),
+                        val userChannelModel = UserChannels(
+                            channelUid, channelName, getCurrentTimeStamp(),
                             getCurrentTimeString(),
-                            getCurrentDateString(),"","","",false)
+                            getCurrentDateString(), "", "", "", false
+                        )
                         mFirebaseRTDbInstance.child(USER_CHANNELS)
                             .child(currentUserUid!!).child(channelUid).setValue(userChannelModel)
                             .addOnSuccessListener {

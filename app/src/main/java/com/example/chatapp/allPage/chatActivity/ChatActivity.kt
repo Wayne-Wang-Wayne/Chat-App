@@ -52,15 +52,17 @@ class ChatActivity : AppCompatActivity() {
         //離開時設置new tag不顯示
         //如果是退出群組process就不需要動，因為資料刪掉了
         mFirebaseRTDbInstance.child(USER_CHANNELS)
-            .child(mFirebaseAuthInstance.currentUser?.uid!!).child(intent.extras?.getString("channelUID")!!).get().addOnSuccessListener{
-                snapShot->
-                if (snapShot.value != null){
+            .child(mFirebaseAuthInstance.currentUser?.uid!!)
+            .child(intent.extras?.getString("channelUID")!!).get()
+            .addOnSuccessListener { snapShot ->
+                if (snapShot.value != null) {
                     mFirebaseRTDbInstance.child(USER_CHANNELS)
                         .child(mFirebaseAuthInstance.currentUser?.uid!!)
-                        .child(intent.extras?.getString("channelUID")!!).child("needNewTag").setValue(false)
+                        .child(intent.extras?.getString("channelUID")!!).child("needNewTag")
+                        .setValue(false)
                 }
             }
-      }
+    }
 
     private fun setView() {
         initToolBar()

@@ -58,7 +58,12 @@ class MyChannelAdapter(
             //set last sender's profile picture
             holder.profilePictureGroupInMyChannel.visibility = View.VISIBLE
             if (allUserProfileUrl[myChannelsList[position].lastSenderUid] != null) {
-                SmallUtil.glideProfileUtil(context, 300, SplashActivity.allUserProfileUrl[myChannelsList[position].lastSenderUid]!!, holder.iv_myProfilePictureInMyChannel)
+                SmallUtil.glideProfileUtil(
+                    context,
+                    300,
+                    SplashActivity.allUserProfileUrl[myChannelsList[position].lastSenderUid]!!,
+                    holder.iv_myProfilePictureInMyChannel
+                )
             } else {
                 holder.iv_myProfilePictureInMyChannel.setImageResource(R.drawable.default_user_image)
             }
@@ -116,7 +121,9 @@ class MyChannelAdapter(
         val tv_LastMessage = itemView.findViewById<TextView>(R.id.tv_LastMessage)
         val iv_NewTag = itemView.findViewById<LottieAnimationView>(R.id.iv_NewTag)
         val tv_CurrentTime = itemView.findViewById<TextView>(R.id.tv_CurrentTime)
-        val profilePictureGroupInMyChannel = itemView.findViewById<CardView>(R.id.profilePictureGroupInMyChannel)
-        val iv_myProfilePictureInMyChannel = itemView.findViewById<ImageView>(R.id.iv_myProfilePictureInMyChannel)
+        val profilePictureGroupInMyChannel =
+            itemView.findViewById<CardView>(R.id.profilePictureGroupInMyChannel)
+        val iv_myProfilePictureInMyChannel =
+            itemView.findViewById<ImageView>(R.id.iv_myProfilePictureInMyChannel)
     }
 }

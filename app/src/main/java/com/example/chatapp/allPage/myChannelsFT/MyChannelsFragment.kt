@@ -76,7 +76,7 @@ class MyChannelsFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.d(TAG,error.message)
+                Log.d(TAG, error.message)
             }
 
         })
