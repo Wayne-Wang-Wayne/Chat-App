@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.chatapp.R
+import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserProfileUrl
 import com.example.chatapp.model.ChannelMessage
 import com.example.chatapp.util.FirebaseUtil
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
@@ -29,7 +30,6 @@ class ChatRecyclerviewAdapter(
     val colorSettingList = ArrayList<String>()
     val MESSAGE_RECEIVED = 1
     val MESSAGE_SENT = 2
-    val profileUriMap = HashMap<String, Any>()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -75,23 +75,11 @@ class ChatRecyclerviewAdapter(
 
             setReceiveBoxColor(currentMessage.senderName!!, holder.tvReceivedMessageParent)
 
-            //set profile picture(只抓一次Url，抓下來就存Map)
-            if (profileUriMap[currentMessage.sentUserUID] != null) {
-                if (profileUriMap[currentMessage.sentUserUID] is String) {
-                    holder.iv_myProfilePictureInReceiveBox.setImageResource(R.drawable.default_user_image)
-                } else {
-                    SmallUtil.glideProfileUtil(mContext, 200, profileUriMap[currentMessage.sentUserUID] as Uri, holder.iv_myProfilePictureInReceiveBox)
-                }
+            //set profile picture
+            if (allUserProfileUrl[currentMessage.sentUserUID] != null) {
+                    SmallUtil.glideProfileUtil(mContext, 200, allUserProfileUrl[currentMessage.sentUserUID]!!, holder.iv_myProfilePictureInReceiveBox)
             } else {
-                val fireRef =
-                    FirebaseUtil.mFirebaseStorageInstance.child("users/${currentMessage.sentUserUID}/profile.jpg")
-                fireRef.downloadUrl.addOnSuccessListener {
-                    SmallUtil.glideProfileUtil(mContext, 200, it, holder.iv_myProfilePictureInReceiveBox)
-                    profileUriMap[currentMessage.sentUserUID!!] = it
-                }.addOnFailureListener {
-                    holder.iv_myProfilePictureInReceiveBox.setImageResource(R.drawable.default_user_image)
-                    profileUriMap[currentMessage.sentUserUID!!] = "Fail"
-                }
+                holder.iv_myProfilePictureInReceiveBox.setImageResource(R.drawable.default_user_image)
             }
 
             //set receiver name and also hide duplicate name

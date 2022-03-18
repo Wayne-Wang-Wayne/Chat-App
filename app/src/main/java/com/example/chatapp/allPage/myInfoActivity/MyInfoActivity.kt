@@ -31,18 +31,14 @@ class MyInfoActivity : AppCompatActivity() {
         if (requestCode == requestPicturesCode) {
             if (resultCode == Activity.RESULT_OK) {
                 val imageUir = data?.data
-                uploadProfileImage(this, iv_myProfilePicture, imageUir!!, profilePictureLoading)
+                uploadProfileImage(this, this,iv_myProfilePicture, imageUir!!, profilePictureLoading)
             }
         }
     }
 
     private fun setView() {
 
-        getPictureFromFirebase(
-            "users/${FirebaseUtil.mFirebaseAuthInstance.currentUser?.uid}/profile.jpg",
-            iv_myProfilePicture,
-            this, profilePictureLoading
-        )
+        getPictureFromFirebase(this, iv_myProfilePicture)
 
         profilePictureGroup.setSafeOnClickListener {
             //打開相簿
