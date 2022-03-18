@@ -309,6 +309,7 @@ class FirebaseUtil {
                         .child(mFirebaseAuthInstance.currentUser?.uid!!).child("userPhotoUrl")
                         .setValue(uri.toString()).addOnSuccessListener {
                             if (!activity.isDestroyed) {
+                                allUserProfileUrl[mFirebaseAuthInstance.currentUser?.uid!!] = uri
                                 glideProfileUtil(context, 600, uri, imageView)
                                 Toast.makeText(context, "更新頭貼成功！", Toast.LENGTH_SHORT)
                                 loadingView?.visibility = View.INVISIBLE
