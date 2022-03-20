@@ -168,6 +168,7 @@ class FirebaseUtil {
                                                     getCurrentTimeString(),
                                                     getCurrentDateString(),
                                                     messageObject.message,
+                                                    messageObject.imageUri,
                                                     currentUserName,
                                                     mFirebaseAuthInstance.currentUser?.uid,
                                                     true
@@ -177,9 +178,15 @@ class FirebaseUtil {
                                     //成功後清空editText box
                                     onMessageSent.doOnMessageSent()
                                     //成功後推播訊息給其他群組成員
+                                    var body = ""
+                                    if(messageObject.message==""&&messageObject.imageUri!=""){
+                                        body = "${messageObject.senderName}傳送了圖片。"
+                                    }else{
+                                        body = "$currentUserName:${messageObject.message!!}"
+                                    }
                                     FirebaseMessageService().sendFirebaseMessageWithVolley(
                                         mContext, channelUID,
-                                        channelName, "$currentUserName:${messageObject.message!!}"
+                                        channelName, body
                                     )
                                 }
 
@@ -382,6 +389,7 @@ class FirebaseUtil {
                                             getCurrentTimeStamp(),
                                             getCurrentTimeString(),
                                             getCurrentDateString(),
+                                            "",
                                             "",
                                             "",
                                             "",

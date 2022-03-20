@@ -63,6 +63,15 @@
         android:layout_marginLeft="5dp"
         android:background="@drawable/received_message_background1">
 
+        <ImageView
+            android:id="@+id/ivReceivedImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:maxWidth="250dp"
+            android:adjustViewBounds="true" />
+
         <TextView
             android:id="@+id/tvReceivedMessage"
             android:layout_width="wrap_content"
@@ -75,7 +84,8 @@
             android:text="This is received message"
             android:textColor="@color/white"
             android:textIsSelectable="true"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone"/>
     </RelativeLayout>
 
 </RelativeLayout>

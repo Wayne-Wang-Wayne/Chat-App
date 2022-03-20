@@ -10,16 +10,14 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.chatapp.R
 import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserProfileUrl
 import com.example.chatapp.model.ChannelMessage
-import com.example.chatapp.util.FirebaseUtil
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
 import com.example.chatapp.util.SmallUtil
-import com.squareup.picasso.Picasso
+import com.example.chatapp.util.SmallUtil.glideNormalUtil
 
 class ChatRecyclerviewAdapter(
     private val mContext: Context,
@@ -59,20 +57,31 @@ class ChatRecyclerviewAdapter(
         val currentMessage = messageList[position]
 
         if (holder.javaClass == SentViewHolder::class.java) {
+
             //do the stuff for sent view holder
             holder as SentViewHolder
-            //set sent message
-            holder.tvSentMessage.text = currentMessage.message
+
             //set send time
             holder.tvSentTime.text =
                 "${modifyDate(currentMessage.messageDate!!)} ${modifyTime(currentMessage.messageTime!!)}"
+
+            //set sent message
+            if (currentMessage.message == "" && currentMessage.imageUri != "") {
+                //如果是圖片
+                holder.ivSentImage.visibility = View.VISIBLE
+                holder.tvSentMessage.visibility = View.GONE
+                glideNormalUtil(mContext, currentMessage.imageUri?.toUri()!!, holder.ivSentImage)
+            } else {
+                //如果是文字訊息
+                holder.tvSentMessage.visibility = View.VISIBLE
+                holder.ivSentImage.visibility = View.GONE
+                holder.tvSentMessage.text = currentMessage.message
+            }
         }
         if (holder.javaClass == ReceivedViewHolder::class.java) {
+
             //do the stuff for received view holder
             holder as ReceivedViewHolder
-            //set received message
-            holder.tvReceivedMessage.text = currentMessage.message
-
             setReceiveBoxColor(currentMessage.senderName!!, holder.tvReceivedMessageParent)
 
             //set profile picture
@@ -96,9 +105,27 @@ class ChatRecyclerviewAdapter(
                 holder.tvReceiveName.visibility = View.VISIBLE
                 holder.profilePictureGroupInReceiveBox.visibility = View.VISIBLE
             }
+
             //set receive time
             holder.tvReceiveTime.text =
                 "${modifyDate(currentMessage.messageDate!!)} ${modifyTime(currentMessage.messageTime!!)}"
+
+            //set received message
+            if (currentMessage.message == "" && currentMessage.imageUri != "") {
+                //如果是圖片
+                holder.ivReceivedImage.visibility = View.VISIBLE
+                holder.tvReceivedMessage.visibility = View.GONE
+                glideNormalUtil(
+                    mContext,
+                    currentMessage.imageUri?.toUri()!!,
+                    holder.ivReceivedImage
+                )
+            } else {
+                //如果是文字訊息
+                holder.tvReceivedMessage.visibility = View.VISIBLE
+                holder.ivReceivedImage.visibility = View.GONE
+                holder.tvReceivedMessage.text = currentMessage.message
+            }
         }
     }
 
@@ -118,6 +145,7 @@ class ChatRecyclerviewAdapter(
     class SentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvSentMessage: TextView = itemView.findViewById<TextView>(R.id.tvSentMessage)
         val tvSentTime: TextView = itemView.findViewById<TextView>(R.id.tvSentTime)
+        val ivSentImage: ImageView = itemView.findViewById(R.id.ivSentImage)
     }
 
     class ReceivedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -130,6 +158,7 @@ class ChatRecyclerviewAdapter(
             itemView.findViewById(R.id.profilePictureGroupInReceiveBox)
         val iv_myProfilePictureInReceiveBox: ImageView =
             itemView.findViewById(R.id.iv_myProfilePictureInReceiveBox)
+        val ivReceivedImage: ImageView = itemView.findViewById(R.id.ivReceivedImage)
     }
 
     private fun modifyDate(messageDate: String): String {

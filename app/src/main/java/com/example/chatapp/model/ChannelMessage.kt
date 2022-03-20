@@ -8,6 +8,7 @@ data class ChannelMessage(
     var sentUserUID: String? = "",
     var messageDate: String? = "",
     var messageTime: String? = "",
-    var message: String? = ""
+    var message: String? = "",
+    var imageUri:String? = ""
 
 )

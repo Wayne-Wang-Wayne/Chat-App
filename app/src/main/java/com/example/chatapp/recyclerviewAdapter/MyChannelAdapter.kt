@@ -42,18 +42,25 @@ class MyChannelAdapter(
 
         //set channel last message and last sender's profile picture
         if (myChannelsList[position].lastSenderName != "") {
-            val charAmount = getCharCount(myChannelsList[position].lastMessage!!)
-            if (charAmount >= 11) {
-                holder.tv_LastMessage.text =
-                    "${myChannelsList[position].lastSenderName}:${
-                        myChannelsList[position].lastMessage?.substring(
-                            0,
-                            10
-                        )
-                    }..."
-            } else {
-                holder.tv_LastMessage.text =
-                    "${myChannelsList[position].lastSenderName}:${myChannelsList[position].lastMessage}"
+
+            if(myChannelsList[position].lastImageUriSent!=""){
+                //如果是send圖片
+                holder.tv_LastMessage.text = "${myChannelsList[position].lastSenderName}傳送了圖片。"
+            }else{
+                //如果是send message
+                val charAmount = getCharCount(myChannelsList[position].lastMessage!!)
+                if (charAmount >= 11) {
+                    holder.tv_LastMessage.text =
+                        "${myChannelsList[position].lastSenderName}:${
+                            myChannelsList[position].lastMessage?.substring(
+                                0,
+                                10
+                            )
+                        }..."
+                } else {
+                    holder.tv_LastMessage.text =
+                        "${myChannelsList[position].lastSenderName}:${myChannelsList[position].lastMessage}"
+                }
             }
             //set last sender's profile picture
             holder.profilePictureGroupInMyChannel.visibility = View.VISIBLE

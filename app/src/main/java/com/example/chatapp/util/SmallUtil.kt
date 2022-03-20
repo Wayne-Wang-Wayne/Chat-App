@@ -4,6 +4,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.net.Uri
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -73,14 +75,40 @@ object SmallUtil {
     }
 
     fun glideProfileUtil(context: Context, width: Int, uri: Uri, imageView: ImageView) {
+            Glide.with(context)
+                .load(uri)
+                .placeholder(R.drawable.default_user_image)
+                .error(R.drawable.default_user_image)
+                .override(width, width)
+                .centerCrop()
+                .dontAnimate()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
+    }
+
+    fun glideNormalUtil(context: Context, uri: Uri, imageView: ImageView) {
         Glide.with(context)
             .load(uri)
-            .placeholder(R.drawable.default_user_image)
-            .error(R.drawable.default_user_image)
-            .override(width, width)
+            .placeholder(R.drawable.place_holder_default_picture)
+            .error(R.drawable.chat_image_error)
             .centerCrop()
             .dontAnimate()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(imageView)
+    }
+
+    fun getDialogProgressBarBuilder(mContext: Context): AlertDialog.Builder {
+        var progressDialog: AlertDialog
+        var builder: AlertDialog.Builder = AlertDialog.Builder(mContext)
+        builder.setTitle("Loading...")
+        val progressBar = ProgressBar(mContext)
+        val lp = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        progressBar.layoutParams = lp
+        builder.setView(progressBar)
+        builder.setCancelable(false)
+        return builder
     }
 }

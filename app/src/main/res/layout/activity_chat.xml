@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chatRootLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -61,18 +62,25 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginLeft="10dp"
-            android:layout_weight="85"
+            android:layout_weight="74"
             android:background="@drawable/message_box_background"
             android:hint="Type a message"
             android:paddingLeft="10dp"
             android:gravity="bottom"
             android:paddingBottom="12dp"/>
-
+        
         <ImageView
-            android:id="@+id/sendButton"
+            android:id="@+id/sendImageButton"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_weight="15"
+            android:layout_weight="12"
+            android:src="@drawable/send_picture_icon"/>
+
+        <ImageView
+            android:id="@+id/sendMessageButton"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="14"
             android:src="@drawable/send_message_icon" />
 
     </LinearLayout>

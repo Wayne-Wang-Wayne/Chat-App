@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         //subscribe to all users channels
         FirebaseUtil.subScribeAllMyChannelsUid()
+
     }
 
 
