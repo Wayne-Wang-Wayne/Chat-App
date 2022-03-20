@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApp">
         <activity
+            android:name=".allPage.pictureDetailActivity.PictureDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".allPage.myInfoActivity.MyInfoActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

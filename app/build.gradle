@@ -143,4 +143,7 @@ dependencies {
 
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //TouchImageView
+    implementation 'com.github.MikeOrtiz:TouchImageView:1.4.1'
 }

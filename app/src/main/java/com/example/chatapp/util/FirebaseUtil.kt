@@ -21,6 +21,7 @@ import com.example.chatapp.util.SmallUtil.getCurrentDateString
 import com.example.chatapp.util.SmallUtil.getCurrentTimeStamp
 import com.example.chatapp.util.SmallUtil.getCurrentTimeString
 import com.example.chatapp.util.SmallUtil.glideProfileUtil
+import com.example.chatapp.util.SmallUtil.simpleDialogUtilWithY
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
@@ -188,9 +189,17 @@ class FirebaseUtil {
                                         mContext, channelUID,
                                         channelName, body
                                     )
+                                }.addOnFailureListener {
+                                    onMessageSent.doOnMessageSent()
+                                    simpleDialogUtilWithY(mContext,"錯誤","訊息傳送失敗，請確認網路再重試！")
                                 }
-
+                        }.addOnFailureListener {
+                            onMessageSent.doOnMessageSent()
+                            simpleDialogUtilWithY(mContext,"錯誤","訊息傳送失敗，請確認網路再重試！")
                         }
+                }.addOnFailureListener {
+                    onMessageSent.doOnMessageSent()
+                    simpleDialogUtilWithY(mContext,"錯誤","訊息傳送失敗，請確認網路再重試！")
                 }
 
         }

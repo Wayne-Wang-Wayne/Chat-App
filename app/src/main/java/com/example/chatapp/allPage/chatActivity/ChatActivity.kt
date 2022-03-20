@@ -79,6 +79,7 @@ class ChatActivity : AppCompatActivity() {
         channelName = intent.extras?.getString("channelName")
         channelUID = intent.extras?.getString("channelUID")
         chat_activity_title.text = channelName
+        chat_back_press.setSafeOnClickListener { finish() }
 
         //logic for adding data to recyclerview
         listenToRTDBForMessage(channelUID!!, object : ValueEventListener {

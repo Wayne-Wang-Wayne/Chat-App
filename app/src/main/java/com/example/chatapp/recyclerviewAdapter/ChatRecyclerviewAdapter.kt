@@ -1,7 +1,9 @@
 package com.example.chatapp.recyclerviewAdapter
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +15,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
+import com.example.chatapp.allPage.pictureDetailActivity.PictureDetailActivity
+import com.example.chatapp.allPage.pictureDetailActivity.PictureDetailActivity.Companion.getDetailPictureKey
 import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserProfileUrl
+import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.ChannelMessage
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
+import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.example.chatapp.util.SmallUtil
 import com.example.chatapp.util.SmallUtil.glideNormalUtil
 
@@ -71,6 +77,11 @@ class ChatRecyclerviewAdapter(
                 holder.ivSentImage.visibility = View.VISIBLE
                 holder.tvSentMessage.visibility = View.GONE
                 glideNormalUtil(mContext, currentMessage.imageUri?.toUri()!!, holder.ivSentImage)
+                holder.ivSentImage.setSafeOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putString(getDetailPictureKey,currentMessage.imageUri)
+                    intentToAnyClass(mContext,bundle,PictureDetailActivity::class.java)
+                }
             } else {
                 //如果是文字訊息
                 holder.tvSentMessage.visibility = View.VISIBLE
@@ -120,6 +131,11 @@ class ChatRecyclerviewAdapter(
                     currentMessage.imageUri?.toUri()!!,
                     holder.ivReceivedImage
                 )
+                holder.ivReceivedImage.setSafeOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putString(getDetailPictureKey,currentMessage.imageUri)
+                    intentToAnyClass(mContext,bundle,PictureDetailActivity::class.java)
+                }
             } else {
                 //如果是文字訊息
                 holder.tvReceivedMessage.visibility = View.VISIBLE

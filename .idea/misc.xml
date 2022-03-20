@@ -21,10 +21,11 @@
         <entry key="app/src/main/res/drawable/received_message_background5.xml" value="0.1245" />
         <entry key="app/src/main/res/drawable/received_message_background6.xml" value="0.1245" />
         <entry key="app/src/main/res/drawable/sent_message_background.xml" value="0.132" />
-        <entry key="app/src/main/res/layout/activity_chat.xml" value="0.17300724637681159" />
+        <entry key="app/src/main/res/layout/activity_chat.xml" value="0.2347305389221557" />
         <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.17083333333333334" />
         <entry key="app/src/main/res/layout/activity_my_info.xml" value="0.15172101449275363" />
+        <entry key="app/src/main/res/layout/activity_picture_detail.xml" value="0.14270833333333333" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_all_public_channels.xml" value="0.23385416666666667" />
