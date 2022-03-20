@@ -7,7 +7,12 @@ import android.os.Bundle
 import android.provider.MediaStore
 import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
+import com.example.chatapp.model.User
+import com.example.chatapp.util.FirebaseUtil
+import com.example.chatapp.util.FirebaseUtil.Companion.ALL_USER
 import com.example.chatapp.util.FirebaseUtil.Companion.getPictureFromFirebase
+import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
+import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseRTDbInstance
 import com.example.chatapp.util.FirebaseUtil.Companion.uploadProfileImage
 import kotlinx.android.synthetic.main.activity_my_info.*
 
@@ -37,8 +42,15 @@ class MyInfoActivity : AppCompatActivity() {
 
     private fun setView() {
 
-        getPictureFromFirebase(this, iv_myProfilePicture)
+        mFirebaseRTDbInstance.child(ALL_USER).child(mFirebaseAuthInstance.currentUser?.uid!!).get().addOnSuccessListener {
+            snapShot-> for (postSnapShot in snapShot.children){
+            val userData = postSnapShot.getValue(User::class.java)
+            tv_profileName.text = userData?.name
+            tv_profileMail.text = userData?.name
+        }
 
+        }
+        getPictureFromFirebase(this, iv_myProfilePicture)
         profilePictureGroup.setSafeOnClickListener {
             //打開相簿
             val openGalleryIntent =

@@ -10,6 +10,7 @@ import androidx.core.net.toUri
 import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.util.SmallUtil
+import com.example.chatapp.util.SmallUtil.glideNoCutPicture
 import com.example.chatapp.util.SmallUtil.glideNormalUtil
 import kotlinx.android.synthetic.main.activity_picture_detail.*
 import java.io.File
@@ -31,7 +32,7 @@ class PictureDetailActivity : AppCompatActivity() {
     private fun setView() {
         picture_detail_back_press.setSafeOnClickListener { finish() }
         val pictureUri = intent.extras?.getString(getDetailPictureKey)?.toUri()
-        glideNormalUtil(this, pictureUri!!, iv_image_detail)
+        glideNoCutPicture(this, pictureUri!!, iv_image_detail)
         btn_downLoad_image.setSafeOnClickListener {
             saveToGallery(pictureUri)
         }

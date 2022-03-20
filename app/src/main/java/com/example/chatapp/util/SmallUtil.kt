@@ -97,6 +97,16 @@ object SmallUtil {
             .into(imageView)
     }
 
+    fun glideNoCutPicture(context: Context, uri: Uri, imageView: ImageView) {
+        Glide.with(context)
+            .load(uri)
+            .placeholder(R.drawable.place_holder_default_picture)
+            .error(R.drawable.chat_image_error)
+            .dontAnimate()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(imageView)
+    }
+
     fun getDialogProgressBarBuilder(mContext: Context): AlertDialog.Builder {
         var progressDialog: AlertDialog
         var builder: AlertDialog.Builder = AlertDialog.Builder(mContext)

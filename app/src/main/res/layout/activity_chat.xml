@@ -58,8 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/chatLinearLayout"
-        android:layout_below="@+id/chat_activity_toolbar"
-        />
+        android:layout_below="@+id/chat_activity_toolbar" />
 
     <include
         layout="@layout/retry_layout"
@@ -84,14 +83,19 @@
         <EditText
             android:id="@+id/messageBox"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_weight="74"
             android:background="@drawable/message_box_background"
             android:hint="Type a message"
             android:paddingLeft="10dp"
             android:gravity="bottom"
-            android:paddingBottom="12dp"/>
+            android:paddingTop="10dp"
+            android:layout_gravity="bottom"
+            android:paddingBottom="12dp"
+            android:maxLines="4"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLength="2000"/>
         
         <ImageView
             android:id="@+id/sendImageButton"
