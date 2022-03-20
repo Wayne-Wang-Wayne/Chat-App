@@ -180,9 +180,9 @@ class FirebaseUtil {
                                     onMessageSent.doOnMessageSent()
                                     //成功後推播訊息給其他群組成員
                                     var body = ""
-                                    if(messageObject.message==""&&messageObject.imageUri!=""){
+                                    if (messageObject.message == "" && messageObject.imageUri != "") {
                                         body = "${messageObject.senderName}傳送了圖片。"
-                                    }else{
+                                    } else {
                                         body = "$currentUserName:${messageObject.message!!}"
                                     }
                                     FirebaseMessageService().sendFirebaseMessageWithVolley(
@@ -191,15 +191,15 @@ class FirebaseUtil {
                                     )
                                 }.addOnFailureListener {
                                     onMessageSent.doOnMessageSent()
-                                    simpleDialogUtilWithY(mContext,"錯誤","訊息傳送失敗，請確認網路再重試！")
+                                    simpleDialogUtilWithY(mContext, "錯誤", "訊息傳送失敗，請確認網路再重試！")
                                 }
                         }.addOnFailureListener {
                             onMessageSent.doOnMessageSent()
-                            simpleDialogUtilWithY(mContext,"錯誤","訊息傳送失敗，請確認網路再重試！")
+                            simpleDialogUtilWithY(mContext, "錯誤", "訊息傳送失敗，請確認網路再重試！")
                         }
                 }.addOnFailureListener {
                     onMessageSent.doOnMessageSent()
-                    simpleDialogUtilWithY(mContext,"錯誤","訊息傳送失敗，請確認網路再重試！")
+                    simpleDialogUtilWithY(mContext, "錯誤", "訊息傳送失敗，請確認網路再重試！")
                 }
 
         }
