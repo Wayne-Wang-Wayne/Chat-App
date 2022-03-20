@@ -43,12 +43,10 @@ class MyInfoActivity : AppCompatActivity() {
     private fun setView() {
 
         mFirebaseRTDbInstance.child(ALL_USER).child(mFirebaseAuthInstance.currentUser?.uid!!).get().addOnSuccessListener {
-            snapShot-> for (postSnapShot in snapShot.children){
-            val userData = postSnapShot.getValue(User::class.java)
+            snapShot->
+            val userData =  snapShot.getValue(User::class.java)
             tv_profileName.text = userData?.name
-            tv_profileMail.text = userData?.name
-        }
-
+            tv_profileMail.text = userData?.email
         }
         getPictureFromFirebase(this, iv_myProfilePicture)
         profilePictureGroup.setSafeOnClickListener {
