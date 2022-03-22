@@ -14,6 +14,7 @@ import com.example.chatapp.allPage.myMainFriend.MyMainFriendsFragment
 import com.example.chatapp.util.FirebaseUtil
 import com.example.chatapp.util.FirebaseUtil.Companion.logOut
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
+import com.example.chatapp.util.PreviewLinkUtil
 import com.example.chatapp.util.SmallUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_my_info.*

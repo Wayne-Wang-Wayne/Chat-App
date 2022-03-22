@@ -1,8 +1,6 @@
 package com.example.chatapp.recyclerviewAdapter
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +11,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
 import com.example.chatapp.allPage.pictureDetailActivity.PictureDetailActivity
@@ -24,6 +23,7 @@ import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.example.chatapp.util.SmallUtil
 import com.example.chatapp.util.SmallUtil.glideNormalUtil
+import kotlinx.android.synthetic.main.fragment_my_channels.*
 
 class ChatRecyclerviewAdapter(
     private val mContext: Context,
@@ -76,17 +76,35 @@ class ChatRecyclerviewAdapter(
                 //如果是圖片
                 holder.ivSentImage.visibility = View.VISIBLE
                 holder.tvSentMessage.visibility = View.GONE
+                holder.sent_link_preview_recyclerview.visibility = View.GONE
                 glideNormalUtil(mContext, currentMessage.imageUri?.toUri()!!, holder.ivSentImage)
                 holder.ivSentImage.setSafeOnClickListener {
                     val bundle = Bundle()
-                    bundle.putString(getDetailPictureKey,currentMessage.imageUri)
-                    intentToAnyClass(mContext,bundle,PictureDetailActivity::class.java)
+                    bundle.putString(getDetailPictureKey, currentMessage.imageUri)
+                    intentToAnyClass(mContext, bundle, PictureDetailActivity::class.java)
                 }
             } else {
                 //如果是文字訊息
                 holder.tvSentMessage.visibility = View.VISIBLE
                 holder.ivSentImage.visibility = View.GONE
                 holder.tvSentMessage.text = currentMessage.message
+
+                //處理連結預覽圖
+                val spans = holder.tvSentMessage.urls
+                if (spans.isNotEmpty()) {
+                    holder.sent_link_preview_recyclerview.visibility = View.VISIBLE
+                    val previewLinkList = ArrayList<String>()
+                    for (span in spans) {
+                        previewLinkList.add(span.url)
+                    }
+                    val linkPreviewAdapter = LinkPreviewAdapter(mContext, previewLinkList)
+                    holder.sent_link_preview_recyclerview.apply {
+                        layoutManager = LinearLayoutManager(context)
+                        adapter = linkPreviewAdapter
+                    }
+                } else {
+                    holder.sent_link_preview_recyclerview.visibility = View.GONE
+                }
             }
         }
         if (holder.javaClass == ReceivedViewHolder::class.java) {
@@ -126,6 +144,7 @@ class ChatRecyclerviewAdapter(
                 //如果是圖片
                 holder.ivReceivedImage.visibility = View.VISIBLE
                 holder.tvReceivedMessage.visibility = View.GONE
+                holder.received_link_preview_recyclerview.visibility = View.GONE
                 glideNormalUtil(
                     mContext,
                     currentMessage.imageUri?.toUri()!!,
@@ -133,14 +152,31 @@ class ChatRecyclerviewAdapter(
                 )
                 holder.ivReceivedImage.setSafeOnClickListener {
                     val bundle = Bundle()
-                    bundle.putString(getDetailPictureKey,currentMessage.imageUri)
-                    intentToAnyClass(mContext,bundle,PictureDetailActivity::class.java)
+                    bundle.putString(getDetailPictureKey, currentMessage.imageUri)
+                    intentToAnyClass(mContext, bundle, PictureDetailActivity::class.java)
                 }
             } else {
                 //如果是文字訊息
                 holder.tvReceivedMessage.visibility = View.VISIBLE
                 holder.ivReceivedImage.visibility = View.GONE
                 holder.tvReceivedMessage.text = currentMessage.message
+
+                //處理連結預覽圖
+                val spans = holder.tvReceivedMessage.urls
+                if (spans.isNotEmpty()) {
+                    holder.received_link_preview_recyclerview.visibility = View.VISIBLE
+                    val previewLinkList = ArrayList<String>()
+                    for (span in spans) {
+                        previewLinkList.add(span.url)
+                    }
+                    val linkPreviewAdapter = LinkPreviewAdapter(mContext, previewLinkList)
+                    holder.received_link_preview_recyclerview.apply {
+                        layoutManager = LinearLayoutManager(context)
+                        adapter = linkPreviewAdapter
+                    }
+                } else {
+                    holder.received_link_preview_recyclerview.visibility = View.GONE
+                }
             }
         }
     }
@@ -162,6 +198,8 @@ class ChatRecyclerviewAdapter(
         val tvSentMessage: TextView = itemView.findViewById<TextView>(R.id.tvSentMessage)
         val tvSentTime: TextView = itemView.findViewById<TextView>(R.id.tvSentTime)
         val ivSentImage: ImageView = itemView.findViewById(R.id.ivSentImage)
+        val sent_link_preview_recyclerview: RecyclerView =
+            itemView.findViewById(R.id.sent_link_preview_recyclerview)
     }
 
     class ReceivedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -175,6 +213,8 @@ class ChatRecyclerviewAdapter(
         val iv_myProfilePictureInReceiveBox: ImageView =
             itemView.findViewById(R.id.iv_myProfilePictureInReceiveBox)
         val ivReceivedImage: ImageView = itemView.findViewById(R.id.ivReceivedImage)
+        val received_link_preview_recyclerview: RecyclerView =
+            itemView.findViewById(R.id.received_link_preview_recyclerview)
     }
 
     private fun modifyDate(messageDate: String): String {

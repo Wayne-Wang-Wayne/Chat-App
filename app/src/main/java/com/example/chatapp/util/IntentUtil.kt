@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.core.content.ContextCompat.startActivity
+
 
 object IntentUtil {
 
@@ -24,5 +26,10 @@ object IntentUtil {
             intent.setClass(context, cls)
             context.startActivity(intent)
         }
+    }
+
+    fun intentToLink(context: Context, url: String) {
+        val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
+        context.startActivity(intent);
     }
 }
