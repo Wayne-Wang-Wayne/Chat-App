@@ -48,7 +48,7 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
         messageList = ArrayList<ChannelMessage>()
-        chatRecyclerviewAdapter = ChatRecyclerviewAdapter(this, messageList)
+        chatRecyclerviewAdapter = ChatRecyclerviewAdapter(applicationContext, messageList)
         chatRecyclerview.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = chatRecyclerviewAdapter

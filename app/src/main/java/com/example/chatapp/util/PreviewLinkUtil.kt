@@ -94,13 +94,16 @@ class PreviewLinkUtil {
 
                 launch(Main) {
                     // 回到Main Thread Set View
-                    SmallUtil.glideNoCutPicture(
-                        context,
-                        uriString,
-                        iv_urlImage
-                    )
-                    tv_urlTitle.text = openGraphResult.title
-                    tv_urlDescription.text = openGraphResult.description
+                    if (iv_urlImage.parent != null && tv_urlTitle.parent != null && tv_urlDescription.parent != null) {
+                        SmallUtil.glideNoCutPicture(
+                            context,
+                            uriString,
+                            iv_urlImage
+                        )
+                        tv_urlTitle.text = openGraphResult.title
+                        tv_urlDescription.text = openGraphResult.description
+
+                    }
                 }
 
             } catch (e: Exception) {
