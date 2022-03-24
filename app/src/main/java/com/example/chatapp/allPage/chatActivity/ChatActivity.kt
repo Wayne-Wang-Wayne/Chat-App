@@ -8,7 +8,6 @@ import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatapp.R
@@ -22,6 +21,7 @@ import com.example.chatapp.util.FirebaseUtil.Companion.listenToRTDBForMessage
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseRTDbInstance
 import com.example.chatapp.util.FirebaseUtil.Companion.storeMessageToDB
+import com.example.chatapp.util.SmallUtil
 import com.example.chatapp.util.SmallUtil.getCurrentDateString
 import com.example.chatapp.util.SmallUtil.getCurrentTimeStamp
 import com.example.chatapp.util.SmallUtil.getCurrentTimeString
@@ -186,6 +186,12 @@ class ChatActivity : AppCompatActivity() {
                                     this
                                 )
                             }
+                        }.addOnProgressListener {
+                            val progress = (100.0 * it.bytesTransferred) / it.totalByteCount
+                            dialogBuilder.setTitle("照片傳送中...${progress.toInt()} %")
+                        }.addOnFailureListener {
+                            dialogBuilder.dismiss()
+                            SmallUtil.quickToast(this, "照片傳送失敗！請檢查網路！")
                         }
                     }
                     .setNegativeButton("不要") { _, _ -> }
