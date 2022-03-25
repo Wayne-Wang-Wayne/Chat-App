@@ -45,7 +45,8 @@ class LinkPreviewAdapter(
             previewLinkList[position],
             holder.iv_link_picture,
             holder.tv_link_title,
-            holder.tv_link_description
+            holder.tv_link_description,
+            holder.itemView
         )
         holder.itemView.setSafeOnClickListener {
             intentToLink(context, previewLinkList[position])

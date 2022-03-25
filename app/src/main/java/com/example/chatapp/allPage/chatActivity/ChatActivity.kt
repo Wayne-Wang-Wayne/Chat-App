@@ -167,7 +167,7 @@ class ChatActivity : AppCompatActivity() {
                             }
                         }
                         val fireRef =
-                            FirebaseUtil.mFirebaseStorageInstance.child("channels/$channelUID${getCurrentTimeStamp()}/profile.jpg")
+                            FirebaseUtil.mFirebaseStorageInstance.child("channels/$channelUID/${getCurrentTimeStamp()}/chatImage.jpg")
                         fireRef.putFile(imageUir!!).addOnSuccessListener {
                             fireRef.downloadUrl.addOnSuccessListener { uri ->
                                 val messageObject = ChannelMessage(

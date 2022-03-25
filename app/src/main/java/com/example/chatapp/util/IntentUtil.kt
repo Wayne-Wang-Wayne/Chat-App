@@ -24,12 +24,14 @@ object IntentUtil {
                 intent.data = uri
             }
             intent.setClass(context, cls)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
     }
 
     fun intentToLink(context: Context, url: String) {
         val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent);
     }
 }

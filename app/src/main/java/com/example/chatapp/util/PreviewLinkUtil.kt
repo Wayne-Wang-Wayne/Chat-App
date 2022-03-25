@@ -2,20 +2,17 @@ package com.example.chatapp.util
 
 
 import android.content.Context
-import android.media.Image
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
 import com.example.chatapp.model.OpenGraphResult
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.internal.lockAndWaitNanos
-
 import org.jsoup.Jsoup
+
 
 class PreviewLinkUtil {
 
@@ -37,7 +34,8 @@ class PreviewLinkUtil {
         passInUrl: String,
         iv_urlImage: ImageView,
         tv_urlTitle: TextView,
-        tv_urlDescription: TextView
+        tv_urlDescription: TextView,
+        itemView: View
     ) {
 
         var url = passInUrl
@@ -90,14 +88,16 @@ class PreviewLinkUtil {
                             }
                         }
                 }
-                val uriString = openGraphResult.image?.toUri()!!
+                val uriString = openGraphResult.image
+                val uri = uriString!!.toUri()
 
                 launch(Main) {
                     // 回到Main Thread Set View
+                    //有資料再set
                     if (iv_urlImage.parent != null && tv_urlTitle.parent != null && tv_urlDescription.parent != null) {
                         SmallUtil.glideNoCutPicture(
                             context,
-                            uriString,
+                            uri,
                             iv_urlImage
                         )
                         tv_urlTitle.text = openGraphResult.title
@@ -110,10 +110,15 @@ class PreviewLinkUtil {
                 e.printStackTrace()
                 launch(Main) {
                     //listener.onError(e.localizedMessage)
+                    //讓沒資料的預覽圖消失
+                    if (itemView.parent != null) {
+                        val params = itemView.layoutParams
+                        params.height = 0
+                        params.width = 0
+                        itemView.layoutParams = params
+                    }
                 }
             }
         }
     }
-
-
 }
