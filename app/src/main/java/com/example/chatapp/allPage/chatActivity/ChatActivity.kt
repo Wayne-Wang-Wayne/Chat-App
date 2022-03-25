@@ -3,6 +3,7 @@ package com.example.chatapp.allPage.chatActivity
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
@@ -35,7 +36,7 @@ import kotlinx.android.synthetic.main.activity_chat.*
 class ChatActivity : AppCompatActivity() {
 
     companion object {
-        const val requestNormalPicturesCode = 998
+        const val requestPicturesOrVideoCode = 998
     }
 
     private lateinit var chatRecyclerviewAdapter: ChatRecyclerviewAdapter
@@ -118,10 +119,8 @@ class ChatActivity : AppCompatActivity() {
         }
 
         sendImageButton.setSafeOnClickListener {
-            //打開相簿
-            val openGalleryIntent =
-                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(openGalleryIntent, requestNormalPicturesCode)
+            //打開相簿選擇影片或相片
+            openGallery()
         }
 
     }
@@ -148,56 +147,76 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == requestNormalPicturesCode) {
+        if (requestCode == requestPicturesOrVideoCode) {
             if (resultCode == Activity.RESULT_OK) {
                 val imageUir = data?.data
-                val imageView = ImageView(this)
-                imageView.setImageURI(imageUir)
-                AlertDialog.Builder(this)
-                    .setTitle("確定要傳送此照片？")
-                    .setView(imageView)
-                    .setPositiveButton("確定") { _, _ ->
-                        val dialogBuilder = getDialogProgressBarBuilder(this).create()
-                        dialogBuilder.show()
-                        val onMessageSent = object : OnMessageSent {
-                            override fun doOnMessageSent() {
-                                if (!isDestroyed) {
-                                    dialogBuilder.dismiss()
-                                }
-                            }
-                        }
-                        val fireRef =
-                            FirebaseUtil.mFirebaseStorageInstance.child("channels/$channelUID/${getCurrentTimeStamp()}/chatImage.jpg")
-                        fireRef.putFile(imageUir!!).addOnSuccessListener {
-                            fireRef.downloadUrl.addOnSuccessListener { uri ->
-                                val messageObject = ChannelMessage(
-                                    currentUserName,
-                                    mFirebaseAuthInstance.currentUser!!.uid,
-                                    getCurrentDateString(),
-                                    getCurrentTimeString(),
-                                    "",
-                                    uri.toString()
-                                )
-                                storeMessageToDB(
-                                    channelUID!!,
-                                    channelName!!,
-                                    messageObject,
-                                    onMessageSent,
-                                    this
-                                )
-                            }
-                        }.addOnProgressListener {
-                            val progress = (100.0 * it.bytesTransferred) / it.totalByteCount
-                            dialogBuilder.setTitle("照片傳送中...${progress.toInt()} %")
-                        }.addOnFailureListener {
-                            dialogBuilder.dismiss()
-                            SmallUtil.quickToast(this, "照片傳送失敗！請檢查網路！")
-                        }
-                    }
-                    .setNegativeButton("不要") { _, _ -> }
-                    .show()
+                if (imageUir.toString().contains("image")) {
+                    //handle image
+                    imageHandle(imageUir!!)
+                } else if (imageUir.toString().contains("video")) {
+                    //handle video
+
+
+                }
+
+
             }
         }
+    }
+
+    private fun openGallery() {
+        val pickIntent =
+            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        pickIntent.type = "image/* video/*"
+        startActivityForResult(pickIntent, requestPicturesOrVideoCode)
+    }
+
+    private fun imageHandle(imageUir: Uri) {
+        val imageView = ImageView(this)
+        imageView.setImageURI(imageUir)
+        AlertDialog.Builder(this)
+            .setTitle("確定要傳送此照片？")
+            .setView(imageView)
+            .setPositiveButton("確定") { _, _ ->
+                val dialogBuilder = getDialogProgressBarBuilder(this).create()
+                dialogBuilder.show()
+                val onMessageSent = object : OnMessageSent {
+                    override fun doOnMessageSent() {
+                        if (!isDestroyed) {
+                            dialogBuilder.dismiss()
+                        }
+                    }
+                }
+                val fireRef =
+                    FirebaseUtil.mFirebaseStorageInstance.child("channels/$channelUID/${getCurrentTimeStamp()}/chatImage.jpg")
+                fireRef.putFile(imageUir!!).addOnSuccessListener {
+                    fireRef.downloadUrl.addOnSuccessListener { uri ->
+                        val messageObject = ChannelMessage(
+                            currentUserName,
+                            mFirebaseAuthInstance.currentUser!!.uid,
+                            getCurrentDateString(),
+                            getCurrentTimeString(),
+                            "",
+                            uri.toString()
+                        )
+                        storeMessageToDB(
+                            channelUID!!,
+                            channelName!!,
+                            messageObject,
+                            onMessageSent,
+                            this
+                        )
+                    }
+                }.addOnProgressListener {
+                    val progress = (100.0 * it.bytesTransferred) / it.totalByteCount
+                    dialogBuilder.setTitle("照片傳送中...${progress.toInt()} %")
+                }.addOnFailureListener {
+                    dialogBuilder.dismiss()
+                    SmallUtil.quickToast(this, "照片傳送失敗！請檢查網路！")
+                }
+            }
+            .setNegativeButton("不要") { _, _ -> }
+            .show()
     }
 
 }
