@@ -317,6 +317,10 @@ class ChatActivity : AppCompatActivity() {
                                 val progress =
                                     (100.0 * it.bytesTransferred) / it.totalByteCount
                                 dialogBuilder.setTitle("影片傳送中...${progress.toInt()} %")
+                            }.addOnCanceledListener {
+                                deleteVideoFile(path!!)
+                                dialogBuilder.dismiss()
+                                SmallUtil.quickToast(this@ChatActivity, "影片傳送失敗！")
                             }
 
                         }
