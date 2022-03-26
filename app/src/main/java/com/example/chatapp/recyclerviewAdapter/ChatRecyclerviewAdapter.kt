@@ -118,7 +118,7 @@ class ChatRecyclerviewAdapter(
                 holder.sent_link_preview_recyclerview.visibility = View.GONE
                 holder.play_icon.visibility = View.VISIBLE
                 glideFormOnlineVideo(mContext, currentMessage.videoUri!!, holder.ivSentImage)
-                holder.itemView.setSafeOnClickListener {
+                holder.ivSentImage.setSafeOnClickListener {
                     goToMediaActivity(currentMessage)
                 }
             }
@@ -201,7 +201,7 @@ class ChatRecyclerviewAdapter(
                 holder.play_icon.visibility = View.VISIBLE
                 glideFormOnlineVideo(mContext, currentMessage.videoUri!!, holder.ivReceivedImage)
 
-                holder.itemView.setSafeOnClickListener {
+                holder.ivReceivedImage.setSafeOnClickListener {
                     goToMediaActivity(currentMessage)
                 }
             }
