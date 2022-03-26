@@ -3,14 +3,21 @@ package com.example.chatapp.allPage.chatActivity
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.abedelazizshe.lightcompressorlibrary.CompressionListener
+import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
+import com.abedelazizshe.lightcompressorlibrary.VideoQuality
+import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.ChannelMessage
@@ -31,6 +38,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_chat.*
+import java.io.File
 
 
 class ChatActivity : AppCompatActivity() {
@@ -121,6 +129,7 @@ class ChatActivity : AppCompatActivity() {
         sendImageButton.setSafeOnClickListener {
             //打開相簿選擇影片或相片
             openGallery()
+
         }
 
     }
@@ -149,17 +158,10 @@ class ChatActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == requestPicturesOrVideoCode) {
             if (resultCode == Activity.RESULT_OK) {
-                val imageUir = data?.data
-                if (imageUir.toString().contains("image")) {
-                    //handle image
-                    imageHandle(imageUir!!)
-                } else if (imageUir.toString().contains("video")) {
-                    //handle video
+                val fileUir = data?.data
 
-
-                }
-
-
+                //todo 如果檔案太大擋下來並return
+                inspectFile(fileUir!!)
             }
         }
     }
@@ -178,7 +180,7 @@ class ChatActivity : AppCompatActivity() {
             .setTitle("確定要傳送此照片？")
             .setView(imageView)
             .setPositiveButton("確定") { _, _ ->
-                val dialogBuilder = getDialogProgressBarBuilder(this).create()
+                val dialogBuilder = getDialogProgressBarBuilder(this, "照片傳送中...").create()
                 dialogBuilder.show()
                 val onMessageSent = object : OnMessageSent {
                     override fun doOnMessageSent() {
@@ -188,7 +190,7 @@ class ChatActivity : AppCompatActivity() {
                     }
                 }
                 val fireRef =
-                    FirebaseUtil.mFirebaseStorageInstance.child("channels/$channelUID/${getCurrentTimeStamp()}/chatImage.jpg")
+                    FirebaseUtil.mFirebaseStorageInstance.child("channels/$channelUID/Image/${getCurrentTimeStamp()}/chatImage.jpg")
                 fireRef.putFile(imageUir!!).addOnSuccessListener {
                     fireRef.downloadUrl.addOnSuccessListener { uri ->
                         val messageObject = ChannelMessage(
@@ -218,6 +220,110 @@ class ChatActivity : AppCompatActivity() {
             .setNegativeButton("不要") { _, _ -> }
             .show()
     }
+
+    private fun inspectFile(fileUir: Uri) {
+        val cursor: Cursor? = contentResolver.query(
+            fileUir,
+            null, null, null, null
+        )
+        cursor?.moveToFirst()
+        val size: Long =
+            cursor!!.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
+        cursor.close()
+        if (size > 30000000) {
+            SmallUtil.simpleDialogUtilWithY(this, "錯誤", "檔案太大，無法傳送！")
+            return
+        } else {
+            if (fileUir.toString().contains("image")) {
+                //handle image
+                imageHandle(fileUir)
+            } else if (fileUir.toString().contains("video")) {
+                //handle video
+
+                //todo 先擋alert dialog確認後再繼續
+
+                AlertDialog.Builder(this)
+                    .setTitle("確定要傳送此影片？")
+                    .setPositiveButton("確定") { _, _ ->
+                        val dialogBuilder = getDialogProgressBarBuilder(this, "影片壓縮中...").create()
+                        dialogBuilder.show()
+                        val uris = ArrayList<Uri>()
+                        uris.add(fileUir)
+                        VideoCompressor.start(
+                            context = applicationContext, // => This is required
+                            uris = uris, // => Source can be provided as content uris
+                            isStreamable = true,
+                            saveAt = Environment.DIRECTORY_MOVIES, // => the directory to save the compressed video(s)
+                            listener = object : CompressionListener {
+                                override fun onProgress(index: Int, percent: Float) {
+                                    // handle while compressing 進度
+                                    runOnUiThread {
+                                        dialogBuilder.setTitle("影片壓縮中...$percent%")
+                                    }
+                                }
+
+                                override fun onStart(index: Int) {
+                                    // Compression start
+                                }
+
+                                override fun onSuccess(index: Int, size: Long, path: String?) {
+                                    // handle upload to firebase
+                                    dialogBuilder.setTitle("影片上傳中...")
+
+                                    val newVideoUri = Uri.parse(File(path!!).toString())
+                                    val fireRef =
+                                        FirebaseUtil.mFirebaseStorageInstance.child("channels/$channelUID/Video/${getCurrentTimeStamp()}/chatVideo.mp4")
+                                    fireRef.putFile(newVideoUri).addOnSuccessListener {
+                                        deleteVideoFile(path!!)
+                                        fireRef.downloadUrl.addOnSuccessListener{
+
+                                        }
+
+                                    }.addOnFailureListener {
+                                        deleteVideoFile(path!!)
+                                        dialogBuilder.dismiss()
+                                        SmallUtil.quickToast(this@ChatActivity, "照片傳送失敗！請檢查網路！")
+                                    }.addOnProgressListener {
+                                        val progress =
+                                            (100.0 * it.bytesTransferred) / it.totalByteCount
+                                        dialogBuilder.setTitle("影片傳送中...${progress.toInt()} %")
+                                    }
+
+                                }
+
+                                override fun onFailure(index: Int, failureMessage: String) {
+                                    // On Failure
+                                    dialogBuilder.dismiss()
+                                    SmallUtil.quickToast(this@ChatActivity, "影片處理失敗！")
+                                }
+
+                                override fun onCancelled(index: Int) {
+                                    // On Cancelled
+                                }
+
+                            },
+                            configureWith = Configuration(
+                                quality = VideoQuality.LOW,
+                                frameRate = 0, /*Int, ignore, or null*/
+                                isMinBitrateCheckEnabled = false,
+                                videoBitrate = 0, /*Int, ignore, or null*/
+                                disableAudio = false, /*Boolean, or ignore*/
+                                keepOriginalResolution = false, /*Boolean, or ignore*/
+                            )
+                        )
+                    }.setNegativeButton("不要") { _, _ ->
+                    }
+            }
+        }
+
+
+    }
+
+    private fun deleteVideoFile(selectedFilePath: String) {
+        val file = File(selectedFilePath)
+        val deleted = file.delete()
+    }
+
 
 }
 

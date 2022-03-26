@@ -149,4 +149,7 @@ dependencies {
 
     //jsoup
     implementation 'org.jsoup:jsoup:1.13.1'
+
+    //壓縮檔案用
+    implementation 'com.github.AbedElazizShe:LightCompressor:1.1.1'
 }

@@ -107,10 +107,10 @@ object SmallUtil {
             .into(imageView)
     }
 
-    fun getDialogProgressBarBuilder(mContext: Context): AlertDialog.Builder {
+    fun getDialogProgressBarBuilder(mContext: Context,title:String): AlertDialog.Builder {
         var progressDialog: AlertDialog
         var builder: AlertDialog.Builder = AlertDialog.Builder(mContext)
-        builder.setTitle("照片傳送中...")
+        builder.setTitle(title)
         val progressBar = ProgressBar(mContext)
         val lp = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
