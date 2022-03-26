@@ -9,6 +9,7 @@ data class ChannelMessage(
     var messageDate: String? = "",
     var messageTime: String? = "",
     var message: String? = "",
-    var imageUri:String? = ""
-
+    var imageUri: String? = "",
+    var videoUri: String? = "",
+    var voiceUri: String? = ""
 )

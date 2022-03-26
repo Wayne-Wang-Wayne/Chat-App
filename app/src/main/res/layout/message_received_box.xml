@@ -71,6 +71,13 @@
             android:visibility="gone"
             android:maxWidth="250dp"
             android:adjustViewBounds="true" />
+        <ImageView
+            android:id="@+id/play_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_event_play"
+            android:visibility="gone"
+            android:layout_centerInParent="true"/>
 
         <TextView
             android:id="@+id/tvReceivedMessage"

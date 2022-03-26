@@ -114,7 +114,7 @@ class ChatActivity : AppCompatActivity() {
             val message = messageBox.text.toString()
             val messageObject = ChannelMessage(
                 currentUserName, mFirebaseAuthInstance.currentUser!!.uid,
-                getCurrentDateString(), getCurrentTimeString(), message, ""
+                getCurrentDateString(), getCurrentTimeString(), message, "", "", ""
             )
             val onMessageSent = object : OnMessageSent {
                 override fun doOnMessageSent() {
@@ -191,7 +191,7 @@ class ChatActivity : AppCompatActivity() {
                 }
                 val fireRef =
                     FirebaseUtil.mFirebaseStorageInstance.child("channels/$channelUID/Image/${getCurrentTimeStamp()}/chatImage.jpg")
-                fireRef.putFile(imageUir!!).addOnSuccessListener {
+                fireRef.putFile(imageUir).addOnSuccessListener {
                     fireRef.downloadUrl.addOnSuccessListener { uri ->
                         val messageObject = ChannelMessage(
                             currentUserName,
@@ -199,7 +199,9 @@ class ChatActivity : AppCompatActivity() {
                             getCurrentDateString(),
                             getCurrentTimeString(),
                             "",
-                            uri.toString()
+                            uri.toString(),
+                            "",
+                            ""
                         )
                         storeMessageToDB(
                             channelUID!!,
@@ -222,15 +224,8 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun inspectFile(fileUir: Uri) {
-        val cursor: Cursor? = contentResolver.query(
-            fileUir,
-            null, null, null, null
-        )
-        cursor?.moveToFirst()
-        val size: Long =
-            cursor!!.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
-        cursor.close()
-        if (size > 30000000) {
+        //檢查檔案大小，太大直接擋掉
+        if (getFileSize(fileUir) > 30000000) {
             SmallUtil.simpleDialogUtilWithY(this, "錯誤", "檔案太大，無法傳送！")
             return
         } else {
@@ -239,80 +234,7 @@ class ChatActivity : AppCompatActivity() {
                 imageHandle(fileUir)
             } else if (fileUir.toString().contains("video")) {
                 //handle video
-
-                //todo 先擋alert dialog確認後再繼續
-
-                AlertDialog.Builder(this)
-                    .setTitle("確定要傳送此影片？")
-                    .setPositiveButton("確定") { _, _ ->
-                        val dialogBuilder = getDialogProgressBarBuilder(this, "影片壓縮中...").create()
-                        dialogBuilder.show()
-                        val uris = ArrayList<Uri>()
-                        uris.add(fileUir)
-                        VideoCompressor.start(
-                            context = applicationContext, // => This is required
-                            uris = uris, // => Source can be provided as content uris
-                            isStreamable = true,
-                            saveAt = Environment.DIRECTORY_MOVIES, // => the directory to save the compressed video(s)
-                            listener = object : CompressionListener {
-                                override fun onProgress(index: Int, percent: Float) {
-                                    // handle while compressing 進度
-                                    runOnUiThread {
-                                        dialogBuilder.setTitle("影片壓縮中...$percent%")
-                                    }
-                                }
-
-                                override fun onStart(index: Int) {
-                                    // Compression start
-                                }
-
-                                override fun onSuccess(index: Int, size: Long, path: String?) {
-                                    // handle upload to firebase
-                                    dialogBuilder.setTitle("影片上傳中...")
-
-                                    val newVideoUri = Uri.parse(File(path!!).toString())
-                                    val fireRef =
-                                        FirebaseUtil.mFirebaseStorageInstance.child("channels/$channelUID/Video/${getCurrentTimeStamp()}/chatVideo.mp4")
-                                    fireRef.putFile(newVideoUri).addOnSuccessListener {
-                                        deleteVideoFile(path!!)
-                                        fireRef.downloadUrl.addOnSuccessListener{
-
-                                        }
-
-                                    }.addOnFailureListener {
-                                        deleteVideoFile(path!!)
-                                        dialogBuilder.dismiss()
-                                        SmallUtil.quickToast(this@ChatActivity, "照片傳送失敗！請檢查網路！")
-                                    }.addOnProgressListener {
-                                        val progress =
-                                            (100.0 * it.bytesTransferred) / it.totalByteCount
-                                        dialogBuilder.setTitle("影片傳送中...${progress.toInt()} %")
-                                    }
-
-                                }
-
-                                override fun onFailure(index: Int, failureMessage: String) {
-                                    // On Failure
-                                    dialogBuilder.dismiss()
-                                    SmallUtil.quickToast(this@ChatActivity, "影片處理失敗！")
-                                }
-
-                                override fun onCancelled(index: Int) {
-                                    // On Cancelled
-                                }
-
-                            },
-                            configureWith = Configuration(
-                                quality = VideoQuality.LOW,
-                                frameRate = 0, /*Int, ignore, or null*/
-                                isMinBitrateCheckEnabled = false,
-                                videoBitrate = 0, /*Int, ignore, or null*/
-                                disableAudio = false, /*Boolean, or ignore*/
-                                keepOriginalResolution = false, /*Boolean, or ignore*/
-                            )
-                        )
-                    }.setNegativeButton("不要") { _, _ ->
-                    }
+                videoHandle(fileUir)
             }
         }
 
@@ -322,6 +244,117 @@ class ChatActivity : AppCompatActivity() {
     private fun deleteVideoFile(selectedFilePath: String) {
         val file = File(selectedFilePath)
         val deleted = file.delete()
+    }
+
+    private fun videoHandle(fileUir: Uri) {
+
+        //先擋alert dialog確認後再繼續
+        AlertDialog.Builder(this)
+            .setTitle("確定要傳送此影片？")
+            .setPositiveButton("確定") { _, _ ->
+                val dialogBuilder = getDialogProgressBarBuilder(this, "影片壓縮中...").create()
+                dialogBuilder.show()
+                val uris = ArrayList<Uri>()
+                uris.add(fileUir)
+                VideoCompressor.start(
+                    context = applicationContext, // => This is required
+                    uris = uris, // => Source can be provided as content uris
+                    isStreamable = true,
+                    saveAt = Environment.DIRECTORY_MOVIES, // => the directory to save the compressed video(s)
+                    listener = object : CompressionListener {
+                        override fun onProgress(index: Int, percent: Float) {
+                            // handle while compressing 進度
+                            runOnUiThread {
+                                dialogBuilder.setTitle("影片壓縮中...${percent.toInt()}%")
+                            }
+                        }
+
+                        override fun onStart(index: Int) {
+                            // Compression start
+                        }
+
+                        override fun onSuccess(index: Int, size: Long, path: String?) {
+                            // handle upload to firebase
+                            dialogBuilder.setTitle("影片上傳中...")
+
+                            val newVideoUri = Uri.fromFile(File(path!!))
+                            val fireRef =
+                                FirebaseUtil.mFirebaseStorageInstance.child("channels/$channelUID/Video/${getCurrentTimeStamp()}/chatVideo.mp4")
+                            fireRef.putFile(newVideoUri).addOnSuccessListener {
+                                deleteVideoFile(path)
+                                fireRef.downloadUrl.addOnSuccessListener { uri ->
+                                    val messageObject = ChannelMessage(
+                                        currentUserName,
+                                        mFirebaseAuthInstance.currentUser!!.uid,
+                                        getCurrentDateString(),
+                                        getCurrentTimeString(),
+                                        "",
+                                        "",
+                                        uri.toString(),
+                                        ""
+                                    )
+                                    val onMessageSent = object : OnMessageSent {
+                                        override fun doOnMessageSent() {
+                                            if (!isDestroyed) {
+                                                dialogBuilder.dismiss()
+                                            }
+                                        }
+                                    }
+                                    storeMessageToDB(
+                                        channelUID!!,
+                                        channelName!!,
+                                        messageObject,
+                                        onMessageSent,
+                                        this@ChatActivity
+                                    )
+                                }
+
+                            }.addOnFailureListener {
+                                deleteVideoFile(path!!)
+                                dialogBuilder.dismiss()
+                                SmallUtil.quickToast(this@ChatActivity, "影片傳送失敗！請檢查網路！")
+                            }.addOnProgressListener {
+                                val progress =
+                                    (100.0 * it.bytesTransferred) / it.totalByteCount
+                                dialogBuilder.setTitle("影片傳送中...${progress.toInt()} %")
+                            }
+
+                        }
+
+                        override fun onFailure(index: Int, failureMessage: String) {
+                            // On Failure
+                            dialogBuilder.dismiss()
+                            SmallUtil.quickToast(this@ChatActivity, "影片處理失敗！")
+                        }
+
+                        override fun onCancelled(index: Int) {
+                            // On Cancelled
+                        }
+
+                    },
+                    configureWith = Configuration(
+                        quality = VideoQuality.LOW,
+                        frameRate = 0, /*Int, ignore, or null*/
+                        isMinBitrateCheckEnabled = false,
+                        videoBitrate = 0, /*Int, ignore, or null*/
+                        disableAudio = false, /*Boolean, or ignore*/
+                        keepOriginalResolution = false, /*Boolean, or ignore*/
+                    )
+                )
+            }.setNegativeButton("不要") { _, _ ->
+            }.show()
+    }
+
+    private fun getFileSize(fileUir: Uri): Long {
+        val cursor: Cursor? = contentResolver.query(
+            fileUir,
+            null, null, null, null
+        )
+        cursor?.moveToFirst()
+        val size: Long =
+            cursor!!.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
+        cursor.close()
+        return size
     }
 
 

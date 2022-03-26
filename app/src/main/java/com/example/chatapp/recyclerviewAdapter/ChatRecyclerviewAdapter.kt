@@ -22,6 +22,7 @@ import com.example.chatapp.model.ChannelMessage
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.example.chatapp.util.SmallUtil
+import com.example.chatapp.util.SmallUtil.glideFormOnlineVideo
 import com.example.chatapp.util.SmallUtil.glideNormalUtil
 import kotlinx.android.synthetic.main.fragment_my_channels.*
 
@@ -34,6 +35,8 @@ class ChatRecyclerviewAdapter(
     val colorSettingList = ArrayList<String>()
     val MESSAGE_RECEIVED = 1
     val MESSAGE_SENT = 2
+    val OPEN_MEDIA_INDEX_KEY = "987sdmads4"
+    val OPEN_MEDIA_LIST_KEY = "2sdo948"
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -72,22 +75,22 @@ class ChatRecyclerviewAdapter(
                 "${modifyDate(currentMessage.messageDate!!)} ${modifyTime(currentMessage.messageTime!!)}"
 
             //set sent message
-            if (currentMessage.message == "" && currentMessage.imageUri != "") {
+            if (currentMessage.imageUri != "") {
                 //如果是圖片
                 holder.ivSentImage.visibility = View.VISIBLE
                 holder.tvSentMessage.visibility = View.GONE
                 holder.sent_link_preview_recyclerview.visibility = View.GONE
+                holder.play_icon.visibility = View.GONE
                 glideNormalUtil(mContext, currentMessage.imageUri?.toUri()!!, holder.ivSentImage)
                 holder.ivSentImage.setSafeOnClickListener {
-                    val bundle = Bundle()
-                    bundle.putString(getDetailPictureKey, currentMessage.imageUri)
-                    intentToAnyClass(mContext, bundle, PictureDetailActivity::class.java)
+                    goToMediaActivity(currentMessage)
                 }
-            } else {
+            } else if (currentMessage.message != "" || (currentMessage.message == "" && currentMessage.imageUri == "" && currentMessage.videoUri == "")) {
                 //如果是文字訊息
                 holder.tvSentMessage.visibility = View.VISIBLE
                 holder.ivSentImage.visibility = View.GONE
                 holder.tvSentMessage.text = currentMessage.message
+                holder.play_icon.visibility = View.GONE
 
                 //處理連結預覽圖
                 val spans = holder.tvSentMessage.urls
@@ -104,6 +107,16 @@ class ChatRecyclerviewAdapter(
                     }
                 } else {
                     holder.sent_link_preview_recyclerview.visibility = View.GONE
+                }
+            } else if (currentMessage.videoUri != "") {
+                //如果是影片
+                holder.ivSentImage.visibility = View.VISIBLE
+                holder.tvSentMessage.visibility = View.GONE
+                holder.sent_link_preview_recyclerview.visibility = View.GONE
+                holder.play_icon.visibility = View.VISIBLE
+                glideFormOnlineVideo(mContext, currentMessage.videoUri!!, holder.ivSentImage)
+                holder.itemView.setSafeOnClickListener {
+                    goToMediaActivity(currentMessage)
                 }
             }
         }
@@ -140,26 +153,26 @@ class ChatRecyclerviewAdapter(
                 "${modifyDate(currentMessage.messageDate!!)} ${modifyTime(currentMessage.messageTime!!)}"
 
             //set received message
-            if (currentMessage.message == "" && currentMessage.imageUri != "") {
+            if (currentMessage.imageUri != "") {
                 //如果是圖片
                 holder.ivReceivedImage.visibility = View.VISIBLE
                 holder.tvReceivedMessage.visibility = View.GONE
                 holder.received_link_preview_recyclerview.visibility = View.GONE
+                holder.play_icon.visibility = View.GONE
                 glideNormalUtil(
                     mContext,
                     currentMessage.imageUri?.toUri()!!,
                     holder.ivReceivedImage
                 )
                 holder.ivReceivedImage.setSafeOnClickListener {
-                    val bundle = Bundle()
-                    bundle.putString(getDetailPictureKey, currentMessage.imageUri)
-                    intentToAnyClass(mContext, bundle, PictureDetailActivity::class.java)
+                    goToMediaActivity(currentMessage)
                 }
-            } else {
+            } else if (currentMessage.message != "" || (currentMessage.message == "" && currentMessage.imageUri == "" && currentMessage.videoUri == "")) {
                 //如果是文字訊息
                 holder.tvReceivedMessage.visibility = View.VISIBLE
                 holder.ivReceivedImage.visibility = View.GONE
                 holder.tvReceivedMessage.text = currentMessage.message
+                holder.play_icon.visibility = View.GONE
 
                 //處理連結預覽圖
                 val spans = holder.tvReceivedMessage.urls
@@ -176,6 +189,17 @@ class ChatRecyclerviewAdapter(
                     }
                 } else {
                     holder.received_link_preview_recyclerview.visibility = View.GONE
+                }
+            } else if (currentMessage.videoUri != "") {
+                //如果是影片
+                holder.ivReceivedImage.visibility = View.VISIBLE
+                holder.tvReceivedMessage.visibility = View.GONE
+                holder.received_link_preview_recyclerview.visibility = View.GONE
+                holder.play_icon.visibility = View.VISIBLE
+                glideFormOnlineVideo(mContext, currentMessage.videoUri!!, holder.ivReceivedImage)
+
+                holder.itemView.setSafeOnClickListener {
+                    goToMediaActivity(currentMessage)
                 }
             }
         }
@@ -200,6 +224,7 @@ class ChatRecyclerviewAdapter(
         val ivSentImage: ImageView = itemView.findViewById(R.id.ivSentImage)
         val sent_link_preview_recyclerview: RecyclerView =
             itemView.findViewById(R.id.sent_link_preview_recyclerview)
+        val play_icon: ImageView = itemView.findViewById(R.id.play_icon)
     }
 
     class ReceivedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -215,6 +240,7 @@ class ChatRecyclerviewAdapter(
         val ivReceivedImage: ImageView = itemView.findViewById(R.id.ivReceivedImage)
         val received_link_preview_recyclerview: RecyclerView =
             itemView.findViewById(R.id.received_link_preview_recyclerview)
+        val play_icon: ImageView = itemView.findViewById(R.id.play_icon)
     }
 
     private fun modifyDate(messageDate: String): String {
@@ -260,5 +286,45 @@ class ChatRecyclerviewAdapter(
             5 -> relativeLayout.background =
                 ContextCompat.getDrawable(mContext, R.drawable.received_message_background6)
         }
+    }
+
+    private fun extractPositionAndUriList(currentMessage: ChannelMessage): ArrayList<Any> {
+        val urlList = ArrayList<String>()
+        var i = 0
+        var index = 0
+        for (message in messageList) {
+
+            if (message.videoUri != "") {
+                urlList.add("video_${message.videoUri}")
+                if (message.videoUri == currentMessage.videoUri) {
+                    index = i
+                }
+                i++
+            }
+            if (message.imageUri != "") {
+                urlList.add("image_${message.videoUri}")
+                if (message.imageUri == currentMessage.imageUri) {
+                    index = i
+                }
+                i++
+            }
+
+        }
+        val fullList = ArrayList<Any>()
+        fullList.add(index)
+        fullList.add(urlList)
+        return fullList
+    }
+
+    private fun goToMediaActivity(currentMessage: ChannelMessage) {
+        val fullUriList = extractPositionAndUriList(currentMessage)
+        val bundle = Bundle()
+        bundle.putInt(OPEN_MEDIA_INDEX_KEY, fullUriList[0] as Int)
+        bundle.putStringArrayList(
+            OPEN_MEDIA_LIST_KEY,
+            fullUriList[1] as ArrayList<String>
+        )
+        intentToAnyClass(mContext, bundle, PictureDetailActivity::class.java)
+
     }
 }

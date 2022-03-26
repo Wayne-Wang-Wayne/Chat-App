@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.example.chatapp.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -120,5 +121,17 @@ object SmallUtil {
         builder.setView(progressBar)
         builder.setCancelable(false)
         return builder
+    }
+
+    fun glideFormOnlineVideo(mContext: Context,uri:String,imageView: ImageView){
+        val requestOptions = RequestOptions()
+        Glide.with(mContext)
+            .load(uri)
+            .apply(requestOptions)
+            .placeholder(R.drawable.chat_image_error)
+            .error(R.drawable.chat_image_error)
+            .thumbnail(Glide.with(mContext).load(uri))
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(imageView)
     }
 }

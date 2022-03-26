@@ -170,6 +170,8 @@ class FirebaseUtil {
                                                     getCurrentDateString(),
                                                     messageObject.message,
                                                     messageObject.imageUri,
+                                                    messageObject.videoUri,
+                                                    messageObject.voiceUri,
                                                     currentUserName,
                                                     mFirebaseAuthInstance.currentUser?.uid,
                                                     true
@@ -180,10 +182,16 @@ class FirebaseUtil {
                                     onMessageSent.doOnMessageSent()
                                     //成功後推播訊息給其他群組成員
                                     var body = ""
-                                    if (messageObject.message == "" && messageObject.imageUri != "") {
-                                        body = "${messageObject.senderName}傳送了圖片。"
-                                    } else {
-                                        body = "$currentUserName:${messageObject.message!!}"
+                                    when {
+                                        messageObject.message != "" -> {
+                                            body = "$currentUserName:${messageObject.message!!}"
+                                        }
+                                        messageObject.imageUri != "" -> {
+                                            body = "${messageObject.senderName}傳送了圖片。"
+                                        }
+                                        messageObject.videoUri != "" -> {
+                                            body = "${messageObject.senderName}傳送了影片。"
+                                        }
                                     }
                                     FirebaseMessageService().sendFirebaseMessageWithVolley(
                                         mContext, channelUID,
@@ -401,7 +409,7 @@ class FirebaseUtil {
                                             "",
                                             "",
                                             "",
-                                            "",
+                                            "", "", "",
                                             false
                                         )
                                     //set 到 userChannel

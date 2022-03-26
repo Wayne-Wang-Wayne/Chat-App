@@ -111,7 +111,7 @@ class CreateChannelFTViewModel(@NonNull application: Application) :
                         val userChannelModel = UserChannels(
                             channelUid, channelName, getCurrentTimeStamp(),
                             getCurrentTimeString(),
-                            getCurrentDateString(), "","", "", "", false
+                            getCurrentDateString(), "","", "", "", "","",false
                         )
                         mFirebaseRTDbInstance.child(USER_CHANNELS)
                             .child(currentUserUid!!).child(channelUid).setValue(userChannelModel)

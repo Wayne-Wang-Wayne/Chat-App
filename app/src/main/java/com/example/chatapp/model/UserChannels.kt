@@ -11,6 +11,8 @@ data class UserChannels(
     var updateDate: String? = "",
     var lastMessage: String? = "",
     var lastImageUriSent: String? = "",
+    var lastVideoUriSent: String? = "",
+    var lastVoiceUriSent: String? = "",
     var lastSenderName: String? = "",
     var lastSenderUid: String? = "",
     var needNewTag: Boolean? = false
