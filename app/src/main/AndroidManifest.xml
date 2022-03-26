@@ -15,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApp">
         <activity
+            android:name=".allPage.MediaActivity.MyMediaActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize"/>
+        <activity
             android:name=".allPage.pictureDetailActivity.PictureDetailActivity"
             android:exported="false" />
         <activity
@@ -24,7 +28,8 @@
         <activity
             android:name=".allPage.chatActivity.ChatActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".allPage.mainActivity.MainActivity"
             android:exported="false"

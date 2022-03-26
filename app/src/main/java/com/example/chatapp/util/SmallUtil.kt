@@ -128,7 +128,6 @@ object SmallUtil {
         Glide.with(mContext)
             .load(uri)
             .apply(requestOptions)
-            .placeholder(R.drawable.chat_image_error)
             .error(R.drawable.chat_image_error)
             .thumbnail(Glide.with(mContext).load(uri))
             .diskCacheStrategy(DiskCacheStrategy.ALL)

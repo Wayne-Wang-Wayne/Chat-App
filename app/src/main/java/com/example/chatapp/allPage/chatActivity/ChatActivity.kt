@@ -225,8 +225,8 @@ class ChatActivity : AppCompatActivity() {
 
     private fun inspectFile(fileUir: Uri) {
         //檢查檔案大小，太大直接擋掉
-        if (getFileSize(fileUir) > 30000000) {
-            SmallUtil.simpleDialogUtilWithY(this, "錯誤", "檔案太大，無法傳送！")
+        if (getFileSize(fileUir) > 40000000) {
+            SmallUtil.simpleDialogUtilWithY(this, "錯誤", "檔案太大，無法傳送(小於40MB)！")
             return
         } else {
             if (fileUir.toString().contains("image")) {

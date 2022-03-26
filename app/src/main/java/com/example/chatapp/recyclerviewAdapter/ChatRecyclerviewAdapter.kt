@@ -14,6 +14,7 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
+import com.example.chatapp.allPage.MediaActivity.MyMediaActivity
 import com.example.chatapp.allPage.pictureDetailActivity.PictureDetailActivity
 import com.example.chatapp.allPage.pictureDetailActivity.PictureDetailActivity.Companion.getDetailPictureKey
 import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserProfileUrl
@@ -35,9 +36,11 @@ class ChatRecyclerviewAdapter(
     val colorSettingList = ArrayList<String>()
     val MESSAGE_RECEIVED = 1
     val MESSAGE_SENT = 2
-    val OPEN_MEDIA_INDEX_KEY = "987sdmads4"
-    val OPEN_MEDIA_LIST_KEY = "2sdo948"
 
+    companion object {
+        val OPEN_MEDIA_INDEX_KEY = "987sdmads4"
+        val OPEN_MEDIA_LIST_KEY = "2sdo948"
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -302,7 +305,7 @@ class ChatRecyclerviewAdapter(
                 i++
             }
             if (message.imageUri != "") {
-                urlList.add("image_${message.videoUri}")
+                urlList.add("image_${message.imageUri}")
                 if (message.imageUri == currentMessage.imageUri) {
                     index = i
                 }
@@ -324,7 +327,7 @@ class ChatRecyclerviewAdapter(
             OPEN_MEDIA_LIST_KEY,
             fullUriList[1] as ArrayList<String>
         )
-        intentToAnyClass(mContext, bundle, PictureDetailActivity::class.java)
+        intentToAnyClass(mContext, bundle, MyMediaActivity::class.java)
 
     }
 }

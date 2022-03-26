@@ -24,6 +24,7 @@
         <entry key="app/src/main/res/layout/activity_chat.xml" value="0.2347305389221557" />
         <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.17083333333333334" />
+        <entry key="app/src/main/res/layout/activity_media.xml" value="0.16757246376811594" />
         <entry key="app/src/main/res/layout/activity_my_info.xml" value="0.15172101449275363" />
         <entry key="app/src/main/res/layout/activity_picture_detail.xml" value="0.14270833333333333" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
@@ -31,9 +32,11 @@
         <entry key="app/src/main/res/layout/fragment_all_public_channels.xml" value="0.23385416666666667" />
         <entry key="app/src/main/res/layout/fragment_base_view_pager.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_create_channels.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_image_display.xml" value="0.16757246376811594" />
         <entry key="app/src/main/res/layout/fragment_join_channels.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_my_channels.xml" value="0.13647830474268416" />
         <entry key="app/src/main/res/layout/fragment_my_main_friends.xml" value="0.17300724637681159" />
+        <entry key="app/src/main/res/layout/fragment_video_player.xml" value="0.16757246376811594" />
         <entry key="app/src/main/res/layout/item_my_channel.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_preview_link.xml" value="0.335" />
         <entry key="app/src/main/res/layout/item_public_channel.xml" value="0.23385416666666667" />

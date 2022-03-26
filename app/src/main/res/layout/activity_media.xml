@@ -4,12 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    tools:context=".allPage.pictureDetailActivity.PictureDetailActivity"
-   >
+    tools:context=".allPage.MediaActivity.MyMediaActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/chat_activity_toolbar"
+        android:id="@+id/media_activity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/black"
@@ -29,7 +27,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/picture_detail_back_press"
+                android:id="@+id/media_detail_back_press"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignParentStart="true"
@@ -39,7 +37,7 @@
                 android:src="@drawable/back_press_icon" />
 
             <ImageView
-                android:id="@+id/btn_downLoad_image"
+                android:id="@+id/btn_downLoad_media"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignParentTop="true"
@@ -47,19 +45,26 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginEnd="8dp"
                 android:src="@drawable/images_download_icon" />
+            <TextView
+                android:id="@+id/media_title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:layout_centerInParent="true"/>
 
 
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <com.ortiz.touchview.TouchImageView
-        android:id="@+id/iv_image_detail"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/fragmentViewPager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/chat_activity_toolbar"
+        android:layout_below="@+id/media_activity_toolbar"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:scaleType="centerInside" />
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

@@ -62,9 +62,13 @@ class MyChannelsFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var myChannelList = ArrayList<UserChannels>()
                 if (snapshot.exists()) {
-                    tvHaveNoMyChannel.visibility = View.INVISIBLE
+                    if(tvHaveNoMyChannel!=null){
+                        tvHaveNoMyChannel.visibility = View.INVISIBLE
+                    }
                 } else {
-                    tvHaveNoMyChannel.visibility = View.VISIBLE
+                    if(tvHaveNoMyChannel!=null){
+                        tvHaveNoMyChannel.visibility = View.VISIBLE
+                    }
                 }
                 for (postSnapShot in snapshot.children) {
                     val myChannel = postSnapShot.getValue(UserChannels::class.java)
