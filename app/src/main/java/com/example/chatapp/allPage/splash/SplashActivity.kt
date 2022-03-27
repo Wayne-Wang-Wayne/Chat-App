@@ -63,7 +63,7 @@ class SplashActivity : AppCompatActivity() {
             }
         }
 
-        handler.postDelayed(runnable, 500)
+        handler.postDelayed(runnable, 100)
     }
 
     private var doubleBackToExitPressedOnce = false
