@@ -3,16 +3,15 @@ package com.example.chatapp.allPage.MediaActivity
 import android.content.Context
 import android.content.res.Configuration
 import android.media.MediaMetadataRetriever
-import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.MediaController
 import androidx.fragment.app.Fragment
 import com.example.chatapp.R
 import com.example.chatapp.util.SmallUtil
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import kotlinx.android.synthetic.main.fragment_video_player.*
 
 
@@ -22,6 +21,7 @@ class VideoPlayerFragment : Fragment() {
     private var width: Float? = 1F
     private var height: Float? = 1F
     private var stopPosition: Int = 0
+    lateinit var player: ExoPlayer
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -53,8 +53,8 @@ class VideoPlayerFragment : Fragment() {
         try {
             val url = arguments?.getString(videoFragmentKey)
             setPlayerAndController(url!!)
-            getVideoWidthHeight(url)
-            setDimension()
+//            getVideoWidthHeight(url)
+//            setDimension()
         } catch (e: Exception) {
             SmallUtil.simpleDialogUtilWithY(mContext, "影片載入錯誤！", "")
             videoProgressBar.visibility = View.GONE
@@ -64,20 +64,19 @@ class VideoPlayerFragment : Fragment() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        setDimension()
+//        setDimension()
     }
 
 
     private fun setDimension() {
         // Adjust the size of the video
         // so it fits on the screen
-
-
+        //自適應影片高度
         val videoProportion = height!! / width!!
         val screenWidth = resources.displayMetrics.widthPixels
         val screenHeight = resources.displayMetrics.heightPixels
         val screenProportion = screenHeight.toFloat() / screenWidth.toFloat()
-        val lp: ViewGroup.LayoutParams = videoView.layoutParams
+        val lp: ViewGroup.LayoutParams = myExoplayer.layoutParams
         if (videoProportion < screenProportion) {
             if ((screenHeight.toFloat() / videoProportion).toInt() > screenWidth) {
                 lp.width = screenWidth
@@ -96,27 +95,18 @@ class VideoPlayerFragment : Fragment() {
                 lp.height = (screenWidth.toFloat() * videoProportion).toInt()
             }
         }
-        videoView.layoutParams = lp
+        myExoplayer.layoutParams = lp
     }
 
     private fun setPlayerAndController(url: String) {
         try {
-            val mediaController = MediaController(mContext)
-            mediaController.setAnchorView(videoView)
-            videoView.setMediaController(mediaController)
-            val video: Uri = Uri.parse(url)
-            videoView.setVideoURI(video)
-            videoProgressBar.visibility = View.VISIBLE
-            videoView.setOnPreparedListener(MediaPlayer.OnPreparedListener { mp ->
-                mp.setOnVideoSizeChangedListener { mp, width, height ->
-                    videoProgressBar.visibility = View.GONE
-                    mp.isLooping = true;
-                }
-            }
-            )
+            player = ExoPlayer.Builder(mContext).build()
+            myExoplayer.player = player
+            val mediaItem: MediaItem = MediaItem.fromUri(url)
+            player.setMediaItem(mediaItem)
+            player.prepare()
 
         } catch (e: Exception) {
-
             SmallUtil.quickToast(mContext, "影片載入錯誤")
         }
     }
@@ -131,18 +121,10 @@ class VideoPlayerFragment : Fragment() {
         retriever.release()
     }
 
-
-    override fun onPause() {
-
-        super.onPause()
-        stopPosition = videoView.currentPosition //stopPosition is an int
-        videoView.pause()
-        videoProgressBar.visibility = View.VISIBLE
+    override fun onDestroy() {
+        super.onDestroy()
+        player.release()
     }
 
-    override fun onResume() {
-        super.onResume()
-        videoView.seekTo(stopPosition)
-        videoView.start() //Or use resume() if it doesn't work. I'm not sure
-    }
+
 }

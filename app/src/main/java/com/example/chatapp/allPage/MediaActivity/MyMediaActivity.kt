@@ -47,7 +47,7 @@ class MyMediaActivity : AppCompatActivity() {
         }
         val mPageFragmentAdapter = PageFragmentAdapter(supportFragmentManager, mFragments)
         fragmentViewPager.adapter = mPageFragmentAdapter
-        fragmentViewPager.offscreenPageLimit = 0
+        fragmentViewPager.offscreenPageLimit = 1
         fragmentViewPager.currentItem = position!!
         media_title_text.text = "${position + 1} / ${mFragments.size}"
         btn_downLoad_media.setSafeOnClickListener {
