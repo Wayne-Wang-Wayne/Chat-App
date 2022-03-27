@@ -98,7 +98,7 @@ class ChatActivity : AppCompatActivity() {
                     val message = postSnapShot.getValue(ChannelMessage::class.java)
                     messageList.add(message!!)
                 }
-                chatRecyclerviewAdapter.notifyDataSetChanged()
+                chatRecyclerviewAdapter.notifyItemRangeInserted(messageList.size-1,1)
                 if (messageList.size != 0) {
                     chatRecyclerview.scrollToPosition(messageList.size - 1)
                 }
