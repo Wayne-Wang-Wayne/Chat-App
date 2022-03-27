@@ -1,5 +1,6 @@
 package com.example.chatapp.allPage.MediaActivity
 
+import android.app.AlertDialog
 import android.app.DownloadManager
 import android.content.res.Configuration
 import android.net.Uri
@@ -98,14 +99,21 @@ class MyMediaActivity : AppCompatActivity() {
     }
 
     private fun onDownloadBottomClick(uriList: ArrayList<String>, position: Int) {
-        when (uriList[position].substring(0, 6)) {
-            "video_" -> {
-                saveVideoToGallery(uriList[position].substring(6).toUri())
+
+        AlertDialog.Builder(this)
+            .setTitle("確定要下載？")
+            .setPositiveButton("確定") { _, _ ->
+                when (uriList[position].substring(0, 6)) {
+                    "video_" -> {
+                        saveVideoToGallery(uriList[position].substring(6).toUri())
+                    }
+                    "image_" -> {
+                        saveImageToGallery(uriList[position].substring(6).toUri())
+                    }
+                }
             }
-            "image_" -> {
-                saveImageToGallery(uriList[position].substring(6).toUri())
-            }
-        }
+            .setNegativeButton("不要") { _, _ ->
+            }.show()
     }
 
     private fun saveImageToGallery(pictureUri: Uri) {
