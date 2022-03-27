@@ -1,5 +1,6 @@
 package com.example.chatapp.allPage.splash
 
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.core.net.toUri
 import com.example.chatapp.R
+import com.example.chatapp.allPage.chatActivity.ChatActivity.Companion.sharedByOtherAppText
 import com.example.chatapp.allPage.logInActivity.LogInActivity
 import com.example.chatapp.model.User
 import com.example.chatapp.util.FirebaseMessageService
@@ -26,6 +28,19 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+
+        //檢查是否有東西傳進來
+        if (intent?.action == Intent.ACTION_SEND) {
+            if ("text/plain" == intent.type) {
+                // Handle text being sent
+                intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+                    sharedByOtherAppText = it
+                }
+
+            } else if (intent.type?.startsWith("image/") == true) {
+                // Handle single image being sent
+            }
+        }
 
         mFirebaseRTDbInstance.child(ALL_USER).get().addOnSuccessListener { snapShot ->
             for (postSnapShot in snapShot.children) {

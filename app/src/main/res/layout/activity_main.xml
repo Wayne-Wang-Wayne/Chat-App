@@ -19,12 +19,14 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/main_Activity_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text=""
-                android:textSize="20dp"
-                android:textStyle="bold" />
+                android:text="請點擊要分享的頻道"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="invisible"/>
 
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>

@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.chatapp.R
+import com.example.chatapp.allPage.chatActivity.ChatActivity
 import com.example.chatapp.allPage.createChannelsFT.CreateChannelsFragment
 import com.example.chatapp.allPage.joinChannelsFT.JoinChannelsFragment
 import com.example.chatapp.allPage.myChannelsFT.MyChannelsFragment
@@ -38,6 +39,11 @@ open class BaseViewPagerFragment : Fragment() {
         baseViewPagerViewModel = ViewModelProvider(this).get(BaseViewPagerViewModel::class.java)
         baseViewPagerViewModel.fetchTabsInfo()
         observeViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        inspectSharedText()
     }
 
     private fun observeViewModel() {
@@ -131,6 +137,14 @@ open class BaseViewPagerFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun inspectSharedText(){
+        if (ChatActivity.sharedByOtherAppText !=null){
+            vNewsTabsLayout.visibility = View.GONE
+        }else{
+            vNewsTabsLayout.visibility = View.VISIBLE
         }
     }
 

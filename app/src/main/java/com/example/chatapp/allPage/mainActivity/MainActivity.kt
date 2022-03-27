@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.chatapp.R
+import com.example.chatapp.allPage.chatActivity.ChatActivity.Companion.sharedByOtherAppText
 import com.example.chatapp.allPage.myInfoActivity.MyInfoActivity
 import com.example.chatapp.allPage.myMainFriend.MyMainFriendsFragment
 import com.example.chatapp.util.FirebaseUtil
@@ -34,6 +35,11 @@ class MainActivity : AppCompatActivity() {
         //subscribe to all users channels
         FirebaseUtil.subScribeAllMyChannelsUid()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        inspectSharedText()
     }
 
 
@@ -92,5 +98,13 @@ class MainActivity : AppCompatActivity() {
             main_activity_toolbar.visibility = View.VISIBLE
             main_frame_layout.visibility = View.VISIBLE
         },2300)
+    }
+
+    private fun inspectSharedText(){
+        if (sharedByOtherAppText!=null){
+            main_Activity_title.visibility = View.VISIBLE
+        }else{
+            main_Activity_title.visibility = View.INVISIBLE
+        }
     }
 }

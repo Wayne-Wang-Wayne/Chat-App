@@ -45,6 +45,7 @@ class ChatActivity : AppCompatActivity() {
 
     companion object {
         const val requestPicturesOrVideoCode = 998
+        var sharedByOtherAppText: String? = null
     }
 
     private lateinit var chatRecyclerviewAdapter: ChatRecyclerviewAdapter
@@ -63,7 +64,7 @@ class ChatActivity : AppCompatActivity() {
             adapter = chatRecyclerviewAdapter
         }
         setView()
-
+        handleInfoFromOtherApp()
     }
 
     override fun onPause() {
@@ -98,7 +99,7 @@ class ChatActivity : AppCompatActivity() {
                     val message = postSnapShot.getValue(ChannelMessage::class.java)
                     messageList.add(message!!)
                 }
-                chatRecyclerviewAdapter.notifyItemRangeInserted(messageList.size-1,1)
+                chatRecyclerviewAdapter.notifyItemRangeInserted(messageList.size - 1, 1)
                 if (messageList.size != 0) {
                     chatRecyclerview.scrollToPosition(messageList.size - 1)
                 }
@@ -359,6 +360,21 @@ class ChatActivity : AppCompatActivity() {
             cursor!!.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
         cursor.close()
         return size
+    }
+
+    private fun handleInfoFromOtherApp() {
+        if (sharedByOtherAppText != null) {
+            val messageObject = ChannelMessage(
+                currentUserName, mFirebaseAuthInstance.currentUser!!.uid,
+                getCurrentDateString(), getCurrentTimeString(), sharedByOtherAppText, "", "", ""
+            )
+            val onMessageSent = object : OnMessageSent {
+                override fun doOnMessageSent() {
+                }
+            }
+            storeMessageToDB(channelUID!!, channelName!!, messageObject, onMessageSent, this)
+            sharedByOtherAppText = null
+        }
     }
 
 
