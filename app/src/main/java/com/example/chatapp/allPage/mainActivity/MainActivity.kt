@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         initToolBar()
-        entryAnimationStart()
+        //entryAnimationStart()
         changePage(BaseViewPagerFragment.newInstance())
 
         //subscribe to all users channels
