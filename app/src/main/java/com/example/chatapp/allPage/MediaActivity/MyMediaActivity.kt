@@ -9,6 +9,7 @@ import android.os.Environment
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.example.chatapp.R
@@ -51,7 +52,8 @@ class MyMediaActivity : AppCompatActivity() {
         fragmentViewPager.currentItem = position!!
         media_title_text.text = "${position + 1} / ${mFragments.size}"
         btn_downLoad_media.setSafeOnClickListener {
-            //todo 下載音樂或影片邏輯
+            //下載音樂或影片邏輯
+            onDownloadBottomClick(uriList, position)
         }
         fragmentViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
@@ -65,7 +67,8 @@ class MyMediaActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 media_title_text.text = "${position + 1} / ${mFragments.size}"
                 btn_downLoad_media.setSafeOnClickListener {
-                    //todo 下載音樂或影片邏輯
+                    //下載音樂或影片邏輯
+                    onDownloadBottomClick(uriList, position)
                 }
             }
 
@@ -94,7 +97,18 @@ class MyMediaActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveToGallery(pictureUri: Uri) {
+    private fun onDownloadBottomClick(uriList: ArrayList<String>, position: Int) {
+        when (uriList[position].substring(0, 6)) {
+            "video_" -> {
+                saveVideoToGallery(uriList[position].substring(6).toUri())
+            }
+            "image_" -> {
+                saveImageToGallery(uriList[position].substring(6).toUri())
+            }
+        }
+    }
+
+    private fun saveImageToGallery(pictureUri: Uri) {
         try {
             val dm = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             val request = DownloadManager.Request(pictureUri)
@@ -105,13 +119,34 @@ class MyMediaActivity : AppCompatActivity() {
                 .setMimeType("image/jpeg") // Your file type. You can use this code to download other file types also.
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setDestinationInExternalPublicDir(
-                    Environment.DIRECTORY_PICTURES,
+                    Environment.DIRECTORY_DOWNLOADS,
                     File.separator + "chat_app_downloaded_image$timeStamp" + ".jpg"
                 )
             dm.enqueue(request)
             Toast.makeText(this, "開始下載圖片！", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Toast.makeText(this, "圖片下載失敗！", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveVideoToGallery(pictureUri: Uri) {
+        try {
+            val dm = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            val request = DownloadManager.Request(pictureUri)
+            val timeStamp = SmallUtil.getCurrentTimeStamp().toString()
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false)
+                .setTitle("chat_app_downloaded_video$timeStamp")
+                .setMimeType("video/mp4") // Your file type. You can use this code to download other file types also.
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS,
+                    File.separator + "chat_app_downloaded_video$timeStamp" + ".mp4"
+                )
+            dm.enqueue(request)
+            Toast.makeText(this, "開始下載影片！", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "影片下載失敗！", Toast.LENGTH_SHORT).show()
         }
     }
 }
