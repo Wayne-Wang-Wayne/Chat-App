@@ -113,18 +113,7 @@ class ChatActivity : AppCompatActivity() {
 
         sendMessageButton.setSafeOnClickListener {
             val message = messageBox.text.toString()
-            val messageObject = ChannelMessage(
-                currentUserName, mFirebaseAuthInstance.currentUser!!.uid,
-                getCurrentDateString(), getCurrentTimeString(), message, "", "", ""
-            )
-            val onMessageSent = object : OnMessageSent {
-                override fun doOnMessageSent() {
-                    if (!isDestroyed) {
-                        messageBox.setText("")
-                    }
-                }
-            }
-            storeMessageToDB(channelUID!!, channelName!!, messageObject, onMessageSent, this)
+            sendTextMessage(message)
         }
 
         sendImageButton.setSafeOnClickListener {
@@ -364,17 +353,24 @@ class ChatActivity : AppCompatActivity() {
 
     private fun handleInfoFromOtherApp() {
         if (sharedByOtherAppText != null) {
-            val messageObject = ChannelMessage(
-                currentUserName, mFirebaseAuthInstance.currentUser!!.uid,
-                getCurrentDateString(), getCurrentTimeString(), sharedByOtherAppText, "", "", ""
-            )
-            val onMessageSent = object : OnMessageSent {
-                override fun doOnMessageSent() {
-                }
-            }
-            storeMessageToDB(channelUID!!, channelName!!, messageObject, onMessageSent, this)
+            sendTextMessage(sharedByOtherAppText!!)
             sharedByOtherAppText = null
         }
+    }
+
+    private fun sendTextMessage(message: String){
+        val messageObject = ChannelMessage(
+            currentUserName, mFirebaseAuthInstance.currentUser!!.uid,
+            getCurrentDateString(), getCurrentTimeString(), message, "", "", ""
+        )
+        val onMessageSent = object : OnMessageSent {
+            override fun doOnMessageSent() {
+                if (!isDestroyed) {
+                    messageBox.setText("")
+                }
+            }
+        }
+        storeMessageToDB(channelUID!!, channelName!!, messageObject, onMessageSent, this)
     }
 
 
