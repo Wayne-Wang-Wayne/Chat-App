@@ -93,6 +93,16 @@
             android:textIsSelectable="true"
             android:textSize="18sp"
             android:visibility="gone"/>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/received_play_voice_animation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:lottie_autoPlay="false"
+            app:lottie_fileName="audio_play_animation.json"
+            app:lottie_loop="true"
+            android:visibility="gone"
+            />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

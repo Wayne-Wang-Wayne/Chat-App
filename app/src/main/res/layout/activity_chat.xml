@@ -109,8 +109,27 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="14"
-            android:src="@drawable/send_message_icon" />
+            android:src="@drawable/send_message_icon"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/voiceRecordSmallButton"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="14"
+            android:src="@drawable/voice_record_small_icon" />
 
     </LinearLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/record_voice_animation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="audio_animation.json"
+        app:lottie_loop="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

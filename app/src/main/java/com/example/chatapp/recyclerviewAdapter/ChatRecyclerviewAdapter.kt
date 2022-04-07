@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.example.chatapp.R
 import com.example.chatapp.allPage.MediaActivity.MyMediaActivity
 import com.example.chatapp.allPage.pictureDetailActivity.PictureDetailActivity
@@ -20,6 +21,7 @@ import com.example.chatapp.allPage.pictureDetailActivity.PictureDetailActivity.C
 import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserProfileUrl
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.ChannelMessage
+import com.example.chatapp.util.AudioPlayHelper
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.example.chatapp.util.SmallUtil
@@ -56,7 +58,7 @@ class ChatRecyclerviewAdapter(
                 )
             }
             else -> {
-                //will not go in to this line
+                //will not go into this line
                 SentViewHolder(
                     LayoutInflater.from(mContext).inflate(R.layout.message_sent_box, parent, false)
                 )
@@ -84,16 +86,18 @@ class ChatRecyclerviewAdapter(
                 holder.tvSentMessage.visibility = View.GONE
                 holder.sent_link_preview_recyclerview.visibility = View.GONE
                 holder.play_icon.visibility = View.GONE
+                holder.sent_play_voice_animation.visibility = View.GONE
                 glideNormalUtil(mContext, currentMessage.imageUri?.toUri()!!, holder.ivSentImage)
                 holder.ivSentImage.setSafeOnClickListener {
                     goToMediaActivity(currentMessage)
                 }
-            } else if (currentMessage.message != "" || (currentMessage.message == "" && currentMessage.imageUri == "" && currentMessage.videoUri == "")) {
+            } else if (currentMessage.message != "" || (currentMessage.message == "" && currentMessage.imageUri == "" && currentMessage.videoUri == "" && currentMessage.voiceUri == "")) {
                 //如果是文字訊息
                 holder.tvSentMessage.visibility = View.VISIBLE
                 holder.ivSentImage.visibility = View.GONE
                 holder.tvSentMessage.text = currentMessage.message
                 holder.play_icon.visibility = View.GONE
+                holder.sent_play_voice_animation.visibility = View.GONE
 
                 //處理連結預覽圖
                 val spans = holder.tvSentMessage.urls
@@ -117,10 +121,22 @@ class ChatRecyclerviewAdapter(
                 holder.tvSentMessage.visibility = View.GONE
                 holder.sent_link_preview_recyclerview.visibility = View.GONE
                 holder.play_icon.visibility = View.VISIBLE
+                holder.sent_play_voice_animation.visibility = View.GONE
                 glideFormOnlineVideo(mContext, currentMessage.videoUri!!, holder.ivSentImage)
                 holder.ivSentImage.setSafeOnClickListener {
                     goToMediaActivity(currentMessage)
                 }
+            }else if (currentMessage.voiceUri != "") {
+                //如果是語音訊息
+                holder.ivSentImage.visibility = View.GONE
+                holder.tvSentMessage.visibility = View.GONE
+                holder.sent_link_preview_recyclerview.visibility = View.GONE
+                holder.play_icon.visibility = View.GONE
+                holder.sent_play_voice_animation.visibility = View.VISIBLE
+                holder.sent_play_voice_animation.setSafeOnClickListener {
+                    AudioPlayHelper(mContext,currentMessage.voiceUri!!).startPlaying()
+                }
+
             }
         }
         if (holder.javaClass == ReceivedViewHolder::class.java) {
@@ -162,6 +178,7 @@ class ChatRecyclerviewAdapter(
                 holder.tvReceivedMessage.visibility = View.GONE
                 holder.received_link_preview_recyclerview.visibility = View.GONE
                 holder.play_icon.visibility = View.GONE
+                holder.received_play_voice_animation.visibility = View.GONE
                 glideNormalUtil(
                     mContext,
                     currentMessage.imageUri?.toUri()!!,
@@ -170,12 +187,13 @@ class ChatRecyclerviewAdapter(
                 holder.ivReceivedImage.setSafeOnClickListener {
                     goToMediaActivity(currentMessage)
                 }
-            } else if (currentMessage.message != "" || (currentMessage.message == "" && currentMessage.imageUri == "" && currentMessage.videoUri == "")) {
+            } else if (currentMessage.message != "" || (currentMessage.message == "" && currentMessage.imageUri == "" && currentMessage.videoUri == "" && currentMessage.voiceUri == "")) {
                 //如果是文字訊息
                 holder.tvReceivedMessage.visibility = View.VISIBLE
                 holder.ivReceivedImage.visibility = View.GONE
                 holder.tvReceivedMessage.text = currentMessage.message
                 holder.play_icon.visibility = View.GONE
+                holder.received_play_voice_animation.visibility = View.GONE
 
                 //處理連結預覽圖
                 val spans = holder.tvReceivedMessage.urls
@@ -199,11 +217,23 @@ class ChatRecyclerviewAdapter(
                 holder.tvReceivedMessage.visibility = View.GONE
                 holder.received_link_preview_recyclerview.visibility = View.GONE
                 holder.play_icon.visibility = View.VISIBLE
+                holder.received_play_voice_animation.visibility = View.GONE
                 glideFormOnlineVideo(mContext, currentMessage.videoUri!!, holder.ivReceivedImage)
 
                 holder.ivReceivedImage.setSafeOnClickListener {
                     goToMediaActivity(currentMessage)
                 }
+            }else if (currentMessage.voiceUri != "") {
+                //如果是語音訊息
+                holder.ivReceivedImage.visibility = View.GONE
+                holder.tvReceivedMessage.visibility = View.GONE
+                holder.received_link_preview_recyclerview.visibility = View.GONE
+                holder.play_icon.visibility = View.GONE
+                holder.received_play_voice_animation.visibility = View.VISIBLE
+                holder.received_play_voice_animation.setSafeOnClickListener {
+                    AudioPlayHelper(mContext,currentMessage.voiceUri!!).startPlaying()
+                }
+
             }
         }
     }
@@ -228,6 +258,7 @@ class ChatRecyclerviewAdapter(
         val sent_link_preview_recyclerview: RecyclerView =
             itemView.findViewById(R.id.sent_link_preview_recyclerview)
         val play_icon: ImageView = itemView.findViewById(R.id.play_icon)
+        val sent_play_voice_animation:LottieAnimationView = itemView.findViewById(R.id.sent_play_voice_animation)
     }
 
     class ReceivedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -244,6 +275,7 @@ class ChatRecyclerviewAdapter(
         val received_link_preview_recyclerview: RecyclerView =
             itemView.findViewById(R.id.received_link_preview_recyclerview)
         val play_icon: ImageView = itemView.findViewById(R.id.play_icon)
+        val received_play_voice_animation:LottieAnimationView = itemView.findViewById(R.id.received_play_voice_animation)
     }
 
     private fun modifyDate(messageDate: String): String {

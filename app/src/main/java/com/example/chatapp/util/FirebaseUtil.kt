@@ -9,7 +9,8 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.chatapp.R
-import com.example.chatapp.allPage.chatActivity.OnMessageSent
+import com.example.chatapp.allPage.chatActivity.ChatActivity
+import com.example.chatapp.allPage.chatActivity.ChatActivity.Companion.voiceRecordEnable
 import com.example.chatapp.allPage.joinChannelsFT.OnJoinSuccess
 import com.example.chatapp.allPage.logInActivity.LogInActivity
 import com.example.chatapp.allPage.mainActivity.MainActivity
@@ -144,7 +145,7 @@ class FirebaseUtil {
             channelUID: String,
             channelName: String,
             messageObject: ChannelMessage,
-            onMessageSent: OnMessageSent,
+            onMessageSent: ChatActivity.OnMessageSent,
             mContext: Context
         ) {
             //存到channelMessages
@@ -180,6 +181,7 @@ class FirebaseUtil {
                                     }
                                     //成功後清空editText box
                                     onMessageSent.doOnMessageSent()
+                                    voiceRecordEnable = true
                                     //成功後推播訊息給其他群組成員
                                     var body = ""
                                     when {
@@ -192,6 +194,9 @@ class FirebaseUtil {
                                         messageObject.videoUri != "" -> {
                                             body = "${messageObject.senderName}傳送了影片。"
                                         }
+                                        messageObject.voiceUri != "" -> {
+                                            body = "${messageObject.senderName}傳送了語音訊息。"
+                                        }
                                     }
                                     FirebaseMessageService().sendFirebaseMessageWithVolley(
                                         mContext, channelUID,
@@ -200,14 +205,17 @@ class FirebaseUtil {
                                 }.addOnFailureListener {
                                     onMessageSent.doOnMessageSent()
                                     simpleDialogUtilWithY(mContext, "錯誤", "訊息傳送失敗，請確認網路再重試！")
+                                    voiceRecordEnable = true
                                 }
                         }.addOnFailureListener {
                             onMessageSent.doOnMessageSent()
                             simpleDialogUtilWithY(mContext, "錯誤", "訊息傳送失敗，請確認網路再重試！")
+                            voiceRecordEnable = true
                         }
                 }.addOnFailureListener {
                     onMessageSent.doOnMessageSent()
                     simpleDialogUtilWithY(mContext, "錯誤", "訊息傳送失敗，請確認網路再重試！")
+                    voiceRecordEnable = true
                 }
 
         }

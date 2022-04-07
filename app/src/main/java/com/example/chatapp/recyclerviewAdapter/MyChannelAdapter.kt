@@ -64,6 +64,9 @@ class MyChannelAdapter(
             } else if (myChannelsList[position].lastVideoUriSent != "") {
                 //如果是send 影片
                 holder.tv_LastMessage.text = "${myChannelsList[position].lastSenderName}傳送了影片。"
+            }else if (myChannelsList[position].lastVoiceUriSent != "") {
+                //如果是send 語音訊息
+                holder.tv_LastMessage.text = "${myChannelsList[position].lastSenderName}傳送了語音訊息。"
             }
             //set last sender's profile picture
             holder.profilePictureGroupInMyChannel.visibility = View.VISIBLE

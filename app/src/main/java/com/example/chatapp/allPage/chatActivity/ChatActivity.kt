@@ -1,9 +1,14 @@
 package com.example.chatapp.allPage.chatActivity
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
+import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -11,8 +16,15 @@ import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.abedelazizshe.lightcompressorlibrary.CompressionListener
 import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
@@ -22,6 +34,7 @@ import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.ChannelMessage
 import com.example.chatapp.recyclerviewAdapter.ChatRecyclerviewAdapter
+import com.example.chatapp.util.AudioRecordHelper
 import com.example.chatapp.util.FirebaseUtil
 import com.example.chatapp.util.FirebaseUtil.Companion.USER_CHANNELS
 import com.example.chatapp.util.FirebaseUtil.Companion.currentUserName
@@ -39,6 +52,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_chat.*
 import java.io.File
+import java.io.IOException
 
 
 class ChatActivity : AppCompatActivity() {
@@ -46,6 +60,7 @@ class ChatActivity : AppCompatActivity() {
     companion object {
         const val requestPicturesOrVideoCode = 998
         var sharedByOtherAppText: String? = null
+        var voiceRecordEnable = true
     }
 
     private lateinit var chatRecyclerviewAdapter: ChatRecyclerviewAdapter
@@ -53,9 +68,15 @@ class ChatActivity : AppCompatActivity() {
     private var mMenu: Menu? = null
     private var channelName: String? = null
     private var channelUID: String? = null
+    private var player: MediaPlayer? = null
+    private var recorder: MediaRecorder? = null
+    private var fileName: String? = null
+    private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        registerPermissionLauncher()
+        fileName = "${externalCacheDir?.absolutePath}/audiorecordtest.3gp"
         setContentView(R.layout.activity_chat)
         messageList = ArrayList<ChannelMessage>()
         chatRecyclerviewAdapter = ChatRecyclerviewAdapter(applicationContext, messageList)
@@ -84,12 +105,23 @@ class ChatActivity : AppCompatActivity() {
             }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setView() {
         initToolBar()
         channelName = intent.extras?.getString("channelName")
         channelUID = intent.extras?.getString("channelUID")
         chat_activity_title.text = channelName
         chat_back_press.setSafeOnClickListener { finish() }
+
+        messageBox.addTextChangedListener {
+            if (it.toString() == "") {
+                sendMessageButton.visibility = View.GONE
+                voiceRecordSmallButton.visibility = View.VISIBLE
+            } else {
+                sendMessageButton.visibility = View.VISIBLE
+                voiceRecordSmallButton.visibility = View.GONE
+            }
+        }
 
         //logic for adding data to recyclerview
         listenToRTDBForMessage(channelUID!!, object : ValueEventListener {
@@ -103,11 +135,13 @@ class ChatActivity : AppCompatActivity() {
                 if (messageList.size != 0) {
                     chatRecyclerview.scrollToPosition(messageList.size - 1)
                 }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
 
             }
+
 
         })
 
@@ -119,6 +153,52 @@ class ChatActivity : AppCompatActivity() {
         sendImageButton.setSafeOnClickListener {
             //打開相簿選擇影片或相片
             openGallery()
+
+        }
+
+        val audioRecordHelper =
+            AudioRecordHelper(this, channelName, channelUID, object : OnMessageSent {
+                override fun doOnMessageSent() {
+                    Toast.makeText(this@ChatActivity, "傳送語音訊息成功", Toast.LENGTH_SHORT).show()
+                }
+            })
+        voiceRecordSmallButton.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    if (ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.RECORD_AUDIO
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        if (voiceRecordEnable) {
+                            audioRecordHelper.startRecording()
+                            record_voice_animation.visibility = View.VISIBLE
+                        }
+                    } else {
+                        askAudioPermission()
+                    }
+                    return@setOnTouchListener true
+                }
+                MotionEvent.ACTION_UP -> {
+
+                    if (ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.RECORD_AUDIO
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        if (voiceRecordEnable) {
+                            voiceRecordEnable = false
+                            audioRecordHelper.stopRecording()
+                            record_voice_animation.visibility = View.GONE
+                        }
+                    } else {
+                        askAudioPermission()
+                    }
+                    return@setOnTouchListener true
+                }
+
+            }
+            return@setOnTouchListener true
 
         }
 
@@ -150,7 +230,7 @@ class ChatActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 val fileUir = data?.data
 
-                //todo 如果檔案太大擋下來並return
+                // 如果檔案太大擋下來並return
                 inspectFile(fileUir!!)
             }
         }
@@ -358,7 +438,7 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendTextMessage(message: String){
+    private fun sendTextMessage(message: String) {
         val messageObject = ChannelMessage(
             currentUserName, mFirebaseAuthInstance.currentUser!!.uid,
             getCurrentDateString(), getCurrentTimeString(), message, "", "", ""
@@ -373,9 +453,34 @@ class ChatActivity : AppCompatActivity() {
         storeMessageToDB(channelUID!!, channelName!!, messageObject, onMessageSent, this)
     }
 
+    private fun checkAudioPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
 
-}
+        }
+    }
 
-interface OnMessageSent {
-    fun doOnMessageSent()
+    private fun askAudioPermission() {
+        requestPermissionLauncher?.launch(
+            Manifest.permission.RECORD_AUDIO
+        )
+    }
+
+    private fun registerPermissionLauncher() {
+        requestPermissionLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                } else {
+                }
+            }
+    }
+
+    interface OnMessageSent {
+        fun doOnMessageSent()
+    }
 }
