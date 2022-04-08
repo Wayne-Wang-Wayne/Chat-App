@@ -32,6 +32,7 @@ class AudioRecordHelper(
             setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
 
             try {
+                SmallUtil.vibrateDevice(mContext)
                 prepare()
                 start()
                 timeIsEnough = false

@@ -3,10 +3,14 @@ package com.example.chatapp.util
 import android.app.AlertDialog
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -132,5 +136,18 @@ object SmallUtil {
             .thumbnail(Glide.with(mContext).load(uri))
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(imageView)
+    }
+
+    // Vibrates the device for 100 milliseconds.
+    fun vibrateDevice(context: Context) {
+        val vibrator = getSystemService(context, Vibrator::class.java)
+        vibrator?.let {
+            if (Build.VERSION.SDK_INT >= 26) {
+                it.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                @Suppress("DEPRECATION")
+                it.vibrate(100)
+            }
+        }
     }
 }
