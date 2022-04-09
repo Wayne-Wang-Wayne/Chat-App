@@ -105,7 +105,7 @@
                 android:layout_height="50dp"
                 android:layout_alignParentStart="true"
                 android:background="@drawable/bg_audio_play_progress"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/received_play_voice_animation"

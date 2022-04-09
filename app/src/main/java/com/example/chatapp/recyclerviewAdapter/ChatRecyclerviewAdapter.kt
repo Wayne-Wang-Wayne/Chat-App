@@ -147,7 +147,7 @@ class ChatRecyclerviewAdapter(
                         if (!holder.sent_play_voice_animation.isAnimating) {
                             holder.sent_play_voice_animation.playAnimation()
                         }
-                        if (proportion == 1F) {
+                        if (proportion > 0.999F) {
                             holder.sent_audio_progress_view.layoutParams =
                                 RelativeLayout.LayoutParams(0, 200)
                             if (holder.sent_play_voice_animation.isAnimating) {
@@ -271,7 +271,7 @@ class ChatRecyclerviewAdapter(
                         if (!holder.received_play_voice_animation.isAnimating) {
                             holder.received_play_voice_animation.playAnimation()
                         }
-                        if (proportion == 1F) {
+                        if (proportion > 0.999F) {
                             holder.received_audio_progress_view.layoutParams =
                                 RelativeLayout.LayoutParams(0, 200)
                             if (holder.received_play_voice_animation.isAnimating) {
@@ -301,7 +301,7 @@ class ChatRecyclerviewAdapter(
             holder as SentViewHolder
             holder.sent_play_voice_animation.cancelAnimation()
             holder.sent_audio_progress_view.visibility = View.GONE
-        }else if(holder.javaClass == ReceivedViewHolder::class.java){
+        } else if (holder.javaClass == ReceivedViewHolder::class.java) {
             holder as ReceivedViewHolder
             holder.received_play_voice_animation.cancelAnimation()
             holder.received_audio_progress_view.visibility = View.GONE
