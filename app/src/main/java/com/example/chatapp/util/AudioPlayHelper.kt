@@ -31,7 +31,7 @@ class AudioPlayHelper(
         player!!.apply {
             try {
                 val fireRef = FirebaseUtil.mFirebaseStorageInstance.child(audioPath)
-                fireRef.getBytes(30000).addOnSuccessListener {
+                fireRef.getBytes(1024 * 1024 * 5).addOnSuccessListener {
 
                     val temp3gp = File.createTempFile("wayne", "3gp", mContext?.cacheDir)
                     temp3gp.deleteOnExit()
