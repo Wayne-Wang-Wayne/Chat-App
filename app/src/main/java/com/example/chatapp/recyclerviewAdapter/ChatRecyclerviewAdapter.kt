@@ -1,7 +1,10 @@
 package com.example.chatapp.recyclerviewAdapter
 
+
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,22 +19,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.example.chatapp.R
 import com.example.chatapp.allPage.MediaActivity.MyMediaActivity
-import com.example.chatapp.allPage.pictureDetailActivity.PictureDetailActivity
-import com.example.chatapp.allPage.pictureDetailActivity.PictureDetailActivity.Companion.getDetailPictureKey
 import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserProfileUrl
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.ChannelMessage
 import com.example.chatapp.util.AudioPlayHelper
+import com.example.chatapp.util.AudioProgressInterface
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.example.chatapp.util.SmallUtil
 import com.example.chatapp.util.SmallUtil.glideFormOnlineVideo
 import com.example.chatapp.util.SmallUtil.glideNormalUtil
-import kotlinx.android.synthetic.main.fragment_my_channels.*
 
 class ChatRecyclerviewAdapter(
     private val mContext: Context,
-    private val messageList: ArrayList<ChannelMessage>
+    private val messageList: ArrayList<ChannelMessage>,
+    private val mActivity: Activity
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -126,15 +128,42 @@ class ChatRecyclerviewAdapter(
                 holder.ivSentImage.setSafeOnClickListener {
                     goToMediaActivity(currentMessage)
                 }
-            }else if (currentMessage.voiceUri != "") {
+            } else if (currentMessage.voiceUri != "") {
                 //如果是語音訊息
                 holder.ivSentImage.visibility = View.GONE
                 holder.tvSentMessage.visibility = View.GONE
                 holder.sent_link_preview_recyclerview.visibility = View.GONE
                 holder.play_icon.visibility = View.GONE
                 holder.sent_play_voice_animation.visibility = View.VISIBLE
+                holder.sent_play_voice_animation.layoutParams =
+                    RelativeLayout.LayoutParams(500, 200)
+                holder.sent_play_voice_animation.cancelAnimation()
+
+
+                val audioProgressInterface = object : AudioProgressInterface {
+                    override fun onAudioPlaying(proportion: Float) {
+                        holder.sent_audio_progress_view.layoutParams =
+                            RelativeLayout.LayoutParams((proportion * 500).toInt(), 200)
+                        if (!holder.sent_play_voice_animation.isAnimating) {
+                            holder.sent_play_voice_animation.playAnimation()
+                        }
+                        if (proportion == 1F) {
+                            holder.sent_audio_progress_view.layoutParams =
+                                RelativeLayout.LayoutParams(0, 200)
+                            if (holder.sent_play_voice_animation.isAnimating) {
+                                holder.sent_play_voice_animation.cancelAnimation()
+                            }
+                        }
+                    }
+                }
                 holder.sent_play_voice_animation.setSafeOnClickListener {
-                    AudioPlayHelper(mContext,currentMessage.voiceUri!!).startPlaying()
+                    val audioPlayHelper = AudioPlayHelper(
+                        mActivity,
+                        mContext,
+                        currentMessage.voiceUri!!,
+                        audioProgressInterface
+                    )
+                    audioPlayHelper.startPlaying()
                 }
 
             }
@@ -223,15 +252,41 @@ class ChatRecyclerviewAdapter(
                 holder.ivReceivedImage.setSafeOnClickListener {
                     goToMediaActivity(currentMessage)
                 }
-            }else if (currentMessage.voiceUri != "") {
+            } else if (currentMessage.voiceUri != "") {
                 //如果是語音訊息
                 holder.ivReceivedImage.visibility = View.GONE
                 holder.tvReceivedMessage.visibility = View.GONE
                 holder.received_link_preview_recyclerview.visibility = View.GONE
                 holder.play_icon.visibility = View.GONE
                 holder.received_play_voice_animation.visibility = View.VISIBLE
+                holder.received_play_voice_animation.layoutParams =
+                    RelativeLayout.LayoutParams(500, 200)
+                holder.received_play_voice_animation.cancelAnimation()
+
+                val audioProgressInterface = object : AudioProgressInterface {
+                    override fun onAudioPlaying(proportion: Float) {
+                        holder.received_audio_progress_view.layoutParams =
+                            RelativeLayout.LayoutParams((proportion * 500).toInt(), 200)
+                        if (!holder.received_play_voice_animation.isAnimating) {
+                            holder.received_play_voice_animation.playAnimation()
+                        }
+                        if (proportion == 1F) {
+                            holder.received_audio_progress_view.layoutParams =
+                                RelativeLayout.LayoutParams(0, 200)
+                            if (holder.received_play_voice_animation.isAnimating) {
+                                holder.received_play_voice_animation.cancelAnimation()
+                            }
+                        }
+                    }
+                }
                 holder.received_play_voice_animation.setSafeOnClickListener {
-                    AudioPlayHelper(mContext,currentMessage.voiceUri!!).startPlaying()
+                    val audioPlayHelper = AudioPlayHelper(
+                        mActivity,
+                        mContext,
+                        currentMessage.voiceUri!!,
+                        audioProgressInterface
+                    )
+                    audioPlayHelper.startPlaying()
                 }
 
             }
@@ -258,7 +313,9 @@ class ChatRecyclerviewAdapter(
         val sent_link_preview_recyclerview: RecyclerView =
             itemView.findViewById(R.id.sent_link_preview_recyclerview)
         val play_icon: ImageView = itemView.findViewById(R.id.play_icon)
-        val sent_play_voice_animation:LottieAnimationView = itemView.findViewById(R.id.sent_play_voice_animation)
+        val sent_play_voice_animation: LottieAnimationView =
+            itemView.findViewById(R.id.sent_play_voice_animation)
+        val sent_audio_progress_view: View = itemView.findViewById(R.id.sent_audio_progress_view)
     }
 
     class ReceivedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -275,7 +332,10 @@ class ChatRecyclerviewAdapter(
         val received_link_preview_recyclerview: RecyclerView =
             itemView.findViewById(R.id.received_link_preview_recyclerview)
         val play_icon: ImageView = itemView.findViewById(R.id.play_icon)
-        val received_play_voice_animation:LottieAnimationView = itemView.findViewById(R.id.received_play_voice_animation)
+        val received_play_voice_animation: LottieAnimationView =
+            itemView.findViewById(R.id.received_play_voice_animation)
+        val received_audio_progress_view: View =
+            itemView.findViewById(R.id.received_audio_progress_view)
     }
 
     private fun modifyDate(messageDate: String): String {

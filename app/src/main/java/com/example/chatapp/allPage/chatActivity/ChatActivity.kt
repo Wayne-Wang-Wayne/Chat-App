@@ -79,7 +79,7 @@ class ChatActivity : AppCompatActivity() {
         fileName = "${externalCacheDir?.absolutePath}/audiorecordtest.3gp"
         setContentView(R.layout.activity_chat)
         messageList = ArrayList<ChannelMessage>()
-        chatRecyclerviewAdapter = ChatRecyclerviewAdapter(applicationContext, messageList)
+        chatRecyclerviewAdapter = ChatRecyclerviewAdapter(applicationContext, messageList,this)
         chatRecyclerview.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = chatRecyclerviewAdapter

@@ -161,23 +161,43 @@ class FirebaseUtil {
                                     //全部成功
                                     for (postSnapShot in snapShot.children) {
                                         val userUid = postSnapShot.key
-                                        mFirebaseRTDbInstance.child(USER_CHANNELS)
-                                            .child(userUid!!).child(channelUID).setValue(
-                                                UserChannels(
-                                                    channelUID,
-                                                    channelName,
-                                                    getCurrentTimeStamp(),
-                                                    getCurrentTimeString(),
-                                                    getCurrentDateString(),
-                                                    messageObject.message,
-                                                    messageObject.imageUri,
-                                                    messageObject.videoUri,
-                                                    messageObject.voiceUri,
-                                                    currentUserName,
-                                                    mFirebaseAuthInstance.currentUser?.uid,
-                                                    true
+                                        if (userUid == mFirebaseAuthInstance.currentUser?.uid){
+                                            mFirebaseRTDbInstance.child(USER_CHANNELS)
+                                                .child(userUid!!).child(channelUID).setValue(
+                                                    UserChannels(
+                                                        channelUID,
+                                                        channelName,
+                                                        getCurrentTimeStamp(),
+                                                        getCurrentTimeString(),
+                                                        getCurrentDateString(),
+                                                        messageObject.message,
+                                                        messageObject.imageUri,
+                                                        messageObject.videoUri,
+                                                        messageObject.voiceUri,
+                                                        currentUserName,
+                                                        mFirebaseAuthInstance.currentUser?.uid,
+                                                        false
+                                                    )
                                                 )
-                                            )
+                                        }else{
+                                            mFirebaseRTDbInstance.child(USER_CHANNELS)
+                                                .child(userUid!!).child(channelUID).setValue(
+                                                    UserChannels(
+                                                        channelUID,
+                                                        channelName,
+                                                        getCurrentTimeStamp(),
+                                                        getCurrentTimeString(),
+                                                        getCurrentDateString(),
+                                                        messageObject.message,
+                                                        messageObject.imageUri,
+                                                        messageObject.videoUri,
+                                                        messageObject.voiceUri,
+                                                        currentUserName,
+                                                        mFirebaseAuthInstance.currentUser?.uid,
+                                                        true
+                                                    )
+                                                )
+                                        }
                                     }
                                     //成功後清空editText box
                                     onMessageSent.doOnMessageSent()

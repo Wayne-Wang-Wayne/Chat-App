@@ -1,5 +1,6 @@
 package com.example.chatapp.util
 
+import android.app.Activity
 import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
@@ -7,14 +8,27 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.*
 
-class AudioPlayHelper(val mContext: Context, val audioPath: String) {
+
+class AudioPlayHelper(
+    val mActivity: Activity,
+    val mContext: Context,
+    private val audioPath: String,
+    private val audioProgressInterface: AudioProgressInterface
+) {
 
     private var player: MediaPlayer? = null
 
 
     fun startPlaying() {
-        player = MediaPlayer().apply {
+        player = MediaPlayer()
+
+        player?.setOnPreparedListener {
+            setProgress(it)
+        }
+
+        player!!.apply {
             try {
                 val fireRef = FirebaseUtil.mFirebaseStorageInstance.child(audioPath)
                 fireRef.getBytes(30000).addOnSuccessListener {
@@ -42,4 +56,34 @@ class AudioPlayHelper(val mContext: Context, val audioPath: String) {
         player?.release()
         player = null
     }
+
+    private fun setProgress(mMediaPlayer: MediaPlayer) {
+
+        val totalTime = mMediaPlayer.duration
+        val timer = Timer()
+        timer.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+
+                Log.d("Progresssss", mMediaPlayer.currentPosition.toString())
+                Log.d("Progresssss", totalTime.toString())
+
+                val proportion = mMediaPlayer.currentPosition.toFloat() / totalTime.toFloat()
+                mActivity.runOnUiThread {
+                    // call callback
+                    audioProgressInterface.onAudioPlaying(proportion)
+                }
+
+                if (mMediaPlayer.currentPosition >= totalTime) {
+                    stopPlaying()
+                    cancel()
+                }
+            }
+        }, 0, 5)
+    }
+
+
+}
+
+interface AudioProgressInterface {
+    fun onAudioPlaying(proportion: Float)
 }
