@@ -157,6 +157,7 @@ class ChatRecyclerviewAdapter(
                     }
                 }
                 holder.sent_play_voice_animation.setSafeOnClickListener {
+                    holder.sent_audio_progress_view.visibility = View.VISIBLE
                     val audioPlayHelper = AudioPlayHelper(
                         mActivity,
                         mContext,
@@ -280,6 +281,7 @@ class ChatRecyclerviewAdapter(
                     }
                 }
                 holder.received_play_voice_animation.setSafeOnClickListener {
+                    holder.received_audio_progress_view.visibility = View.VISIBLE
                     val audioPlayHelper = AudioPlayHelper(
                         mActivity,
                         mContext,
@@ -290,6 +292,19 @@ class ChatRecyclerviewAdapter(
                 }
 
             }
+        }
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        if (holder.javaClass == SentViewHolder::class.java) {
+            holder as SentViewHolder
+            holder.sent_play_voice_animation.cancelAnimation()
+            holder.sent_audio_progress_view.visibility = View.GONE
+        }else if(holder.javaClass == ReceivedViewHolder::class.java){
+            holder as ReceivedViewHolder
+            holder.received_play_voice_animation.cancelAnimation()
+            holder.received_audio_progress_view.visibility = View.GONE
         }
     }
 
