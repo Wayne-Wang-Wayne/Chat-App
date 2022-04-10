@@ -4,7 +4,6 @@ package com.example.chatapp.recyclerviewAdapter
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +22,8 @@ import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserProfil
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.ChannelMessage
 import com.example.chatapp.util.AudioPlayHelper
+import com.example.chatapp.util.AudioPlayHelper.Companion.audioPlayerList
+import com.example.chatapp.util.AudioPlayHelper.Companion.stopAllAudioPlayer
 import com.example.chatapp.util.AudioProgressInterface
 import com.example.chatapp.util.FirebaseUtil.Companion.mFirebaseAuthInstance
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
@@ -164,7 +165,12 @@ class ChatRecyclerviewAdapter(
                         currentMessage.voiceUri!!,
                         audioProgressInterface
                     )
+                    //先停掉其他的player再播
+                    stopAllAudioPlayer()
+                    audioPlayerList.add(audioPlayHelper)
+
                     audioPlayHelper.startPlaying()
+
                 }
 
             }
@@ -288,6 +294,10 @@ class ChatRecyclerviewAdapter(
                         currentMessage.voiceUri!!,
                         audioProgressInterface
                     )
+                    //先停掉其他的player再播
+                    stopAllAudioPlayer()
+                    audioPlayerList.add(audioPlayHelper)
+
                     audioPlayHelper.startPlaying()
                 }
 
@@ -299,10 +309,16 @@ class ChatRecyclerviewAdapter(
         super.onViewRecycled(holder)
         if (holder.javaClass == SentViewHolder::class.java) {
             holder as SentViewHolder
+            if (holder.sent_play_voice_animation.isAnimating) {
+                stopAllAudioPlayer()
+            }
             holder.sent_play_voice_animation.cancelAnimation()
             holder.sent_audio_progress_view.visibility = View.GONE
         } else if (holder.javaClass == ReceivedViewHolder::class.java) {
             holder as ReceivedViewHolder
+            if (holder.received_play_voice_animation.isAnimating) {
+                stopAllAudioPlayer()
+            }
             holder.received_play_voice_animation.cancelAnimation()
             holder.received_audio_progress_view.visibility = View.GONE
         }

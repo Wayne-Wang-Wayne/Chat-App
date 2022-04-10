@@ -34,6 +34,7 @@ import com.example.chatapp.R
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.ChannelMessage
 import com.example.chatapp.recyclerviewAdapter.ChatRecyclerviewAdapter
+import com.example.chatapp.util.AudioPlayHelper.Companion.stopAllAudioPlayer
 import com.example.chatapp.util.AudioRecordHelper
 import com.example.chatapp.util.FirebaseUtil
 import com.example.chatapp.util.FirebaseUtil.Companion.USER_CHANNELS
@@ -79,7 +80,7 @@ class ChatActivity : AppCompatActivity() {
         fileName = "${externalCacheDir?.absolutePath}/audiorecordtest.3gp"
         setContentView(R.layout.activity_chat)
         messageList = ArrayList<ChannelMessage>()
-        chatRecyclerviewAdapter = ChatRecyclerviewAdapter(applicationContext, messageList,this)
+        chatRecyclerviewAdapter = ChatRecyclerviewAdapter(applicationContext, messageList, this)
         chatRecyclerview.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = chatRecyclerviewAdapter
@@ -478,6 +479,11 @@ class ChatActivity : AppCompatActivity() {
                 } else {
                 }
             }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopAllAudioPlayer()
     }
 
     interface OnMessageSent {
