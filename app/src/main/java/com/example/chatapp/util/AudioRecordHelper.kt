@@ -85,10 +85,12 @@ class AudioRecordHelper(
     }
 
     private fun cleanRecorder() {
-        recorder?.apply {
-            stop()
-            release()
+        try {
+            recorder?.stop()
+        }catch (e:Exception){
+
         }
+        recorder?.release()
         recorder = null
         timeIsEnough = false
         recordIsValid = false
