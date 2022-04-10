@@ -80,7 +80,7 @@ class AudioPlayHelper(
             // call callback
             Handler().postDelayed(Runnable {
                 audioProgressInterface.onAudioPlaying(1F)
-            },1000)
+            },500)
         }
         audioPlayerList.remove(this)
     }
