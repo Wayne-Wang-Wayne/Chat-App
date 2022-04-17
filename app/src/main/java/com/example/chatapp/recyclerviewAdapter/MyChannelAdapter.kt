@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.example.chatapp.R
 import com.example.chatapp.allPage.chatActivity.ChatActivity
+import com.example.chatapp.allPage.myInfoActivity.MyInfoActivity.Companion.MainPicture
 import com.example.chatapp.allPage.splash.SplashActivity
 import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserProfileUrl
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
@@ -74,6 +75,7 @@ class MyChannelAdapter(
                 SmallUtil.glideProfileUtil(
                     context,
                     300,
+                    MainPicture,
                     SplashActivity.allUserProfileUrl[myChannelsList[position].lastSenderUid]!!,
                     holder.iv_myProfilePictureInMyChannel
                 )

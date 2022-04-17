@@ -7,7 +7,8 @@ data class User(
     var email: String? = "",
     var name: String? = "",
     var userUID: String? = "",
-    var userPhotoUrl: String? = ""
+    var userPhotoUrl: String? = "",
+    var userBackgroundUrl:String? = ""
 )
 
 

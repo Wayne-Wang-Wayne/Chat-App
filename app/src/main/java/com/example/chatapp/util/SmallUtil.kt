@@ -15,6 +15,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.chatapp.R
+import com.example.chatapp.allPage.myInfoActivity.MyInfoActivity.Companion.BackgroundPicture
+import com.example.chatapp.allPage.myInfoActivity.MyInfoActivity.Companion.MainPicture
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Matcher
@@ -79,16 +81,28 @@ object SmallUtil {
         return count
     }
 
-    fun glideProfileUtil(context: Context, width: Int, uri: Uri, imageView: ImageView) {
-            Glide.with(context)
-                .load(uri)
-                .placeholder(R.drawable.default_user_image)
-                .error(R.drawable.default_user_image)
-                .override(width, width)
-                .centerCrop()
-                .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView)
+    fun glideProfileUtil(context: Context,width:Int = 0, type:String, uri: Uri, imageView: ImageView) {
+       when(type){
+           BackgroundPicture->{
+               Glide.with(context)
+                   .load(uri)
+                   .centerCrop()
+                   .dontAnimate()
+                   .diskCacheStrategy(DiskCacheStrategy.ALL)
+                   .into(imageView)
+           }
+           MainPicture->{
+               Glide.with(context)
+                   .load(uri)
+                   .placeholder(R.drawable.default_user_image)
+                   .error(R.drawable.default_user_image)
+                   .override(width, width)
+                   .centerCrop()
+                   .dontAnimate()
+                   .diskCacheStrategy(DiskCacheStrategy.ALL)
+                   .into(imageView)
+           }
+       }
     }
 
     fun glideNormalUtil(context: Context, uri: Uri, imageView: ImageView) {

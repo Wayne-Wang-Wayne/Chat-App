@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../Library/Android/sdk/platforms/android-31/data/res/layout/activity_list_item.xml" value="0.1" />
+        <entry key="../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_expandable_list_item_1.xml" value="0.1" />
         <entry key="app/src/debug/res/drawable/btn_background.xml" value="0.132" />
         <entry key="app/src/debug/res/drawable/edt_background.xml" value="0.13" />
         <entry key="app/src/debug/res/layout/activity_sign_up.xml" value="0.17300724637681159" />
@@ -42,6 +44,7 @@
         <entry key="app/src/main/res/layout/item_preview_link.xml" value="0.335" />
         <entry key="app/src/main/res/layout/item_public_channel.xml" value="0.23385416666666667" />
         <entry key="app/src/main/res/layout/item_tab.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/layout_profile_dialog.xml" value="0.1" />
         <entry key="app/src/main/res/layout/message_received_box.xml" value="0.25" />
         <entry key="app/src/main/res/layout/message_received_layout.xml" value="0.17300724637681159" />
         <entry key="app/src/main/res/layout/message_sent_box.xml" value="0.335" />

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -18,6 +19,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.example.chatapp.R
 import com.example.chatapp.allPage.MediaActivity.MyMediaActivity
+import com.example.chatapp.allPage.chatActivity.ChatActivity
+import com.example.chatapp.allPage.chatActivity.ProfileDialogFragment
+import com.example.chatapp.allPage.myInfoActivity.MyInfoActivity.Companion.MainPicture
 import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserProfileUrl
 import com.example.chatapp.customStuff.SafeClickListener.Companion.setSafeOnClickListener
 import com.example.chatapp.model.ChannelMessage
@@ -30,6 +34,7 @@ import com.example.chatapp.util.IntentUtil.intentToAnyClass
 import com.example.chatapp.util.SmallUtil
 import com.example.chatapp.util.SmallUtil.glideFormOnlineVideo
 import com.example.chatapp.util.SmallUtil.glideNormalUtil
+
 
 class ChatRecyclerviewAdapter(
     private val mContext: Context,
@@ -186,6 +191,7 @@ class ChatRecyclerviewAdapter(
                 SmallUtil.glideProfileUtil(
                     mContext,
                     200,
+                    MainPicture,
                     allUserProfileUrl[currentMessage.sentUserUID]!!,
                     holder.iv_myProfilePictureInReceiveBox
                 )
@@ -201,6 +207,13 @@ class ChatRecyclerviewAdapter(
             } else {
                 holder.tvReceiveName.visibility = View.VISIBLE
                 holder.profilePictureGroupInReceiveBox.visibility = View.VISIBLE
+            }
+            //頭像點擊邏輯
+            holder.profilePictureGroupInReceiveBox.setSafeOnClickListener {
+                ProfileDialogFragment.getInstance(
+                    currentMessage.sentUserUID!!,
+                    currentMessage.senderName!!
+                ).show((mActivity as AppCompatActivity).supportFragmentManager, "fragmentDialog")
             }
 
             //set receive time

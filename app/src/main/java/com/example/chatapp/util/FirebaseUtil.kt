@@ -14,6 +14,9 @@ import com.example.chatapp.allPage.chatActivity.ChatActivity.Companion.voiceReco
 import com.example.chatapp.allPage.joinChannelsFT.OnJoinSuccess
 import com.example.chatapp.allPage.logInActivity.LogInActivity
 import com.example.chatapp.allPage.mainActivity.MainActivity
+import com.example.chatapp.allPage.myInfoActivity.MyInfoActivity.Companion.BackgroundPicture
+import com.example.chatapp.allPage.myInfoActivity.MyInfoActivity.Companion.MainPicture
+import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserBackgroundUrl
 import com.example.chatapp.allPage.splash.SplashActivity.Companion.allUserProfileUrl
 import com.example.chatapp.model.*
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
@@ -161,7 +164,7 @@ class FirebaseUtil {
                                     //全部成功
                                     for (postSnapShot in snapShot.children) {
                                         val userUid = postSnapShot.key
-                                        if (userUid == mFirebaseAuthInstance.currentUser?.uid){
+                                        if (userUid == mFirebaseAuthInstance.currentUser?.uid) {
                                             mFirebaseRTDbInstance.child(USER_CHANNELS)
                                                 .child(userUid!!).child(channelUID).setValue(
                                                     UserChannels(
@@ -179,7 +182,7 @@ class FirebaseUtil {
                                                         false
                                                     )
                                                 )
-                                        }else{
+                                        } else {
                                             mFirebaseRTDbInstance.child(USER_CHANNELS)
                                                 .child(userUid!!).child(channelUID).setValue(
                                                     UserChannels(
@@ -346,43 +349,89 @@ class FirebaseUtil {
         }
 
         fun uploadProfileImage(
+            pictureType: String,
             activity: Activity,
             context: Context,
             imageView: ImageView,
             profileImageUri: Uri,
             loadingView: View? = null
         ) {
-            loadingView?.visibility = View.VISIBLE
-            val fireRef =
-                mFirebaseStorageInstance.child("users/${mFirebaseAuthInstance.currentUser?.uid}/profile.jpg")
-            fireRef.putFile(profileImageUri).addOnSuccessListener {
-                fireRef.downloadUrl.addOnSuccessListener { uri ->
-                    mFirebaseRTDbInstance.child(ALL_USER)
-                        .child(mFirebaseAuthInstance.currentUser?.uid!!).child("userPhotoUrl")
-                        .setValue(uri.toString()).addOnSuccessListener {
-                            if (!activity.isDestroyed) {
-                                allUserProfileUrl[mFirebaseAuthInstance.currentUser?.uid!!] = uri
-                                glideProfileUtil(context, 600, uri, imageView)
-                                Toast.makeText(context, "更新頭貼成功！", Toast.LENGTH_SHORT)
-                                loadingView?.visibility = View.INVISIBLE
-                            }
+            when (pictureType) {
+                MainPicture -> {
+                    loadingView?.visibility = View.VISIBLE
+                    val fireRef =
+                        mFirebaseStorageInstance.child("users/${mFirebaseAuthInstance.currentUser?.uid}/profile.jpg")
+                    fireRef.putFile(profileImageUri).addOnSuccessListener {
+                        fireRef.downloadUrl.addOnSuccessListener { uri ->
+                            mFirebaseRTDbInstance.child(ALL_USER)
+                                .child(mFirebaseAuthInstance.currentUser?.uid!!)
+                                .child("userPhotoUrl")
+                                .setValue(uri.toString()).addOnSuccessListener {
+                                    if (!activity.isDestroyed) {
+                                        allUserProfileUrl[mFirebaseAuthInstance.currentUser?.uid!!] =
+                                            uri
+                                        glideProfileUtil(context, 600, MainPicture, uri, imageView)
+                                        Toast.makeText(context, "更新頭貼成功！", Toast.LENGTH_SHORT)
+                                        loadingView?.visibility = View.INVISIBLE
+                                    }
+                                }
                         }
+                    }.addOnFailureListener {
+                        Toast.makeText(context, "更新頭貼失敗！", Toast.LENGTH_SHORT)
+                        loadingView?.visibility = View.INVISIBLE
+                    }
                 }
-            }.addOnFailureListener {
-                Toast.makeText(context, "更新頭貼失敗！", Toast.LENGTH_SHORT)
-                loadingView?.visibility = View.INVISIBLE
+                BackgroundPicture -> {
+                    loadingView?.visibility = View.VISIBLE
+                    val fireRef =
+                        mFirebaseStorageInstance.child("users/${mFirebaseAuthInstance.currentUser?.uid}/background.jpg")
+                    fireRef.putFile(profileImageUri).addOnSuccessListener {
+                        fireRef.downloadUrl.addOnSuccessListener { uri ->
+                            mFirebaseRTDbInstance.child(ALL_USER)
+                                .child(mFirebaseAuthInstance.currentUser?.uid!!)
+                                .child("userBackgroundUrl")
+                                .setValue(uri.toString()).addOnSuccessListener {
+                                    if (!activity.isDestroyed) {
+                                        allUserBackgroundUrl[mFirebaseAuthInstance.currentUser?.uid!!] =
+                                            uri
+                                        glideProfileUtil(
+                                            context = context,
+                                            type = BackgroundPicture,
+                                            uri = uri,
+                                            imageView = imageView
+                                        )
+                                        Toast.makeText(context, "更新背景成功！", Toast.LENGTH_SHORT)
+                                        loadingView?.visibility = View.INVISIBLE
+                                    }
+                                }
+                        }
+                    }.addOnFailureListener {
+                        Toast.makeText(context, "更新背景失敗！", Toast.LENGTH_SHORT)
+                        loadingView?.visibility = View.INVISIBLE
+                    }
+                }
             }
+
         }
 
         fun getPictureFromFirebase(
-            context: Context, imageView: ImageView
+            context: Context, iv_myProfilePicture: ImageView, iv_profile_background: ImageView
         ) {
             if (allUserProfileUrl[mFirebaseAuthInstance.currentUser?.uid] != null) {
                 glideProfileUtil(
                     context,
                     600,
+                    MainPicture,
                     allUserProfileUrl[mFirebaseAuthInstance.currentUser?.uid]!!,
-                    imageView
+                    iv_myProfilePicture
+                )
+            }
+            if (allUserBackgroundUrl[mFirebaseAuthInstance.currentUser?.uid] != null) {
+                glideProfileUtil(
+                    context = context,
+                    type = BackgroundPicture,
+                    uri = allUserBackgroundUrl[mFirebaseAuthInstance.currentUser?.uid]!!,
+                    imageView = iv_profile_background
                 )
             }
         }

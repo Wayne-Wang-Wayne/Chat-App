@@ -23,6 +23,7 @@ class SplashActivity : AppCompatActivity() {
 
     companion object {
         val allUserProfileUrl = HashMap<String, Uri>()
+        val allUserBackgroundUrl = HashMap<String, Uri>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,14 +43,26 @@ class SplashActivity : AppCompatActivity() {
             }
         }
 
-        mFirebaseRTDbInstance.child(ALL_USER).get().addOnSuccessListener { snapShot ->
-            for (postSnapShot in snapShot.children) {
+        mFirebaseRTDbInstance.child(ALL_USER).get().addOnSuccessListener { snapShot1 ->
+            for (postSnapShot in snapShot1.children) {
                 val user = postSnapShot.getValue(User::class.java)
-                if (user?.userPhotoUrl!=""){
+                if (user?.userPhotoUrl != "") {
                     allUserProfileUrl[user?.userUID!!] = user?.userPhotoUrl!!.toUri()
                 }
             }
-            delayForThreeSecond()
+            mFirebaseRTDbInstance.child(ALL_USER).get().addOnSuccessListener { snapShot2 ->
+                for (postSnapShot in snapShot2.children) {
+                    val user = postSnapShot.getValue(User::class.java)
+                    if (user?.userBackgroundUrl != "") {
+                        allUserBackgroundUrl[user?.userUID!!] = user?.userBackgroundUrl!!.toUri()
+                    }
+                }
+                delayForThreeSecond()
+            }.addOnFailureListener {
+                SmallUtil.quickToast(this, "App啟動異常，請重啟！")
+            }
+        }.addOnFailureListener {
+            SmallUtil.quickToast(this, "App啟動異常，請重啟！")
         }
     }
 
