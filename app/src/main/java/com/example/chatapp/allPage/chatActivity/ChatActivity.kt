@@ -1,6 +1,8 @@
 package com.example.chatapp.allPage.chatActivity
 
 import android.Manifest
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
@@ -23,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.abedelazizshe.lightcompressorlibrary.CompressionListener
 import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
 import com.abedelazizshe.lightcompressorlibrary.VideoQuality
@@ -50,7 +53,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_chat.*
 import java.io.File
-import java.io.IOException
 
 
 class ChatActivity : AppCompatActivity() {
@@ -84,6 +86,7 @@ class ChatActivity : AppCompatActivity() {
             adapter = chatRecyclerviewAdapter
         }
         setView()
+        senseIfAtBottomAnimation()
         handleInfoFromOtherApp()
     }
 
@@ -132,6 +135,7 @@ class ChatActivity : AppCompatActivity() {
                 }
                 chatRecyclerviewAdapter.notifyItemRangeInserted(messageList.size - 1, 1)
                 if (messageList.size != 0) {
+                    arrowDisAppearAnimation()
                     chatRecyclerview.scrollToPosition(messageList.size - 1)
                 }
 
@@ -153,6 +157,10 @@ class ChatActivity : AppCompatActivity() {
             //打開相簿選擇影片或相片
             openGallery()
 
+        }
+        chat_activity_arrow_down.setSafeOnClickListener {
+            arrowDisAppearAnimation()
+            chatRecyclerview.smoothScrollToPosition(messageList.size - 1)
         }
 
         val audioRecordHelper =
@@ -488,10 +496,60 @@ class ChatActivity : AppCompatActivity() {
         fun doOnMessageSent()
     }
 
-    private fun setStatusBarColor(){
+    private fun setStatusBarColor() {
         val window: Window = window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = ContextCompat.getColor(this, R.color.tool_bar_background)
+    }
+
+    private fun senseIfAtBottomAnimation() {
+        chatRecyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(1)) {
+                    //如果已經在就不用再set
+                    arrowDisAppearAnimation()
+                } else {
+                    //如果已經在就不用再set
+                    arrowAppearAnimation()
+                }
+            }
+        })
+    }
+
+    private fun arrowDisAppearAnimation() {
+        if (chat_activity_arrow_down.visibility == View.VISIBLE) {
+            chat_activity_arrow_down.animate()
+                .translationY(144f)
+                .alpha(0.0f)
+                .setDuration(300)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        chat_activity_arrow_down.visibility = View.GONE
+                    }
+                })
+        }
+    }
+
+    private fun arrowAppearAnimation() {
+        if (chat_activity_arrow_down.visibility == View.GONE) {
+            chat_activity_arrow_down.visibility = View.VISIBLE
+            chat_activity_arrow_down.alpha = 0f
+            if (chat_activity_arrow_down.y == 0f) {
+                chat_activity_arrow_down.y = 144f
+            }
+            chat_activity_arrow_down.animate()
+                .translationY(0f)
+                .alpha(1.0f)
+                .setDuration(300)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+
+                    }
+                })
+        }
     }
 }
