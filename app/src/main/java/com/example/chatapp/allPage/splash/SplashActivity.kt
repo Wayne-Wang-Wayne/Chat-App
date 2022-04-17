@@ -2,10 +2,13 @@ package com.example.chatapp.allPage.splash
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Window
+import android.view.WindowManager
 import androidx.core.net.toUri
 import com.example.chatapp.R
 import com.example.chatapp.allPage.chatActivity.ChatActivity.Companion.sharedByOtherAppText
@@ -27,8 +30,13 @@ class SplashActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //customize status bar
+        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+
 
         //檢查是否有東西傳進來
         if (intent?.action == Intent.ACTION_SEND) {

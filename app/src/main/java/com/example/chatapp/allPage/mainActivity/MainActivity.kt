@@ -1,24 +1,22 @@
 package com.example.chatapp.allPage.mainActivity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.chatapp.R
 import com.example.chatapp.allPage.chatActivity.ChatActivity.Companion.sharedByOtherAppText
 import com.example.chatapp.allPage.myInfoActivity.MyInfoActivity
-import com.example.chatapp.allPage.myMainFriend.MyMainFriendsFragment
 import com.example.chatapp.util.FirebaseUtil
 import com.example.chatapp.util.FirebaseUtil.Companion.logOut
 import com.example.chatapp.util.IntentUtil.intentToAnyClass
-import com.example.chatapp.util.PreviewLinkUtil
 import com.example.chatapp.util.SmallUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_my_info.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setStatusBarColor()
         initToolBar()
         //entryAnimationStart()
         changePage(BaseViewPagerFragment.newInstance())
@@ -106,5 +105,12 @@ class MainActivity : AppCompatActivity() {
         }else{
             main_Activity_title.visibility = View.INVISIBLE
         }
+    }
+
+    private fun setStatusBarColor(){
+        val window: Window = window
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.tool_bar_background)
     }
 }

@@ -8,8 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -25,10 +27,9 @@ import java.io.File
 class MyMediaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStatusBarColor()
         setContentView(R.layout.activity_media)
-
         initViewPager()
-
         media_detail_back_press.setSafeOnClickListener { finish() }
     }
 
@@ -156,5 +157,12 @@ class MyMediaActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Toast.makeText(this, "影片下載失敗！", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun setStatusBarColor(){
+        val window: Window = window
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.black)
     }
 }

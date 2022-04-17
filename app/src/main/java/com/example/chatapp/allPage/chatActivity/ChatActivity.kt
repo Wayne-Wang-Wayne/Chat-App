@@ -14,10 +14,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.OpenableColumns
-import android.view.Menu
-import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -76,6 +73,7 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStatusBarColor()
         registerPermissionLauncher()
         fileName = "${externalCacheDir?.absolutePath}/audiorecordtest.3gp"
         setContentView(R.layout.activity_chat)
@@ -488,5 +486,12 @@ class ChatActivity : AppCompatActivity() {
 
     interface OnMessageSent {
         fun doOnMessageSent()
+    }
+
+    private fun setStatusBarColor(){
+        val window: Window = window
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.tool_bar_background)
     }
 }
